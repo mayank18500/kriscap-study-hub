@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Mail, Phone, MapPin, Loader2, User, Eye, X } from "lucide-react";
+import { Search, Mail, Phone, MapPin, Loader2, User, Eye, X, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,9 +11,21 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useRef } from "react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { format } from "date-fns";
+import { useToast } from "@/components/ui/use-toast";
 
 import { useDebounce } from "@/hooks/use-debounce";
 
@@ -21,6 +33,9 @@ const AdminUsers = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearch = useDebounce(searchQuery, 300);
     const [selectedUser, setSelectedUser] = useState<any>(null);
+    const [userToDelete, setUserToDelete] = useState<any>(null);
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
 
     const { data: users, isLoading } = useQuery({
         queryKey: ["adminUsers"],
@@ -30,12 +45,36 @@ const AdminUsers = () => {
         }
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: async (userId: string) => {
+            await api.delete(`/api/admin/users/${userId}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+            toast({ title: "User Deleted", description: "The user has been permanently removed." });
+            setUserToDelete(null);
+        },
+        onError: (error: any) => {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.response?.data?.message || "Failed to delete user",
+            });
+        }
+    });
+
+    const handleDeleteUser = () => {
+        if (userToDelete) {
+            deleteMutation.mutate(userToDelete._id);
+        }
+    };
+
     const filteredUsers = users?.filter((user: any) =>
         user.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
         user.email.toLowerCase().includes(debouncedSearch.toLowerCase())
     ) || [];
 
-    if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>;
+    if (isLoading) return <div className="flex justify-center p-8">< Loader2 className="animate-spin" /></div >;
 
     return (
         <div className="space-y-6">
@@ -112,6 +151,9 @@ const AdminUsers = () => {
                                             <Button variant="ghost" size="icon" onClick={() => setSelectedUser(user)}>
                                                 <Eye className="w-4 h-4" />
                                             </Button>
+                                            <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setUserToDelete(user)}>
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
                                         </td>
                                     </motion.tr>
                                 ))}
@@ -184,6 +226,29 @@ const AdminUsers = () => {
                     )}
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete
+                            <span className="font-medium text-foreground"> {userToDelete?.name}'s </span>
+                            account and remove their data from our servers.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleteMutation.isPending}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDeleteUser}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            disabled={deleteMutation.isPending}
+                        >
+                            {deleteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete Account"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div >
     );
 };

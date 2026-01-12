@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import TMAFiles from "./pages/TMAFiles";
 import ProjectFiles from "./pages/ProjectFiles";
@@ -14,6 +16,7 @@ import Downloads from "./pages/Downloads";
 import Profile from "./pages/Profile";
 import DashboardLayout from "./layouts/DashboardLayout";
 import AdminLayout from "./layouts/AdminLayout";
+import PublicLayout from "./layouts/PublicLayout";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
@@ -63,6 +66,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
 
               {/* Client Dashboard Routes - Protected */}
               <Route element={<ProtectedRoute />}>
@@ -89,9 +94,13 @@ const App = () => (
                 </Route>
               </Route>
 
-              {/* Public pages for TMA and Projects */}
-              <Route path="/tma-files" element={<Index />} />
-              <Route path="/project-files" element={<Index />} />
+              {/* Protected pages with Public Layout */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<PublicLayout />}>
+                  <Route path="/tma-files" element={<TMAFiles />} />
+                  <Route path="/project-files" element={<ProjectFiles />} />
+                </Route>
+              </Route>
 
               {/* Catch-all */}
               <Route path="*" element={<NotFound />} />

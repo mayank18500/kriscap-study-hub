@@ -10,3 +10,16 @@ services:
         value: production
       - key: PORT
         value: 10000
+
+  - type: web
+    name: kriscap-study-hub-frontend
+    env: static
+    rootDir: Frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: kriscap-study-hub-backend
+          property: url

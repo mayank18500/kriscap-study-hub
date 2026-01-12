@@ -7,7 +7,8 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (credentials: any) => Promise<any>;
-    register: (credentials: any) => Promise<void>;
+    register: (credentials: any) => Promise<any>;
+    verifyOtp: (email: string, otp: string) => Promise<any>;
     logout: () => Promise<void>;
     checkAuth: () => Promise<void>;
 }
@@ -38,7 +39,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const register = async (credentials: any) => {
         const { data } = await api.post("/auth/register", credentials);
+        return data;
+    };
+
+    const verifyOtp = async (email: string, otp: string) => {
+        const { data } = await api.post("/auth/verify-email", { email, otp });
         setUser(data.user);
+        return data.user;
     };
 
     const logout = async () => {
@@ -54,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, logout, checkAuth }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, verifyOtp, logout, checkAuth }}>
             {children}
         </AuthContext.Provider>
     );

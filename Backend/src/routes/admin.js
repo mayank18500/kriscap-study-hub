@@ -10,9 +10,8 @@ const {
     updateOrderStatus,
     getAdminUsers,
     getAdminPayments,
-    uploadFile
+    deleteUser
 } = require("../controllers/admin");
-const upload = require("../middleware/upload");
 
 const router = express.Router();
 
@@ -33,11 +32,9 @@ router.patch("/orders/:id/status", updateOrderStatus);
 
 // Users
 router.get("/users", getAdminUsers);
+router.delete("/users/:id", deleteUser);
 
 // Payments
 router.get("/payments", getAdminPayments);
-
-// Uploads
-router.post("/upload", upload.single("file"), uploadFile);
 
 module.exports = router;

@@ -47,20 +47,7 @@ const AdminProducts = () => {
     previewUrl: ""
   });
 
-  const handleUpload = async (file: File, field: 'fileUrl' | 'previewUrl') => {
-    const formData = new FormData();
-    formData.append('file', file);
 
-    try {
-      const { data } = await api.post('/api/admin/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      setNewProduct(prev => ({ ...prev, [field]: data.fileUrl }));
-      toast({ title: "Upload Successful", description: "File uploaded successfully" });
-    } catch (error) {
-      toast({ variant: "destructive", title: "Upload Failed", description: "Could not upload file" });
-    }
-  };
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["adminProducts"],
@@ -193,30 +180,26 @@ const AdminProducts = () => {
                 </div>
               </div>
 
-              {/* File Uploads */}
+              {/* File Links */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Product File (PDF/Doc)</Label>
+                  <Label>Product Link (Google Drive/External)</Label>
                   <div className="flex items-center gap-2">
                     <Input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={(e) => {
-                        if (e.target.files?.[0]) handleUpload(e.target.files[0], 'fileUrl');
-                      }}
+                      placeholder="https://drive.google.com/..."
+                      value={newProduct.fileUrl}
+                      onChange={(e) => setNewProduct({ ...newProduct, fileUrl: e.target.value })}
                     />
                     {newProduct.fileUrl && <FileText className="text-green-500 w-5 h-5" />}
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Preview Image</Label>
+                  <Label>Preview Image Link</Label>
                   <div className="flex items-center gap-2">
                     <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        if (e.target.files?.[0]) handleUpload(e.target.files[0], 'previewUrl');
-                      }}
+                      placeholder="https://imgur.com/..."
+                      value={newProduct.previewUrl}
+                      onChange={(e) => setNewProduct({ ...newProduct, previewUrl: e.target.value })}
                     />
                     {newProduct.previewUrl && <Eye className="text-green-500 w-5 h-5" />}
                   </div>
