@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 
+import config from "./config/env";
+
 const app = express();
 
 // Middleware
@@ -10,7 +12,7 @@ app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080"], // Frontend URL
+    origin: config.ALLOWED_ORIGINS, // Frontend URL
     credentials: true,
 }));
 app.use(express.json());
