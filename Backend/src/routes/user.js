@@ -1,6 +1,6 @@
-import express from "express";
-import { getDashboardStats, saveAddress, getDownloads, updateProfile } from "../controllers/user";
-import verifyToken from "../middleware/auth";
+const express = require("express");
+const { getDashboardStats, saveAddress, getDownloads, updateProfile } = require("../controllers/user");
+const verifyToken = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -10,4 +10,4 @@ router.post("/address", saveAddress);
 router.patch("/profile", updateProfile);
 router.get("/downloads", getDownloads);
 
-export default router;
+module.exports = router;

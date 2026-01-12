@@ -1,24 +1,7 @@
-import mongoose, { Schema, Document } from "mongoose";
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-export interface IProduct extends Document {
-    name: string;
-    description: string;
-    price: number;
-    type: "TMA" | "PROJECT";
-    class: string; // "10" | "12"
-    subject?: string;
-    medium?: string; // "English" | "Hindi"
-    fileUrl?: string; // For digital downloads (TMA)
-    previewUrl?: string;
-    isPhysical: boolean; // True for Projects
-    active: boolean;
-    rating: number;
-    reviews: number;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-const ProductSchema: Schema = new Schema(
+const ProductSchema = new Schema(
     {
         name: { type: String, required: true },
         description: { type: String },
@@ -37,4 +20,4 @@ const ProductSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-export default mongoose.model<IProduct>("Product", ProductSchema);
+module.exports = mongoose.model("Product", ProductSchema);

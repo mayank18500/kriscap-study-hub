@@ -1,6 +1,6 @@
-import express from "express";
-import { createOrder, verifyPayment, getMyOrders, getInvoice } from "../controllers/order";
-import verifyToken from "../middleware/auth";
+const express = require("express");
+const { createOrder, verifyPayment, getMyOrders, getInvoice } = require("../controllers/order");
+const verifyToken = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -10,4 +10,4 @@ router.post("/verify", verifyPayment); // Maps to /api/orders/verify (Note: Fron
 router.get("/my-orders", getMyOrders);
 router.get("/invoice/:id", getInvoice);
 
-export default router;
+module.exports = router;

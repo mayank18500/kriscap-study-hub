@@ -1,9 +1,9 @@
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import helmet from "helmet";
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const helmet = require("helmet");
 
-import config from "./config/env";
+const config = require("./config/env");
 
 const app = express();
 
@@ -25,12 +25,13 @@ app.get("/", (req, res) => {
 });
 
 // Import Routes
-import authRoutes from "./routes/auth";
-import productRoutes from "./routes/product";
-import orderRoutes from "./routes/order";
-import paymentRoutes from "./routes/payment";
-import userRoutes from "./routes/user";
-import notificationRoutes from "./routes/notification";
+const authRoutes = require("./routes/auth");
+const productRoutes = require("./routes/product");
+const orderRoutes = require("./routes/order");
+const paymentRoutes = require("./routes/payment");
+const userRoutes = require("./routes/user");
+const notificationRoutes = require("./routes/notification");
+const adminRoutes = require("./routes/admin");
 
 app.use("/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -38,11 +39,10 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/notifications", notificationRoutes);
-import adminRoutes from "./routes/admin";
 app.use("/api/admin", adminRoutes);
 
 // Global Error Handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err, req, res, next) => {
     console.error("Global Error:", err);
     res.status(err.status || 500).json({
         message: err.message || "Internal Server Error",
@@ -50,4 +50,4 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
     });
 });
 
-export default app;
+module.exports = app;

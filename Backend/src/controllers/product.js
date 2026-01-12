@@ -1,10 +1,9 @@
-import { Request, Response } from "express";
-import Product from "../models/Product";
+const Product = require("../models/Product");
 
-export const getProducts = async (req: Request, res: Response) => {
+exports.getProducts = async (req, res) => {
     try {
         const { type } = req.query;
-        const filter: any = {};
+        const filter = {};
 
         if (type) {
             filter.type = type;
@@ -17,7 +16,7 @@ export const getProducts = async (req: Request, res: Response) => {
     }
 };
 
-export const getProductById = async (req: Request, res: Response) => {
+exports.getProductById = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         if (!product) {

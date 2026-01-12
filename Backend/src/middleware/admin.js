@@ -1,11 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import User from "../models/User";
+const User = require("../models/User");
 
-interface AuthRequest extends Request {
-    userId?: string;
-}
-
-const verifyAdmin = async (req: AuthRequest, res: Response, next: NextFunction) => {
+const verifyAdmin = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId);
         if (!user || user.role !== "admin") {
@@ -17,4 +12,4 @@ const verifyAdmin = async (req: AuthRequest, res: Response, next: NextFunction) 
     }
 };
 
-export default verifyAdmin;
+module.exports = verifyAdmin;

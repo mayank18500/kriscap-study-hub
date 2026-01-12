@@ -1,7 +1,7 @@
-import express from "express";
-import verifyToken from "../middleware/auth";
-import verifyAdmin from "../middleware/admin";
-import {
+const express = require("express");
+const verifyToken = require("../middleware/auth");
+const verifyAdmin = require("../middleware/admin");
+const {
     getAdminStats,
     getAdminProducts,
     createProduct,
@@ -9,8 +9,10 @@ import {
     getAdminOrders,
     updateOrderStatus,
     getAdminUsers,
-    getAdminPayments
-} from "../controllers/admin";
+    getAdminPayments,
+    uploadFile
+} = require("../controllers/admin");
+const upload = require("../middleware/upload");
 
 const router = express.Router();
 
@@ -36,8 +38,6 @@ router.get("/users", getAdminUsers);
 router.get("/payments", getAdminPayments);
 
 // Uploads
-import upload from "../middleware/upload";
-import { uploadFile } from "../controllers/admin";
 router.post("/upload", upload.single("file"), uploadFile);
 
-export default router;
+module.exports = router;

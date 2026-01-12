@@ -1,23 +1,16 @@
-import { Request, Response } from "express";
-import Razorpay from "razorpay";
-import crypto from "crypto";
-import Order from "../models/Order";
-import Product from "../models/Product";
-import User from "../models/User";
-import { io } from "../index";
-
-import config from "../config/env";
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const Order = require("../models/Order");
+const Product = require("../models/Product");
+const User = require("../models/User");
+const config = require("../config/env");
 
 const razorpay = new Razorpay({
     key_id: config.RAZORPAY_KEY_ID,
     key_secret: config.RAZORPAY_KEY_SECRET,
 });
 
-interface AuthRequest extends Request {
-    userId?: string;
-}
-
-export const createOrder = async (req: AuthRequest, res: Response) => {
+exports.createOrder = async (req, res) => {
     try {
         const { productId, addressId } = req.body; // addressId might be 'latest' or specific ID
         const userId = req.userId;
@@ -80,7 +73,7 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
     }
 };
 
-export const verifyPayment = async (req: AuthRequest, res: Response) => {
+exports.verifyPayment = async (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         const userId = req.userId;
@@ -105,15 +98,20 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
             // Check product type to set status
             // We need to fetch product to check type
             await order.populate("products.product");
-            const product = (order.products[0].product as any);
+            const product = order.products[0].product;
+
+            // Late require to avoid circular dependency
+            const { io } = require("../index");
 
             if (product.type === "TMA") {
                 order.status = "Completed";
                 // Emit file unlocked event
-                io.to(userId!).emit("file_unlocked", {
-                    fileName: product.name,
-                    orderId: order._id
-                });
+                if (io) {
+                    io.to(userId).emit("file_unlocked", {
+                        fileName: product.name,
+                        orderId: order._id
+                    });
+                }
             } else {
                 order.status = "Pending"; // Waiting for shipping
             }
@@ -121,10 +119,10 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
             await order.save();
 
             // Emit global/user socket event
-            io.emit("payment_success", { orderId: order._id, userId });
-
-            // Also emit order status update
-            io.emit("order_status_update", { orderId: order._id, status: order.status });
+            if (io) {
+                io.emit("payment_success", { orderId: order._id, userId });
+                io.emit("order_status_update", { orderId: order._id, status: order.status });
+            }
 
             res.json({ message: "Payment verified successfully", orderId: order._id });
         } else {
@@ -136,14 +134,14 @@ export const verifyPayment = async (req: AuthRequest, res: Response) => {
     }
 };
 
-export const getMyOrders = async (req: AuthRequest, res: Response) => {
+exports.getMyOrders = async (req, res) => {
     try {
         const userId = req.userId;
         const orders = await Order.find({ user: userId }).populate("products.product").sort({ createdAt: -1 });
 
         // Transform for frontend
         const formattedOrders = orders.map(order => {
-            const product = (order.products[0].product as any);
+            const product = order.products[0].product;
             return {
                 id: order._id,
                 type: product.type,
@@ -161,14 +159,14 @@ export const getMyOrders = async (req: AuthRequest, res: Response) => {
     }
 };
 
-export const getInvoice = async (req: AuthRequest, res: Response) => {
+exports.getInvoice = async (req, res) => {
     try {
         const orderId = req.params.id;
         const order = await Order.findById(orderId).populate("user products.product");
         if (!order) return res.status(404).send("Order not found");
 
-        const product = (order.products[0].product as any);
-        const user = (order.user as any);
+        const product = order.products[0].product;
+        const user = order.user;
 
         const invoiceHtml = `
             <h1>Invoice</h1>

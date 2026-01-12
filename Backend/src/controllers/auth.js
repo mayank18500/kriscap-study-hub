@@ -1,16 +1,15 @@
-import { Request, Response } from "express";
-import bcrypt from "bcryptjs";
-import config from "../config/env";
-import jwt from "jsonwebtoken";
-import User from "../models/User";
+const bcrypt = require("bcryptjs");
+const config = require("../config/env");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-const generateToken = (id: string) => {
+const generateToken = (id) => {
     return jwt.sign({ id }, config.JWT_SECRET, {
         expiresIn: "1d",
     });
 };
 
-export const register = async (req: Request, res: Response) => {
+exports.register = async (req, res) => {
     try {
         const { name, email, password, phoneNumber } = req.body;
 
@@ -29,7 +28,7 @@ export const register = async (req: Request, res: Response) => {
             phoneNumber,
         });
 
-        const token = generateToken((user._id as unknown) as string);
+        const token = generateToken(user._id);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -52,7 +51,7 @@ export const register = async (req: Request, res: Response) => {
     }
 };
 
-export const login = async (req: Request, res: Response) => {
+exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -71,7 +70,7 @@ export const login = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Please login with Google" });
         }
 
-        const token = generateToken((user._id as unknown) as string);
+        const token = generateToken(user._id);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -95,7 +94,7 @@ export const login = async (req: Request, res: Response) => {
     }
 };
 
-export const logout = (req: Request, res: Response) => {
+exports.logout = (req, res) => {
     res.cookie("token", "", {
         httpOnly: true,
         expires: new Date(0),
@@ -103,7 +102,7 @@ export const logout = (req: Request, res: Response) => {
     res.status(200).json({ message: "Logged out" });
 };
 
-export const getMe = async (req: any, res: Response) => {
+exports.getMe = async (req, res) => {
     try {
         const user = await User.findById(req.userId).select("-password");
         if (!user) {

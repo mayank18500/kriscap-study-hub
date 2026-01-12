@@ -1,9 +1,8 @@
-import { Request, Response } from "express";
-import User from "../models/User";
-import Order from "../models/Order";
-import Product from "../models/Product";
+const User = require("../models/User");
+const Order = require("../models/Order");
+const Product = require("../models/Product");
 
-export const getAdminStats = async (req: Request, res: Response) => {
+exports.getAdminStats = async (req, res) => {
     try {
         const totalUsers = await User.countDocuments({ role: "user" });
         const totalOrders = await Order.countDocuments();
@@ -34,8 +33,8 @@ export const getAdminStats = async (req: Request, res: Response) => {
 
         // Format recent orders for frontend
         const formattedRecentOrders = recentOrders.map(order => {
-            const product = order.products[0]?.product as any;
-            const user = order.user as any;
+            const product = order.products[0]?.product;
+            const user = order.user;
             return {
                 id: order._id,
                 customer: user?.name || "Unknown",
@@ -61,7 +60,7 @@ export const getAdminStats = async (req: Request, res: Response) => {
     }
 };
 
-export const getAdminProducts = async (req: Request, res: Response) => {
+exports.getAdminProducts = async (req, res) => {
     try {
         const products = await Product.find().sort({ createdAt: -1 });
 
@@ -83,7 +82,7 @@ export const getAdminProducts = async (req: Request, res: Response) => {
     }
 };
 
-export const createProduct = async (req: Request, res: Response) => {
+exports.createProduct = async (req, res) => {
     try {
         const { name, type, class: grade, medium, price } = req.body;
         // File handling would go here (e.g. S3 upload), for now assuming just data or fileUrl passed
@@ -105,7 +104,7 @@ export const createProduct = async (req: Request, res: Response) => {
     }
 }
 
-export const toggleProductStatus = async (req: Request, res: Response) => {
+exports.toggleProductStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const product = await Product.findById(id);
@@ -119,7 +118,7 @@ export const toggleProductStatus = async (req: Request, res: Response) => {
     }
 }
 
-export const getAdminOrders = async (req: Request, res: Response) => {
+exports.getAdminOrders = async (req, res) => {
     try {
         const orders = await Order.find({ paymentStatus: "Paid" })
             .populate("user", "name email phoneNumber addresses")
@@ -127,8 +126,8 @@ export const getAdminOrders = async (req: Request, res: Response) => {
             .sort({ createdAt: -1 });
 
         const formattedOrders = orders.map(order => {
-            const product = order.products[0]?.product as any;
-            const user = order.user as any;
+            const product = order.products[0]?.product;
+            const user = order.user;
             // Use order shipping address if available, fallback to user's default address
             const shippingAddress = order.shippingAddress || (user.addresses && user.addresses[0]);
 
@@ -153,7 +152,7 @@ export const getAdminOrders = async (req: Request, res: Response) => {
     }
 };
 
-export const updateOrderStatus = async (req: Request, res: Response) => {
+exports.updateOrderStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
@@ -167,7 +166,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     }
 }
 
-export const getAdminUsers = async (req: Request, res: Response) => {
+exports.getAdminUsers = async (req, res) => {
     try {
         const users = await User.find({ role: "user" }).select("-password").sort({ createdAt: -1 });
         res.json(users);
@@ -176,7 +175,7 @@ export const getAdminUsers = async (req: Request, res: Response) => {
     }
 };
 
-export const getAdminPayments = async (req: Request, res: Response) => {
+exports.getAdminPayments = async (req, res) => {
     try {
         const orders = await Order.find({
             status: { $in: ["Completed", "Processing", "In Transit", "Delivered"] }
@@ -187,8 +186,8 @@ export const getAdminPayments = async (req: Request, res: Response) => {
         const payments = orders.map(order => ({
             id: order.razorpayPaymentId || `PAY-${order._id.toString().slice(-6)}`, // Using paymentId if exists, else fallback
             orderId: order._id,
-            user: (order.user as any)?.name || "Unknown",
-            email: (order.user as any)?.email,
+            user: order.user?.name || "Unknown",
+            email: order.user?.email,
             amount: order.totalAmount,
             status: "Success",
             date: order.createdAt,
@@ -201,7 +200,7 @@ export const getAdminPayments = async (req: Request, res: Response) => {
     }
 };
 
-export const uploadFile = async (req: Request, res: Response) => {
+exports.uploadFile = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
     }

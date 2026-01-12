@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import Product from "../models/Product";
-import User from "../models/User";
-import bcrypt from "bcryptjs";
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const Product = require("../models/Product");
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
 
 dotenv.config();
 

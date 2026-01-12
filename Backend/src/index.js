@@ -1,8 +1,8 @@
-import http from "http";
-import mongoose from "mongoose";
-import { Server } from "socket.io";
-import app from "./app";
-import config from "./config/env";
+const http = require("http");
+const mongoose = require("mongoose");
+const { Server } = require("socket.io");
+const app = require("./app");
+const config = require("./config/env");
 
 const server = http.createServer(app);
 
@@ -40,4 +40,4 @@ mongoose
         console.error("MongoDB connection error:", err);
     });
 
-export { io };
+module.exports = { io };

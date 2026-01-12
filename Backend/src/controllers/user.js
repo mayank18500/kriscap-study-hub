@@ -1,14 +1,9 @@
-import { Request, Response } from "express";
-import User from "../models/User";
-import Order from "../models/Order";
-import Product from "../models/Product";
-import bcrypt from "bcryptjs";
+const User = require("../models/User");
+const Order = require("../models/Order");
+const Product = require("../models/Product");
+const bcrypt = require("bcryptjs");
 
-interface AuthRequest extends Request {
-    userId?: string;
-}
-
-export const getDashboardStats = async (req: AuthRequest, res: Response) => {
+exports.getDashboardStats = async (req, res) => {
     try {
         const userId = req.userId;
 
@@ -44,7 +39,7 @@ export const getDashboardStats = async (req: AuthRequest, res: Response) => {
     }
 };
 
-export const saveAddress = async (req: AuthRequest, res: Response) => {
+exports.saveAddress = async (req, res) => {
     try {
         const { addresses } = req.body;
         const user = await User.findById(req.userId);
@@ -62,7 +57,7 @@ export const saveAddress = async (req: AuthRequest, res: Response) => {
     }
 };
 
-export const updateProfile = async (req: AuthRequest, res: Response) => {
+exports.updateProfile = async (req, res) => {
     try {
         const { name, phoneNumber, email, password } = req.body; // Allow email/password update if needed
         const user = await User.findById(req.userId);
@@ -91,7 +86,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     }
 };
 
-export const getDownloads = async (req: AuthRequest, res: Response) => {
+exports.getDownloads = async (req, res) => {
     try {
         const userId = req.userId;
         const orders = await Order.find({ user: userId, status: "Completed" }).populate("products.product").sort({ createdAt: -1 });
@@ -100,7 +95,7 @@ export const getDownloads = async (req: AuthRequest, res: Response) => {
             // Safe check validation
             if (!order.products || order.products.length === 0) return [];
 
-            const product = (order.products[0].product as any);
+            const product = order.products[0].product;
             if (product && product.type === "TMA") {
                 return {
                     id: product._id,

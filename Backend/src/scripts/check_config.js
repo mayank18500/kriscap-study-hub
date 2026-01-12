@@ -1,4 +1,4 @@
-import "dotenv/config";
+require("dotenv/config");
 
 const key = process.env.RAZORPAY_KEY_ID || "";
 console.log("CWD:", process.cwd());
@@ -7,7 +7,7 @@ console.log(`Key Preview: ${key.substring(0, 10)}... (ends with ${key.substring(
 
 (async () => {
     try {
-        await import("../controllers/order");
+        require("../controllers/order");
         console.log("Razorpay initialized successfully (Import passed).");
     } catch (error) {
         console.error("FATAL ERROR during Import:", error);

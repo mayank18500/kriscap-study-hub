@@ -1,7 +1,7 @@
-import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import config from "../config/env";
+const multer = require("multer");
+const { v2: cloudinary } = require("cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const config = require("../config/env");
 
 // Configure Cloudinary
 cloudinary.config({
@@ -23,11 +23,11 @@ const storage = new CloudinaryStorage({
             resource_type: isRaw ? "raw" : "auto", // "raw" for non-image files like PDF/Docs
             public_id: file.originalname.split('.')[0] + "-" + Date.now(), // Generate unique ID
             // Transformation logic can go here for images
-        } as any;
+        };
     },
 });
 
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (req, file, cb) => {
     const allowedTypes = [
         "image/jpeg",
         "image/png",
@@ -52,4 +52,4 @@ const upload = multer({
     },
 });
 
-export default upload;
+module.exports = upload;

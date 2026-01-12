@@ -1,14 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import User, { IUser } from "../models/User";
-import config from "../config/env";
+const jwt = require("jsonwebtoken");
+const config = require("../config/env");
 
-interface AuthRequest extends Request {
-    user?: IUser;
-    userId?: string;
-}
-
-const verifyToken = async (req: AuthRequest, res: Response, next: NextFunction) => {
+const verifyToken = async (req, res, next) => {
     let token = req.cookies.token;
 
     if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
@@ -20,7 +13,7 @@ const verifyToken = async (req: AuthRequest, res: Response, next: NextFunction) 
     }
 
     try {
-        const decoded = jwt.verify(token, config.JWT_SECRET) as { id: string };
+        const decoded = jwt.verify(token, config.JWT_SECRET);
         req.userId = decoded.id;
         next();
     } catch (error) {
@@ -29,4 +22,4 @@ const verifyToken = async (req: AuthRequest, res: Response, next: NextFunction) 
     }
 };
 
-export default verifyToken;
+module.exports = verifyToken;
