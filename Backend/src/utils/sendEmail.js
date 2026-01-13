@@ -13,24 +13,32 @@ const sendEmail = async (to, subject, html) => {
             return;
         }
 
+        // DEBUGGING: Check if env vars are present (do not log full password)
+        console.log("DEBUG: Sending email...");
+        console.log("DEBUG: USER =", process.env.EMAIL_USER);
+        console.log("DEBUG: PASS Length =", process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : "Missing");
+
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 465,
-            secure: true, // true for 465, false for other ports
+            secure: true,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
             },
+            // Enable detailed logs
+            logger: true,
+            debug: true,
         });
 
-        await transporter.sendMail({
+        const info = await transporter.sendMail({
             from: `"Kriscap Education" <${process.env.EMAIL_USER}>`,
             to,
             subject,
             html,
         });
 
-        console.log(`Email sent to ${to}`);
+        console.log(`Email sent: ${info.messageId}`);
     } catch (error) {
         console.error("Email send failed:", error);
         // Don't throw to prevent crashing auth flow, but user might not get OTP
