@@ -41,7 +41,7 @@ exports.register = async (req, res) => {
         await sendEmail(
             email,
             "Your Verification Code - Kriscap Education",
-            `<h3>Your OTC is: <b style="font-size: 24px;">${otp}</b></h3><p>This code expires in 10 minutes.</p>`
+            `<h3>Your OTP is: <b style="font-size: 24px;">${otp}</b></h3><p>This code expires in 10 minutes.</p>`
         );
 
         res.status(200).json({ message: "OTP sent to your email. Please verify." });
