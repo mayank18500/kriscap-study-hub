@@ -7,7 +7,7 @@ const PendingUserSchema = new Schema(
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         phoneNumber: { type: String },
-        otp: { type: String, required: true },
+        verificationToken: { type: String, required: true },
         createdAt: { type: Date, default: Date.now, expires: 600 } // Expires in 10 minutes (600 seconds)
     }
 );

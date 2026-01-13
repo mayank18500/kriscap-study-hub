@@ -12,10 +12,7 @@ const generateToken = (id) => {
 const PendingUser = require("../models/PendingUser");
 const sendEmail = require("../utils/sendEmail");
 
-// Generate 6 digit OTP
-const generateOTP = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-};
+const crypto = require("crypto");
 
 exports.register = async (req, res) => {
     try {
@@ -28,40 +25,58 @@ exports.register = async (req, res) => {
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const otp = generateOTP();
+
+        // Generate Secure Token
+        const verificationToken = crypto.randomBytes(32).toString("hex");
 
         // Save to PendingUser (upsert to handle retries)
         await PendingUser.findOneAndUpdate(
             { email },
-            { name, email, password: hashedPassword, phoneNumber, otp },
+            { name, email, password: hashedPassword, phoneNumber, verificationToken },
             { upsert: true, new: true }
         );
 
-        // Send OTP
+        // Verification Link
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:8080";
+        const verificationUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
+
+        // Send Email with Link
         await sendEmail(
             email,
-            "Your Verification Code - Kriscap Education",
-            `<h3>Your OTP is: <b style="font-size: 24px;">${otp}</b></h3><p>This code expires in 10 minutes.</p>`
+            "Verify Your Email - Kriscap Education",
+            `
+            <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #333;">Welcome to Kriscap Education!</h2>
+                <p>Please click the button below to verify your email address and complete your registration.</p>
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="${verificationUrl}" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Verify Email</a>
+                </div>
+                <p style="color: #666; font-size: 14px;">Or copy and paste this link in your browser:</p>
+                <p style="color: #666; font-size: 12px; word-break: break-all;">${verificationUrl}</p>
+                <p>This link expires in 10 minutes.</p>
+            </div>
+            `
         );
 
-        res.status(200).json({ message: "OTP sent to your email. Please verify." });
+        res.status(200).json({ message: "Verification email sent. Please check your inbox." });
     } catch (error) {
+        console.error("Register Error:", error);
         res.status(500).json({ message: "Server error", error });
     }
 };
 
 exports.verifyEmail = async (req, res) => {
     try {
-        const { email, otp } = req.body;
+        const { token } = req.body;
 
-        const pendingUser = await PendingUser.findOne({ email });
-
-        if (!pendingUser) {
-            return res.status(400).json({ message: "Invalid or expired OTP. Please register again." });
+        if (!token) {
+            return res.status(400).json({ message: "Token is required" });
         }
 
-        if (pendingUser.otp !== otp) {
-            return res.status(400).json({ message: "Incorrect OTP" });
+        const pendingUser = await PendingUser.findOne({ verificationToken: token });
+
+        if (!pendingUser) {
+            return res.status(400).json({ message: "Invalid or expired verification link. Please register again." });
         }
 
         // Create actual User
@@ -73,12 +88,12 @@ exports.verifyEmail = async (req, res) => {
         });
 
         // Delete pending record
-        await PendingUser.deleteOne({ email });
+        await PendingUser.deleteOne({ email: pendingUser.email });
 
         // Generate Token & Login
-        const token = generateToken(user._id);
+        const jwtToken = generateToken(user._id);
 
-        res.cookie("token", token, {
+        res.cookie("token", jwtToken, {
             httpOnly: true,
             secure: config.NODE_ENV === "production",
             maxAge: 24 * 60 * 60 * 1000, // 1 day
@@ -93,8 +108,10 @@ exports.verifyEmail = async (req, res) => {
                 email: user.email,
                 role: user.role,
             },
+            message: "Email verified successfully!"
         });
     } catch (error) {
+        console.error("Verify Email Error:", error);
         res.status(500).json({ message: "Server error", error });
     }
 };
@@ -162,7 +179,7 @@ exports.getMe = async (req, res) => {
     }
 };
 
-const crypto = require("crypto");
+
 
 exports.forgotPassword = async (req, res) => {
     try {
@@ -187,7 +204,7 @@ exports.forgotPassword = async (req, res) => {
 
         await user.save();
 
-        const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password/${resetToken}`;
+        const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:8080"}/reset-password/${resetToken}`;
 
         const message = `
         <h1>Password Reset Request</h1>

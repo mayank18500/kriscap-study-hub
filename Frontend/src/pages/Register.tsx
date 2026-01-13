@@ -16,7 +16,7 @@ const Register = () => {
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { register, verifyOtp } = useAuth();
+    const { register } = useAuth();
     const navigate = useNavigate();
     const { toast } = useToast();
 
@@ -27,35 +27,14 @@ const Register = () => {
             await register({ name, email, password });
             setOtpSent(true);
             toast({
-                title: "OTP Sent",
-                description: "Please check your email for the verification code.",
+                title: "Verification Email Sent",
+                description: "Please check your inbox to verify your account.",
             });
         } catch (error: any) {
             toast({
                 variant: "destructive",
                 title: "Error",
                 description: error.response?.data?.message || "Failed to initiate registration",
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleVerify = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            await verifyOtp(email, otp);
-            toast({
-                title: "Account Verified",
-                description: "Welcome to Kriscap Education!",
-            });
-            navigate("/dashboard");
-        } catch (error: any) {
-            toast({
-                variant: "destructive",
-                title: "Verification Failed",
-                description: error.response?.data?.message || "Invalid OTP",
             });
         } finally {
             setIsLoading(false);
@@ -148,41 +127,24 @@ const Register = () => {
                                 </Button>
                             </form>
                         ) : (
-                            <form onSubmit={handleVerify} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="otp">Verification Code</Label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input
-                                            id="otp"
-                                            type="text"
-                                            placeholder="Enter 6-digit code"
-                                            value={otp}
-                                            onChange={(e) => setOtp(e.target.value)}
-                                            className="pl-10 tracking-widest text-center text-lg"
-                                            maxLength={6}
-                                            required
-                                            disabled={isLoading}
-                                        />
-                                    </div>
+                            <div className="text-center space-y-4">
+                                <div className="p-4 bg-green-50 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
+                                    <Mail className="w-8 h-8 text-green-500" />
                                 </div>
-                                <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                                    {isLoading ? (
-                                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                    ) : (
-                                        "Verify & Login"
-                                    )}
+                                <h3 className="text-xl font-semibold">Check your email</h3>
+                                <p className="text-muted-foreground">
+                                    We have sent a verification link to <strong>{email}</strong>.
+                                    <br />
+                                    Please click the link to activate your account.
+                                </p>
+                                <Button
+                                    variant="outline"
+                                    className="w-full mt-4"
+                                    onClick={() => setOtpSent(false)}
+                                >
+                                    Use a different email
                                 </Button>
-                                <div className="text-center">
-                                    <button
-                                        type="button"
-                                        onClick={() => setOtpSent(false)}
-                                        className="text-sm text-primary hover:underline"
-                                    >
-                                        Change Email
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
                         )}
 
                         <div className="mt-6 text-center">
@@ -195,8 +157,8 @@ const Register = () => {
                         </div>
                     </CardContent>
                 </Card>
-            </motion.div>
-        </div>
+            </motion.div >
+        </div >
     );
 };
 

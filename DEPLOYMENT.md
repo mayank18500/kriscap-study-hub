@@ -16,6 +16,7 @@ When deploying the **Backend** service to Render, you must add the following Env
 | `CLOUDINARY_API_SECRET`| `...` | Your Cloudinary API Secret. |
 | `RAZORPAY_KEY_ID` | `...` | Your Razorpay Key ID. |
 | `RAZORPAY_KEY_SECRET` | `...` | Your Razorpay Key Secret. |
+| `FRONTEND_URL` | `https://your-frontend-url.onrender.com` | URL of your deployed frontend (no trailing slash). |
 
 ## 2. Environment Variables (Frontend)
 
