@@ -95,7 +95,6 @@ const Dashboard = () => {
     <div className="space-y-6">
       {/* Welcome Section */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-r from-primary to-primary/80 rounded-2xl p-6 text-primary-foreground"
       >
@@ -196,8 +195,8 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === "Completed"
-                          ? "badge-success"
-                          : "badge-warning"
+                        ? "badge-success"
+                        : "badge-warning"
                         }`}>
                         {order.status}
                       </span>

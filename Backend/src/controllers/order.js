@@ -5,10 +5,19 @@ const Product = require("../models/Product");
 const User = require("../models/User");
 const config = require("../config/env");
 
-const razorpay = new Razorpay({
-    key_id: config.RAZORPAY_KEY_ID,
-    key_secret: config.RAZORPAY_KEY_SECRET,
-});
+let razorpay;
+try {
+    if (config.RAZORPAY_KEY_ID && config.RAZORPAY_KEY_SECRET) {
+        razorpay = new Razorpay({
+            key_id: config.RAZORPAY_KEY_ID,
+            key_secret: config.RAZORPAY_KEY_SECRET,
+        });
+    } else {
+        console.warn("Skipping Razorpay initialization: Missing keys");
+    }
+} catch (error) {
+    console.error("Razorpay Config Error:", error);
+}
 
 exports.createOrder = async (req, res) => {
     try {
@@ -44,6 +53,14 @@ exports.createOrder = async (req, res) => {
             receipt: `receipt_${Date.now()}`,
         };
 
+
+        if (!razorpay) {
+            return res.status(503).json({
+                message: "Payment system is currently unavailable (Configuration Error).",
+                code: "PAYMENT_CONFIG_ERROR"
+            });
+        }
+
         // Debug Log (Safe)
         console.log("Creating Razorpay Order...");
 
@@ -77,6 +94,10 @@ exports.verifyPayment = async (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         const userId = req.userId;
+
+        if (!config.RAZORPAY_KEY_SECRET) {
+            return res.status(503).json({ message: "Payment verification unavailable" });
+        }
 
         const body = razorpay_order_id + "|" + razorpay_payment_id;
 
