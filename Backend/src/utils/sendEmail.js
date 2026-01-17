@@ -2,13 +2,12 @@ const nodemailer = require("nodemailer");
 const config = require("../config/env");
 
 const sendEmail = async (to, subject, html) => {
-    // If credentials are provided, try to send real email
     if (config.EMAIL_USER && config.EMAIL_PASS) {
         try {
             const transporter = nodemailer.createTransport({
-                service: "smtp.gmail.com",
+                host: "smtp.gmail.com",
                 port: 465,
-                secure: true,
+                secure: true, // Use SSL/TLS
                 auth: {
                     user: config.EMAIL_USER,
                     pass: config.EMAIL_PASS,
