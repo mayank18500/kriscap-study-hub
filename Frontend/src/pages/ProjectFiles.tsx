@@ -40,6 +40,7 @@ const ProjectFiles = () => {
   const [pincode, setPincode] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(""); // Phone number
   const [isProcessing, setIsProcessing] = useState(false);
 
   const { user } = useAuth();
@@ -67,9 +68,12 @@ const ProjectFiles = () => {
     setSelectedProduct(product);
 
     // Check if user has saved address
+    setPhoneNumber(user.phoneNumber || ""); // Get number
+
     if (user.addresses && user.addresses.length > 0) {
       // Use saved address directly
-      handleProcessOrder(product);
+      setIsAddressOpen(true); // Open dialog anyway to confirm phone and address? Or just phone dialog?
+      // Since ProjectFiles requires Address, we use the same dialog.
     } else {
       setIsAddressOpen(true);
     }
@@ -100,6 +104,7 @@ const ProjectFiles = () => {
         productId: product._id,
         amount: product.price,
         addressId: "latest",
+        phoneNumber: phoneNumber
       });
 
       // Open Razorpay
@@ -340,6 +345,15 @@ const ProjectFiles = () => {
                 value={state}
                 onChange={(e) => setState(e.target.value)}
                 placeholder="Delhi"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="9876543210"
               />
             </div>
           </div>

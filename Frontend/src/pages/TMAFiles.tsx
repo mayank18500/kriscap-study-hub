@@ -20,12 +20,27 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { useDebounce } from "@/hooks/use-debounce";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+
 const TMAFiles = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
   const [selectedClass, setSelectedClass] = useState("all");
   const [selectedMedium, setSelectedMedium] = useState("all");
   const { user } = useAuth();
+
+  // Phone Dialog State
+  const [isPhoneDialogOpen, setIsPhoneDialogOpen] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
   const { data: products, isLoading, isError } = useQuery({
@@ -38,7 +53,7 @@ const TMAFiles = () => {
     },
   });
 
-  const handleBuy = async (product: Product) => {
+  const handleBuy = (product: Product) => {
     if (!user) {
       toast({
         variant: "destructive",
@@ -47,6 +62,23 @@ const TMAFiles = () => {
       });
       return;
     }
+    setSelectedProduct(product);
+    setPhoneNumber(user.phoneNumber || "");
+    setIsPhoneDialogOpen(true);
+  };
+
+  const confirmPurchase = async () => {
+    if (!phoneNumber || phoneNumber.length < 10) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Phone Number",
+        description: "Please enter a valid phone number.",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+    const product = selectedProduct!;
 
     const isScriptLoaded = await loadRazorpayScript();
     if (!isScriptLoaded) {
@@ -55,6 +87,7 @@ const TMAFiles = () => {
         title: "Error",
         description: "Razorpay SDK failed to load. Check your connection.",
       });
+      setIsProcessing(false);
       return;
     }
 
@@ -63,7 +96,11 @@ const TMAFiles = () => {
       const { data: orderData } = await api.post("/api/orders/create", {
         productId: product._id,
         amount: product.price,
+        phoneNumber: phoneNumber // Send phone number
       });
+
+      setIsPhoneDialogOpen(false); // Close dialog on success
+      setIsProcessing(false);
 
       // 2. Open Razorpay
       const options = {
@@ -112,6 +149,7 @@ const TMAFiles = () => {
         title: "Error",
         description: "Something went wrong while initiating purchase.",
       });
+      setIsProcessing(false);
     }
   };
 
@@ -241,6 +279,36 @@ const TMAFiles = () => {
           <p className="text-muted-foreground">Try adjusting your filters</p>
         </div>
       )}
+      {/* Phone Number Dialog */}
+      <Dialog open={isPhoneDialogOpen} onOpenChange={setIsPhoneDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Phone Number</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="phone" className="text-right">
+                Phone
+              </Label>
+              <Input
+                id="phone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="col-span-3"
+                placeholder="Enter your phone number"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={confirmPurchase}>
+              {isProcessing ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Continue to Payment
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

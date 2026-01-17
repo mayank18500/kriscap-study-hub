@@ -9,7 +9,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard";
 import TMAFiles from "./pages/TMAFiles";
 import ProjectFiles from "./pages/ProjectFiles";
 import Orders from "./pages/Orders";
@@ -49,7 +49,7 @@ const AdminRoute = () => {
   if (!isAuthenticated) return <Navigate to="/login" />;
 
   if (user?.role !== "admin") {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/dashboard/tma" />;
   }
 
   return <Outlet />;
@@ -74,7 +74,7 @@ const App = () => (
               {/* Client Dashboard Routes - Protected */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<DashboardLayout />}>
-                  <Route index element={<Dashboard />} />
+                  <Route index element={<Navigate to="/dashboard/tma" replace />} />
                   <Route path="tma" element={<TMAFiles />} />
                   <Route path="projects" element={<ProjectFiles />} />
                   <Route path="orders" element={<Orders />} />

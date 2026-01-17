@@ -81,6 +81,19 @@ const AdminProducts = () => {
     }
   });
 
+  const deleteProductMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/api/admin/products/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminProducts"] });
+      toast({ title: "Deleted", description: "Product deleted successfully" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "Error", description: "Failed to delete product" });
+    }
+  });
+
   const handleCreateProduct = () => {
     createProductMutation.mutate({
       ...newProduct,
@@ -139,7 +152,7 @@ const AdminProducts = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="TMA">TMA File</SelectItem>
-                      <SelectItem value="Project">Project File</SelectItem>
+                      <SelectItem value="PROJECT">Project File</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -290,7 +303,14 @@ const AdminProducts = () => {
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => {
+                              if (confirm("Are you sure you want to delete this product?")) {
+                                deleteProductMutation.mutate(product.id);
+                              }
+                            }}
+                          >
                             <Trash2 className="w-4 h-4 mr-2" />
                             Delete
                           </DropdownMenuItem>

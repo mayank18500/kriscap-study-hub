@@ -8,7 +8,9 @@ const requiredKeys = [
     "JWT_SECRET",
     "CLOUDINARY_CLOUD_NAME",
     "CLOUDINARY_API_KEY",
-    "CLOUDINARY_API_SECRET"
+    "CLOUDINARY_API_SECRET",
+    "EMAIL_USER",
+    "EMAIL_PASS"
 ];
 
 const missingKeys = requiredKeys.filter(key => !process.env[key]);
@@ -39,7 +41,9 @@ const config = {
     ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS
         ? process.env.ALLOWED_ORIGINS.split(",")
         : ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080"],
-    NODE_ENV: process.env.NODE_ENV || "development"
+    NODE_ENV: process.env.NODE_ENV || "development",
+    EMAIL_USER: process.env.EMAIL_USER,
+    EMAIL_PASS: process.env.EMAIL_PASS
 };
 
 module.exports = config;

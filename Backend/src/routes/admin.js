@@ -10,7 +10,8 @@ const {
     updateOrderStatus,
     getAdminUsers,
     getAdminPayments,
-    deleteUser
+    deleteUser,
+    deleteProduct
 } = require("../controllers/admin");
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router.get("/stats", getAdminStats);
 router.get("/products", getAdminProducts);
 router.post("/products", createProduct);
 router.patch("/products/:id/toggle", toggleProductStatus);
+router.delete("/products/:id", deleteProduct);
 
 // Orders
 router.get("/orders", getAdminOrders);

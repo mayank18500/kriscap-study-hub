@@ -135,7 +135,7 @@ exports.getAdminOrders = async (req, res) => {
                 id: order._id,
                 customer: user?.name,
                 email: user?.email,
-                phone: user?.phoneNumber,
+                phone: order.phoneNumber || user?.phoneNumber,
                 type: product?.type,
                 product: product?.name,
                 amount: order.totalAmount,
@@ -207,6 +207,17 @@ exports.deleteUser = async (req, res) => {
         const user = await User.findByIdAndDelete(id);
         if (!user) return res.status(404).json({ message: "User not found" });
         res.json({ message: "User deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+exports.deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findByIdAndDelete(id);
+        if (!product) return res.status(404).json({ message: "Product not found" });
+        res.json({ message: "Product deleted successfully" });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }

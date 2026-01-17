@@ -74,7 +74,8 @@ exports.createOrder = async (req, res) => {
             razorpayOrderId: razorpayOrder.id,
             status: "Pending",
             paymentStatus: "Pending",
-            shippingAddress: shippingAddress
+            shippingAddress: shippingAddress,
+            phoneNumber: req.body.phoneNumber // Save phone number from request
         });
 
         res.json({
@@ -162,11 +163,11 @@ exports.getMyOrders = async (req, res) => {
 
         // Transform for frontend
         const formattedOrders = orders.map(order => {
-            const product = order.products[0].product;
+            const product = order.products[0]?.product;
             return {
                 id: order._id,
-                type: product.type,
-                name: product.name,
+                type: product?.type || "Unknown",
+                name: product?.name || "Product Deleted",
                 status: order.status,
                 date: order.createdAt,
                 price: order.totalAmount,

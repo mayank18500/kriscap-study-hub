@@ -22,7 +22,7 @@ const DashboardSidebar = ({ isOpen, onClose }: DashboardSidebarProps) => {
   const location = useLocation();
 
   const navItems = [
-    { icon: LayoutDashboard, name: "Dashboard", href: "/dashboard" },
+    // { icon: LayoutDashboard, name: "Dashboard", href: "/dashboard" },
     { icon: FileText, name: "Buy TMA", href: "/dashboard/tma" },
     { icon: Package, name: "Buy Project Files", href: "/dashboard/projects" },
     { icon: ShoppingBag, name: "My Orders", href: "/dashboard/orders" },

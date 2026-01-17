@@ -132,7 +132,7 @@ const Profile = () => {
                     value={formData.name}
                     onChange={handleChange}
                     className="pl-10"
-                    disabled // Currently disabled as API doesn't mention name update
+                  // disabled // Enabled now
                   />
                 </div>
               </div>

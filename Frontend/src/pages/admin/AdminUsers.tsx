@@ -137,6 +137,14 @@ const AdminUsers = () => {
                                                         <span>{user.phoneNumber}</span>
                                                     </div>
                                                 )}
+                                                {user.addresses && user.addresses.length > 0 && (
+                                                    <div className="flex items-center gap-2 text-sm">
+                                                        <MapPin className="w-3 h-3 text-muted-foreground" />
+                                                        <span className="truncate max-w-[150px]">
+                                                            {user.addresses[user.addresses.length - 1].city}, {user.addresses[user.addresses.length - 1].state}
+                                                        </span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </td>
                                         <td className="py-3 px-4">

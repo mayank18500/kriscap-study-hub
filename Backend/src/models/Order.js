@@ -31,6 +31,7 @@ const OrderSchema = new Schema(
             pincode: { type: String },
         },
         trackingId: { type: String },
+        phoneNumber: { type: String },
     },
     { timestamps: true }
 );

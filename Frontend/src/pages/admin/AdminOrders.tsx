@@ -161,6 +161,7 @@ const AdminOrders = () => {
                       <div>
                         <div className="font-medium text-foreground">{order.customer}</div>
                         <div className="text-xs text-muted-foreground">{order.email}</div>
+                        {order.phone && <div className="text-xs text-muted-foreground">{order.phone}</div>}
                       </div>
                     </td>
                     <td className="py-3 px-4 text-muted-foreground">{order.product}</td>
@@ -233,7 +234,10 @@ const AdminOrders = () => {
                   <div className="bg-muted/30 p-3 rounded-lg space-y-1 text-sm">
                     <div className="font-medium text-foreground">{selectedOrder.customer}</div>
                     <div>{selectedOrder.email}</div>
-                    <div>{selectedOrder.phone || "No phone number"}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Phone:</span>
+                      <span>{selectedOrder.phone || "No phone number"}</span>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -292,7 +296,7 @@ const AdminOrders = () => {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   );
 };
 

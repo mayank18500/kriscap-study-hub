@@ -47,7 +47,7 @@ const Header = () => {
             <Link to="/login">
               <Button variant="ghost">Login</Button>
             </Link>
-            <Link to="/dashboard">
+            <Link to="/dashboard/tma">
               <Button variant="default">Dashboard</Button>
             </Link>
           </div>
@@ -86,7 +86,7 @@ const Header = () => {
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" className="w-full">Login</Button>
                 </Link>
-                <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                <Link to="/dashboard/tma" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="default" className="w-full">Dashboard</Button>
                 </Link>
               </div>
