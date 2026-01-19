@@ -17,8 +17,8 @@ const Footer = () => {
   ];
 
   const contactInfo = [
-    { icon: Mail, text: "support@kriscap.edu", href: "mailto:support@kriscap.edu" },
-    { icon: Phone, text: "+91 98765 43210", href: "tel:+919876543210" },
+    { icon: Mail, text: "kriscapeducation@gmail.com", href: "mailto:kriscapeducation@gmail.com" },
+    { icon: Phone, text: "+917023057797", href: "tel:+917023057797" },
     { icon: MapPin, text: "Delhi, India", href: "#" },
   ];
 
@@ -39,7 +39,7 @@ const Footer = () => {
             <p className="text-primary-foreground/70 text-sm mb-6">
               Your trusted partner for NIOS study materials. Quality content, affordable prices, and excellent support.
             </p>
-            
+
             {/* WhatsApp Button */}
             <a
               href="https://wa.me/919876543210"
