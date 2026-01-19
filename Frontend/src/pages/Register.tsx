@@ -25,11 +25,12 @@ const Register = () => {
         setIsLoading(true);
         try {
             await register({ name, email, password });
-            setOtpSent(true);
             toast({
-                title: "Verification Email Sent",
-                description: "Please check your inbox to verify your account.",
+                title: "Welcome!",
+                description: "Account created successfully.",
             });
+            // Redirect based on role or default
+            navigate("/dashboard/tma");
         } catch (error: any) {
             toast({
                 variant: "destructive",
@@ -65,87 +66,66 @@ const Register = () => {
 
                 <Card>
                     <CardContent className="p-6">
-                        {!otpSent ? (
-                            <form onSubmit={handleRegister} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Full Name</Label>
-                                    <div className="relative">
-                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input
-                                            id="name"
-                                            type="text"
-                                            placeholder="John Doe"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            className="pl-10"
-                                            required
-                                            disabled={isLoading}
-                                        />
-                                    </div>
+                        <form onSubmit={handleRegister} className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">Full Name</Label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Input
+                                        id="name"
+                                        type="text"
+                                        placeholder="John Doe"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="pl-10"
+                                        required
+                                        disabled={isLoading}
+                                    />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            placeholder="you@example.com"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="pl-10"
-                                            required
-                                            disabled={isLoading}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="password">Password</Label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            placeholder="••••••••"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            className="pl-10"
-                                            required
-                                            disabled={isLoading}
-                                        />
-                                    </div>
-                                </div>
-                                <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                                    {isLoading ? (
-                                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                    ) : (
-                                        <>
-                                            Get OTP
-                                            <ArrowRight className="w-4 h-4 ml-2" />
-                                        </>
-                                    )}
-                                </Button>
-                            </form>
-                        ) : (
-                            <div className="text-center space-y-4">
-                                <div className="p-4 bg-green-50 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
-                                    <Mail className="w-8 h-8 text-green-500" />
-                                </div>
-                                <h3 className="text-xl font-semibold">Check your email</h3>
-                                <p className="text-muted-foreground">
-                                    We have sent a verification link to <strong>{email}</strong>.
-                                    <br />
-                                    Please click the link to activate your account.
-                                </p>
-                                <Button
-                                    variant="outline"
-                                    className="w-full mt-4"
-                                    onClick={() => setOtpSent(false)}
-                                >
-                                    Use a different email
-                                </Button>
                             </div>
-                        )}
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email</Label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        placeholder="you@example.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="pl-10"
+                                        required
+                                        disabled={isLoading}
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Password</Label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="pl-10"
+                                        required
+                                        disabled={isLoading}
+                                    />
+                                </div>
+                            </div>
+                            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                                {isLoading ? (
+                                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                ) : (
+                                    <>
+                                        Create Account
+                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                    </>
+                                )}
+                            </Button>
+                        </form>
 
                         <div className="mt-6 text-center">
                             <p className="text-sm text-muted-foreground">

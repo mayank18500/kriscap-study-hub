@@ -4,7 +4,6 @@ const {
     login,
     logout,
     getMe,
-    verifyEmail,
     forgotPassword,
     resetPassword
 } = require("../controllers/auth");
@@ -13,7 +12,7 @@ const verifyToken = require("../middleware/auth");
 const router = express.Router();
 
 router.post("/register", register);
-router.post("/verify-email", verifyEmail);
+// router.post("/verify-email", verifyEmail);
 router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:resetToken", resetPassword);

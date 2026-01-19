@@ -8,7 +8,6 @@ interface AuthContextType {
     isLoading: boolean;
     login: (credentials: any) => Promise<any>;
     register: (credentials: any) => Promise<any>;
-    verifyEmail: (token: string) => Promise<any>;
     logout: () => Promise<void>;
     checkAuth: () => Promise<void>;
 }
@@ -37,16 +36,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return data.user;
     };
 
-    const register = async (credentials: any) => {
-        const { data } = await api.post("/auth/register", credentials);
-        return data;
+    const register = async (userData: any) => {
+        try {
+            const response = await api.post("/auth/register", userData);
+            // New logic: Immediate login
+            setUser(response.data.user);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     };
 
-    const verifyEmail = async (token: string) => {
-        const { data } = await api.post("/auth/verify-email", { token });
-        setUser(data.user);
-        return data.user;
-    };
+
 
     const logout = async () => {
         try {
@@ -61,7 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, verifyEmail, logout, checkAuth }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, logout, checkAuth }}>
             {children}
         </AuthContext.Provider>
     );

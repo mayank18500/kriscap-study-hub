@@ -14,7 +14,7 @@ const transport = nodemailer.createTransport({
     },
 });
 
-const sendEmail = async (name, email, confirmationCode) => {
+const sendEmail = async (email,subject, htmlContent) => {
     console.log("Sending Email to " + email);
 
     const htmlContent = `
@@ -95,7 +95,7 @@ const sendEmail = async (name, email, confirmationCode) => {
 
     try {
         await transport.sendMail({
-            from: process.env.SMTP_USER,
+            from: process.env.EMAIL_USER,
             to: email,
             subject: "Please confirm your account",
             html: htmlContent,

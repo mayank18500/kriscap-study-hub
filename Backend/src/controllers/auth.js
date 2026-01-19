@@ -9,8 +9,8 @@ const generateToken = (id) => {
     });
 };
 
-const PendingUser = require("../models/PendingUser");
-const sendEmail = require("../utils/sendEmail");
+// const PendingUser = require("../models/PendingUser");
+// const sendEmail = require("../utils/sendEmail");
 
 const crypto = require("crypto");
 
@@ -26,69 +26,13 @@ exports.register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Generate Secure Token
-        const verificationToken = crypto.randomBytes(32).toString("hex");
-
-        // Save to PendingUser (upsert to handle retries)
-        await PendingUser.findOneAndUpdate(
-            { email },
-            { name, email, password: hashedPassword, phoneNumber, verificationToken },
-            { upsert: true, new: true }
-        );
-
-        // Verification Link
-        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:8080";
-        const verificationUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
-
-        // Send Email with Link
-        await sendEmail(
-            email,
-            "Verify Your Email - Kriscap Education",
-            `
-            <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #333;">Welcome to Kriscap Education!</h2>
-                <p>Please click the button below to verify your email address and complete your registration.</p>
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="${verificationUrl}" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Verify Email</a>
-                </div>
-                <p style="color: #666; font-size: 14px;">Or copy and paste this link in your browser:</p>
-                <p style="color: #666; font-size: 12px; word-break: break-all;">${verificationUrl}</p>
-                <p>This link expires in 10 minutes.</p>
-            </div>
-            `
-        );
-
-        res.status(200).json({ message: "Verification email sent. Please check your inbox." });
-    } catch (error) {
-        console.error("Register Error:", error);
-        res.status(500).json({ message: "Server error", error });
-    }
-};
-
-exports.verifyEmail = async (req, res) => {
-    try {
-        const { token } = req.body;
-
-        if (!token) {
-            return res.status(400).json({ message: "Token is required" });
-        }
-
-        const pendingUser = await PendingUser.findOne({ verificationToken: token });
-
-        if (!pendingUser) {
-            return res.status(400).json({ message: "Invalid or expired verification link. Please register again." });
-        }
-
-        // Create actual User
+        // Create User Directly
         const user = await User.create({
-            name: pendingUser.name,
-            email: pendingUser.email,
-            password: pendingUser.password,
-            phoneNumber: pendingUser.phoneNumber,
+            name,
+            email,
+            password: hashedPassword,
+            phoneNumber
         });
-
-        // Delete pending record
-        await PendingUser.deleteOne({ email: pendingUser.email });
 
         // Generate Token & Login
         const jwtToken = generateToken(user._id);
@@ -108,10 +52,10 @@ exports.verifyEmail = async (req, res) => {
                 email: user.email,
                 role: user.role,
             },
-            message: "Email verified successfully!"
+            message: "Registered and logged in successfully!"
         });
     } catch (error) {
-        console.error("Verify Email Error:", error);
+        console.error("Register Error:", error);
         res.status(500).json({ message: "Server error", error });
     }
 };
