@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Search, Package, Eye, ShoppingCart, Star, Truck, Loader2, MapPin } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, Package, Eye, ShoppingCart, Star, Truck, Loader2, MapPin, GraduationCap, ShieldCheck, Box } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,14 +20,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea"; // Assuming this exists or use Input for now
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { Product } from "@/types/product";
 import { loadRazorpayScript } from "@/lib/razorpay";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
-
 import { useDebounce } from "@/hooks/use-debounce";
 
 const ProjectFiles = () => {
@@ -36,11 +35,13 @@ const ProjectFiles = () => {
   const [selectedClass, setSelectedClass] = useState("all");
   const [isAddressOpen, setIsAddressOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  
+  // Form State
   const [address, setAddress] = useState("");
   const [pincode, setPincode] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState(""); // Phone number
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
   const { user } = useAuth();
@@ -58,48 +59,35 @@ const ProjectFiles = () => {
 
   const handleOrderClick = (product: Product) => {
     if (!user) {
-      toast({
-        variant: "destructive",
-        title: "Authentication Required",
-        description: "Please login to order files.",
-      });
+      toast({ variant: "destructive", title: "Authentication Required", description: "Please login to order files." });
       return;
     }
     setSelectedProduct(product);
-
-    // Check if user has saved address
-    setPhoneNumber(user.phoneNumber || ""); // Get number
-
+    setPhoneNumber(user.phoneNumber || "");
+    
+    // Auto-fill address if available
     if (user.addresses && user.addresses.length > 0) {
-      // Use saved address directly
-      setIsAddressOpen(true); // Open dialog anyway to confirm phone and address? Or just phone dialog?
-      // Since ProjectFiles requires Address, we use the same dialog.
-    } else {
-      setIsAddressOpen(true);
+      const lastAddr = user.addresses[user.addresses.length - 1];
+      setAddress(lastAddr.addressLine1 || "");
+      setPincode(lastAddr.pincode || "");
+      setCity(lastAddr.city || "");
+      setState(lastAddr.state || "");
     }
+    setIsAddressOpen(true);
   };
 
   const handleProcessOrder = async (product: Product, isNewAddress = false) => {
     setIsProcessing(true);
     try {
       if (isNewAddress) {
-        // Save New Address
         await api.post("/api/user/address", {
-          addresses: [{
-            addressLine1: address,
-            pincode,
-            city,
-            state,
-            isDefault: true
-          }]
+          addresses: [{ addressLine1: address, pincode, city, state, isDefault: true }]
         });
       }
 
-      // Load Razorpay
       const isScriptLoaded = await loadRazorpayScript();
-      if (!isScriptLoaded) throw new Error("Razorpay SDK failed to load");
+      if (!isScriptLoaded) throw new Error("Payment gateway failed to initialize.");
 
-      // Create Order
       const { data: orderData } = await api.post("/api/orders/create", {
         productId: product._id,
         amount: product.price,
@@ -107,13 +95,12 @@ const ProjectFiles = () => {
         phoneNumber: phoneNumber
       });
 
-      // Open Razorpay
       const options = {
         key: orderData.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: orderData.amount,
         currency: orderData.currency,
         name: "Kriscap Education",
-        description: `Order ${product.name}`,
+        description: `Fulfillment: ${product.name}`,
         order_id: orderData.id,
         handler: async function (response: any) {
           try {
@@ -122,13 +109,10 @@ const ProjectFiles = () => {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
             });
-            toast({
-              title: "Success",
-              description: "Order placed successfully! We will ship it soon.",
-            });
+            toast({ title: "Order Confirmed", description: "Project acquisition finalized. Shipment follows shortly." });
             setIsAddressOpen(false);
           } catch (verifyError) {
-            toast({ variant: "destructive", title: "Payment Verification Failed", description: "Please contact support." });
+            toast({ variant: "destructive", title: "Verification Failed", description: "Please contact support." });
           }
         },
         prefill: { name: user.name, email: user.email },
@@ -137,28 +121,19 @@ const ProjectFiles = () => {
 
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.open();
-
     } catch (error: any) {
-      // Handle ADDRESS_REQUIRED specifically if we somehow missed it
-      if (error.response?.data?.code === "ADDRESS_REQUIRED") {
-        toast({ variant: "destructive", title: "Address Required", description: "Please add a shipping address." });
-        setIsAddressOpen(true);
-      } else {
-        toast({ variant: "destructive", title: "Error", description: "Failed to process order." });
-      }
+      toast({ variant: "destructive", title: "Order Error", description: "Could not finalize transaction." });
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleConfirmOrder = async () => {
-    if (!address || !pincode || !city || !state) {
-      toast({ variant: "destructive", title: "Missing Information", description: "Please fill in all address details." });
+    if (!address || !pincode || !city || !state || !phoneNumber) {
+      toast({ variant: "destructive", title: "Incomplete Folio", description: "Please provide all required shipment details." });
       return;
     }
-    if (selectedProduct) {
-      await handleProcessOrder(selectedProduct, true);
-    }
+    if (selectedProduct) await handleProcessOrder(selectedProduct, true);
   };
 
   const filteredFiles = products?.filter((file) => {
@@ -167,60 +142,52 @@ const ProjectFiles = () => {
     return matchesSearch && matchesClass;
   }) || [];
 
-  if (isLoading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center text-destructive">
-        Failed to load projects. Please try again later.
-      </div>
-    );
-  }
+  if (isLoading) return <div className="flex h-[50vh] items-center justify-center"><Loader2 className="h-10 w-10 animate-spin text-amber-600" /></div>;
 
   return (
-    <div className="space-y-6">
-      {/* Info Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-secondary/10 border border-secondary/20 rounded-xl p-4 flex items-center gap-4"
-      >
-        <div className="w-10 h-10 rounded-lg bg-secondary/20 flex items-center justify-center shrink-0">
-          <Truck className="w-5 h-5 text-secondary" />
-        </div>
-        <div>
-          <h3 className="font-medium text-foreground">Home Delivery Available</h3>
-          <p className="text-sm text-muted-foreground">
-            All project files are delivered to your doorstep within 3-5 business days.
+    <div className="max-w-7xl mx-auto space-y-10 pb-20">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-amber-400 text-[10px] font-bold uppercase tracking-widest">
+            <Truck className="w-3 h-3" /> Logistics Center
+          </div>
+          <h1 className="font-serif text-4xl font-bold text-slate-900">Physical Project Files</h1>
+          <p className="text-slate-500 italic leading-relaxed max-w-xl">
+            Custom-bound, hand-curated project files delivered across India. Verified scholarly content ready for submission.
           </p>
         </div>
-      </motion.div>
+        
+        <div className="flex items-center gap-3 bg-[#fdfcf8] border border-slate-100 p-4 rounded-2xl shadow-sm">
+           <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
+              <Box className="w-5 h-5 text-amber-600" />
+           </div>
+           <div>
+              <p className="text-[10px] font-bold uppercase text-slate-400">Dispatch Timeline</p>
+              <p className="text-sm font-bold text-slate-900">3-5 Business Days</p>
+           </div>
+        </div>
+      </div>
 
-      {/* Filters */}
-      <Card>
+      {/* Search & Filter Ledger */}
+      <Card className="bg-white border-slate-100 rounded-2xl shadow-sm overflow-hidden">
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
-                placeholder="Search projects..."
+                placeholder="Search subject project files..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-12 h-12 bg-[#fdfcf8] border-none rounded-xl focus:ring-amber-500/20"
               />
             </div>
             <Select value={selectedClass} onValueChange={setSelectedClass}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Class" />
+              <SelectTrigger className="w-full sm:w-48 h-12 rounded-xl border-slate-200 font-bold text-slate-600">
+                <SelectValue placeholder="Grade Level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Classes</SelectItem>
+                <SelectItem value="all">All Grades</SelectItem>
                 <SelectItem value="10">Class 10</SelectItem>
                 <SelectItem value="12">Class 12</SelectItem>
               </SelectContent>
@@ -229,140 +196,126 @@ const ProjectFiles = () => {
         </CardContent>
       </Card>
 
-      {/* Results */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredFiles.map((file, index) => (
-          <motion.div
-            key={file._id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-          >
-            <Card className="card-hover h-full">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
-                    <Package className="w-6 h-6 text-secondary" />
+      {/* Project Grid */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <AnimatePresence>
+          {filteredFiles.map((file, index) => (
+            <motion.div
+              key={file._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="group"
+            >
+              <Card className="h-full bg-white border-slate-100 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2">
+                <CardContent className="p-8">
+                  <div className="flex items-start justify-between mb-8">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center group-hover:bg-amber-500 group-hover:rotate-6 transition-all duration-500">
+                      <Package className="w-7 h-7 text-amber-400 group-hover:text-slate-900" />
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold tracking-widest uppercase">
+                      Class {file.class}
+                    </span>
                   </div>
-                  <span className="px-2 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium">
-                    Class {file.class}
-                  </span>
-                </div>
 
-                <h3 className="font-heading font-semibold text-lg text-foreground mb-1">
-                  {file.name}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Complete Project • Home Delivery
-                </p>
-
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-warning text-warning" />
-                    <span className="text-sm font-medium">{file.rating || 0}</span>
+                  <div className="mb-8 min-h-[90px]">
+                    <h3 className="font-serif text-2xl font-bold text-slate-900 mb-2 group-hover:text-amber-700 transition-colors">
+                      {file.name}
+                    </h3>
+                    <div className="flex items-center gap-3 text-slate-500 text-xs italic">
+                      <Truck className="w-3.5 h-3.5" /> Direct Home Delivery
+                    </div>
                   </div>
-                  <span className="text-sm text-muted-foreground">
-                    ({file.reviews || 0} reviews)
-                  </span>
-                </div>
 
-                <div className="flex items-center gap-2 mb-4">
-                  <Truck className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">3-5 Days Delivery</span>
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t border-border">
-                  <div className="text-2xl font-bold text-secondary">
-                    ₹{file.price}
+                  <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                    <div>
+                        <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Fee & Shipping</span>
+                        <div className="text-2xl font-serif font-bold text-slate-900">
+                            ₹{file.price}
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:border-slate-900 hover:text-slate-900 transition-all">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button onClick={() => handleOrderClick(file)} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-6 font-bold shadow-lg transition-all active:scale-95">
+                        <ShoppingCart className="w-4 h-4 mr-2" />
+                        Acquire
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                    <Button variant="secondary" size="sm" onClick={() => handleOrderClick(file)}>
-                      <ShoppingCart className="w-4 h-4 mr-1" />
-                      Order
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
 
       {filteredFiles.length === 0 && (
-        <div className="text-center py-12">
-          <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-2">No projects found</h3>
-          <p className="text-muted-foreground">Try adjusting your filters</p>
+        <div className="text-center py-24 border-2 border-dashed border-slate-200 rounded-[3rem]">
+          <Package className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+          <h3 className="font-serif text-2xl font-bold text-slate-400">Project Not Cataloged</h3>
+          <p className="text-slate-400 italic">Adjust your search parameters to find the required subject project.</p>
         </div>
       )}
 
-      {/* Address Dialog */}
+      {/* Shipment Folio Dialog */}
       <Dialog open={isAddressOpen} onOpenChange={setIsAddressOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Shipping Details</DialogTitle>
-            <DialogDescription>
-              Enter your delivery address for this project file.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="address">Address (House No, Street, Area)</Label>
-              <Input
-                id="address"
+        <DialogContent className="sm:max-w-[500px] rounded-[2rem] bg-[#fdfcf8] border-none shadow-2xl overflow-hidden p-0">
+          <div className="bg-slate-900 p-8 text-white relative">
+             <div className="absolute top-0 right-0 p-6 opacity-10">
+                <Truck size={100} />
+             </div>
+             <DialogTitle className="font-serif text-3xl font-bold mb-2">Shipment Folio</DialogTitle>
+             <DialogDescription className="text-slate-400 italic">
+                Provide the coordinates for the physical delivery of your project files.
+             </DialogDescription>
+          </div>
+          
+          <div className="p-8 space-y-6">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Delivery Address</Label>
+              <Textarea
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Ex. 123, Main Street"
+                className="rounded-xl border-slate-200 bg-white min-h-[100px] focus:ring-amber-500/20"
+                placeholder="House Number, Street, Landmarks..."
               />
             </div>
+            
             <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="New Delhi"
-                />
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">City</Label>
+                <Input value={city} onChange={(e) => setCity(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="pincode">Pincode</Label>
-                <Input
-                  id="pincode"
-                  value={pincode}
-                  onChange={(e) => setPincode(e.target.value)}
-                  placeholder="110001"
-                />
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Pincode</Label>
+                <Input value={pincode} onChange={(e) => setPincode(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
               </div>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="state">State</Label>
-              <Input
-                id="state"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                placeholder="Delhi"
-              />
+
+            <div className="grid grid-cols-2 gap-4">
+               <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">State</Label>
+                <Input value={state} onChange={(e) => setState(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Contact Phone</Label>
+                <Input value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
+              </div>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="9876543210"
-              />
+
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex gap-3 italic text-xs text-slate-500">
+               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+               Your project files will be physically bound and dispatched to this address.
             </div>
           </div>
-          <DialogFooter>
-            <Button disabled={isProcessing} onClick={handleConfirmOrder}>
-              {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Make Payment
+
+          <div className="p-8 pt-0">
+            <Button onClick={handleConfirmOrder} className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-xl transition-all active:scale-95">
+              {isProcessing ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "Authorize & Pay"}
             </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

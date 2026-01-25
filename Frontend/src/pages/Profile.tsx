@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User as UserIcon, Mail, Phone, MapPin, Save, Loader2 } from "lucide-react";
+import { User as UserIcon, Mail, Phone, MapPin, Save, Loader2, BadgeCheck, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
@@ -27,7 +27,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (user) {
-      const defaultAddress = user.addresses && user.addresses.length > 0 ? user.addresses[user.addresses.length - 1] : {};
+      const defaultAddress = user.addresses?.length > 0 ? user.addresses[user.addresses.length - 1] : {};
       setFormData({
         name: user.name || "",
         email: user.email || "",
@@ -47,15 +47,13 @@ const Profile = () => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      // Save Profile Details (Name, Phone)
-      if (formData.phone !== user?.phoneNumber || formData.name !== user?.name) { // Check if changed
+      if (formData.phone !== user?.phoneNumber || formData.name !== user?.name) {
         await api.patch("/api/user/profile", {
           name: formData.name,
           phoneNumber: formData.phone
         });
       }
 
-      // Save Address
       if (formData.addressLine1) {
         await api.post("/api/user/address", {
           addresses: [{
@@ -68,176 +66,161 @@ const Profile = () => {
         });
       }
 
-      // Optionally update other details if API supports it (currently only address is supported via dedicated endpoint, but we can assume we might update user too)
-      // For now, just re-fetch user to sync
       await checkAuth();
-
-      toast({ title: "Profile Updated", description: "Your profile has been updated successfully." });
+      toast({ title: "Portfolio Updated", description: "Your credentials have been successfully synced." });
     } catch (error) {
-      toast({ variant: "destructive", title: "Error", description: "Failed to update profile." });
+      toast({ variant: "destructive", title: "Sync Error", description: "Failed to update your academic profile." });
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <Loader2 className="w-8 h-8 animate-spin text-amber-600" />
+    </div>
+  );
 
   return (
-    <div className="max-w-2xl space-y-6">
-      {/* Profile Header */}
+    <div className="max-w-4xl mx-auto pb-12">
+      {/* Profile Header: Academic Badge Style */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        className="mb-10 text-center lg:text-left"
       >
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-2xl gradient-primary flex items-center justify-center">
-                <UserIcon className="w-10 h-10 text-primary-foreground" />
-              </div>
-              <div>
-                <h2 className="font-heading text-2xl font-bold text-foreground">
-                  {user.name}
-                </h2>
-                <p className="text-muted-foreground">{user.email}</p>
-                <span className="inline-block mt-2 px-3 py-1 rounded-full bg-success/10 text-success text-xs font-medium">
-                  Verified Student
-                </span>
-              </div>
+        <div className="flex flex-col lg:flex-row items-center gap-8 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
+          <div className="relative group">
+            <div className="w-32 h-32 rounded-full bg-slate-900 flex items-center justify-center border-4 border-[#fdfcf8] shadow-xl overflow-hidden">
+              <UserIcon className="w-14 h-14 text-amber-400" />
             </div>
-          </CardContent>
-        </Card>
+            <button className="absolute bottom-0 right-0 p-2 bg-amber-500 rounded-full text-white border-2 border-white hover:scale-110 transition-transform">
+              <Camera className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex items-center justify-center lg:justify-start gap-3">
+              <h2 className="font-serif text-3xl font-bold text-slate-900">{user.name}</h2>
+              <BadgeCheck className="w-6 h-6 text-emerald-500 fill-emerald-50" />
+            </div>
+            <p className="text-slate-500 font-medium italic">{user.email}</p>
+            <div className="pt-2">
+              <span className="px-4 py-1.5 rounded-full bg-slate-900 text-amber-400 text-[10px] font-bold uppercase tracking-widest">
+                Official NIOS Candidate
+              </span>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
-      {/* Personal Information */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-heading">Personal Information</CardTitle>
-            <CardDescription>Update your personal details</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <div className="relative">
-                  <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="pl-10"
-                  // disabled // Enabled now
-                  />
+      <div className="grid md:grid-cols-5 gap-8">
+        {/* Main Form Fields */}
+        <div className="md:col-span-3 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="border-slate-100 rounded-[1.5rem] bg-white shadow-sm overflow-hidden">
+              <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100">
+                <h3 className="font-serif font-bold text-slate-900">Primary Credentials</h3>
+              </div>
+              <CardContent className="p-6 space-y-5">
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Full Legal Name</Label>
+                  <div className="relative">
+                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Input
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="pl-12 h-12 rounded-xl border-slate-200 focus:ring-amber-500/20 bg-[#fdfcf8]"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="pl-10"
-                    disabled
-                  />
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Contact Number</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Input
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="pl-12 h-12 rounded-xl border-slate-200 focus:ring-amber-500/20 bg-[#fdfcf8]"
+                    />
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-      {/* Shipping Address */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-heading">Shipping Address</CardTitle>
-            <CardDescription>Address for project file deliveries</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="addressLine1">Street Address</Label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                <Textarea
-                  id="addressLine1"
-                  name="addressLine1"
-                  value={formData.addressLine1}
-                  onChange={handleChange}
-                  className="pl-10 min-h-20"
-                />
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card className="border-slate-100 rounded-[1.5rem] bg-white shadow-sm overflow-hidden">
+              <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100">
+                <h3 className="font-serif font-bold text-slate-900">Logistics & Delivery</h3>
               </div>
-            </div>
-            <div className="grid sm:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="state">State</Label>
-                <Input
-                  id="state"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="pincode">PIN Code</Label>
-                <Input
-                  id="pincode"
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+              <CardContent className="p-6 space-y-5">
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Residence Address</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-4 w-4 h-4 text-slate-400" />
+                    <Textarea
+                      name="addressLine1"
+                      value={formData.addressLine1}
+                      onChange={handleChange}
+                      className="pl-12 min-h-[100px] rounded-xl border-slate-200 bg-[#fdfcf8]"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input name="city" placeholder="City" value={formData.city} onChange={handleChange} className="h-12 rounded-xl border-slate-200 bg-[#fdfcf8]" />
+                  <Input name="state" placeholder="State" value={formData.state} onChange={handleChange} className="h-12 rounded-xl border-slate-200 bg-[#fdfcf8]" />
+                </div>
+                <Input name="pincode" placeholder="PIN Code" value={formData.pincode} onChange={handleChange} className="h-12 rounded-xl border-slate-200 bg-[#fdfcf8]" />
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
 
-      {/* Save Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <Button size="lg" className="w-full sm:w-auto" onClick={handleSave} disabled={isLoading}>
-          {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-          Save Changes
-        </Button>
-      </motion.div>
+        {/* Sidebar Actions */}
+        <div className="md:col-span-2 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className="bg-slate-900 rounded-[1.5rem] p-8 text-white shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Save size={120} />
+              </div>
+              <h4 className="font-serif text-xl font-bold mb-4">Account Sync</h4>
+              <p className="text-slate-400 text-sm leading-relaxed mb-8">
+                Ensure your shipping details are accurate to avoid delays in physical project file deliveries.
+              </p>
+              <Button 
+                onClick={handleSave} 
+                disabled={isLoading}
+                className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-full transition-all"
+              >
+                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Authorize Update"}
+              </Button>
+            </div>
+          </motion.div>
+
+          <div className="p-6 border-2 border-dashed border-slate-200 rounded-[1.5rem]">
+             <h5 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 text-center">Security Notice</h5>
+             <p className="text-[11px] text-slate-400 text-center leading-relaxed italic">
+               The email address <span className="text-slate-600 font-bold">{user.email}</span> is permanently linked to your student ID and cannot be modified.
+             </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
