@@ -1,77 +1,85 @@
 import { motion } from "framer-motion";
-import { Search, CreditCard, Download, CheckCircle } from "lucide-react";
+import { Search, CreditCard, Download, CheckCircle, GraduationCap } from "lucide-react";
 
 const HowItWorks = () => {
   const steps = [
     {
       icon: Search,
-      number: "01",
-      title: "Choose Subject",
-      description: "Browse our collection and select the TMA or Project file you need for your class and medium.",
+      number: "I",
+      title: "Select Curriculum",
+      description: "Browse our curated library and select the TMA or Project file specific to your subject, class, and preferred medium.",
     },
     {
       icon: CreditCard,
-      number: "02",
-      title: "Make Payment",
-      description: "Complete secure payment using UPI, Cards, Net Banking, or Wallets. Instant confirmation.",
+      number: "II",
+      title: "Secure Enrollment",
+      description: "Complete your transaction through our encrypted gateway supporting UPI, Cards, and Net Banking with instant receipt.",
     },
     {
       icon: Download,
-      number: "03",
-      title: "Download / Delivery",
-      description: "TMA files available for instant download. Project files delivered to your doorstep.",
+      number: "III",
+      title: "Instant Fulfillment",
+      description: "Access your digital TMA files immediately or track your professionally bound projects delivered to your doorstep.",
     },
   ];
 
   return (
-    <section id="how-it-works" className="section-padding bg-muted/50">
-      <div className="container-wide">
+    <section id="how-it-works" className="py-24 bg-slate-900 relative overflow-hidden">
+      {/* Classical Background Accents */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+      <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]" />
+
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4">
-            Simple Process
-          </span>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-            How It Works
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 mb-6">
+            <GraduationCap className="w-4 h-4 text-amber-500" />
+            <span className="text-amber-500 text-xs font-bold tracking-[0.2em] uppercase">
+              The Path to Excellence
+            </span>
+          </div>
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-white mb-6">
+            Our Methodical <span className="italic text-amber-400 font-medium">Approach</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Get your study materials in just 3 simple steps
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+            Three disciplined steps to securing your academic success with Kriscap Education.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 relative">
-          {/* Connection Line */}
-          <div className="hidden md:block absolute top-24 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-primary via-secondary to-accent" />
+        <div className="grid md:grid-cols-3 gap-12 relative">
+          {/* Connecting Golden Line - Desktop Only */}
+          <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
           
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.15 }}
-              className="relative"
+              transition={{ delay: index * 0.2 }}
+              className="relative text-center group"
             >
-              <div className="bg-card rounded-2xl border border-border shadow-card p-8 text-center relative z-10">
-                {/* Number Badge */}
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
-                  {index + 1}
+              {/* Icon Orb */}
+              <div className="relative mb-8 flex justify-center">
+                <div className="w-24 h-24 rounded-full bg-slate-800 border border-amber-500/20 flex items-center justify-center transition-all duration-500 group-hover:border-amber-500/60 group-hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] relative z-10">
+                  <step.icon className="w-10 h-10 text-amber-500" />
                 </div>
-                
-                {/* Icon */}
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                  <step.icon className="w-8 h-8 text-primary" />
+                {/* Roman Numeral Badge */}
+                <div className="absolute -top-2 right-[30%] w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-900 text-xs font-bold border-4 border-slate-900 z-20">
+                  {step.number}
                 </div>
-                
-                {/* Content */}
-                <h3 className="font-heading text-xl font-bold text-foreground mb-3">
+              </div>
+              
+              {/* Content */}
+              <div className="relative">
+                <h3 className="font-serif text-2xl font-bold text-white mb-4 transition-colors group-hover:text-amber-400">
                   {step.title}
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-slate-400 leading-relaxed px-4">
                   {step.description}
                 </p>
               </div>
@@ -79,16 +87,22 @@ const HowItWorks = () => {
           ))}
         </div>
 
-        {/* Success Badge */}
+        {/* Trust Seal */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="flex justify-center mt-12"
+          transition={{ delay: 0.6 }}
+          className="flex justify-center mt-20"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-success/10 border border-success/20">
-            <CheckCircle className="w-5 h-5 text-success" />
-            <span className="text-success font-medium">Join 10,000+ satisfied NIOS students</span>
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-[1px] w-32 bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+            <div className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+              <CheckCircle className="w-5 h-5 text-emerald-500" />
+              <span className="text-slate-300 font-medium tracking-wide italic">
+                Supporting the aspirations of 10,000+ NIOS Scholars
+              </span>
+            </div>
           </div>
         </motion.div>
       </div>

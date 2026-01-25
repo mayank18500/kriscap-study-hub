@@ -1,110 +1,115 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FileText, Package, ArrowRight, Download, Truck } from "lucide-react";
+import { FileText, Package, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Categories = () => {
   const categories = [
     {
       icon: FileText,
-      emoji: "📘",
-      title: "TMA Files",
-      subtitle: "Digital Download",
-      description: "Instantly download verified TMA files for all NIOS subjects. Get high-quality, well-researched answers.",
-      features: ["Instant Download", "All Subjects", "Class 10 & 12", "Hindi & English Medium"],
-      cta: "Browse TMA Files",
+      title: "TMA Solutions",
+      subtitle: "Instant Digital Access",
+      description: "Expertly crafted Tutor Marked Assignments. Download verified answers instantly and secure your marks without the stress.",
+      features: ["Verified by Experts", "Bilingual Support", "2025-26 Updated", "PDF Format"],
+      cta: "Browse TMA Library",
       link: "/tma-files",
-      gradient: "from-primary to-primary/80",
-      iconBg: "bg-primary/10",
-      iconColor: "text-primary",
+      accent: "amber",
     },
     {
       icon: Package,
-      emoji: "📦",
-      title: "Project Files",
-      subtitle: "Home Delivery",
-      description: "Order complete project files delivered to your doorstep. Professionally prepared with all required components.",
-      features: ["Home Delivery", "Complete Projects", "Ready to Submit", "All India Delivery"],
-      cta: "Order Project Files",
+      title: "Handwritten Projects",
+      subtitle: "Curated Home Delivery",
+      description: "Complete, physically prepared project files delivered to your doorstep. Tailored specifically for your chosen subjects.",
+      features: ["Doorstep Delivery", "Handwritten Quality", "Ready to Submit", "Tracked Shipping"],
+      cta: "Order Physical Files",
       link: "/project-files",
-      gradient: "from-secondary to-secondary/80",
-      iconBg: "bg-secondary/10",
-      iconColor: "text-secondary",
+      accent: "slate",
     },
   ];
 
   return (
-    <section className="section-padding bg-background">
-      <div className="container-wide">
+    <section className="py-24 bg-white relative overflow-hidden">
+      {/* Decorative side element */}
+      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-32 bg-amber-500/20 rounded-r-full hidden lg:block" />
+
+      <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-            What We Offer
+          <span className="text-amber-600 font-bold tracking-[0.2em] text-xs uppercase mb-3 block">
+            Our Academic Services
+          </span>
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+            Expert Resources for <span className="italic text-amber-600">NIOS Success</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Choose from our comprehensive collection of NIOS study materials
+          <div className="w-20 h-1 bg-amber-500 mx-auto mb-6 rounded-full" />
+          <p className="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">
+            High-quality study materials designed to streamline your learning journey and maximize your academic performance.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
           {categories.map((category, index) => (
             <motion.div
               key={category.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: index * 0.1, duration: 0.6 }}
               className="group"
             >
-              <div className="bg-card rounded-2xl border border-border shadow-card card-hover p-6 lg:p-8 h-full">
-                {/* Icon & Badge */}
-                <div className="flex items-start justify-between mb-6">
-                  <div className={`w-14 h-14 rounded-xl ${category.iconBg} flex items-center justify-center`}>
-                    <category.icon className={`w-7 h-7 ${category.iconColor}`} />
-                  </div>
-                  <span className="text-3xl">{category.emoji}</span>
+              <div className="relative bg-[#fdfcf8] rounded-[2rem] border border-slate-100 p-8 lg:p-12 h-full transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(15,23,42,0.1)] hover:-translate-y-2 overflow-hidden">
+                {/* Background Accent Pattern */}
+                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                  <category.icon size={160} strokeWidth={1} />
                 </div>
 
-                {/* Content */}
-                <div className="mb-6">
-                  <h3 className="font-heading text-2xl font-bold text-foreground mb-1">
+                {/* Header */}
+                <div className="relative z-10">
+                  <div className={`w-14 h-14 rounded-2xl ${index === 0 ? 'bg-amber-500 text-white' : 'bg-slate-900 text-white'} flex items-center justify-center mb-8 shadow-lg transition-transform group-hover:scale-110 duration-500`}>
+                    <category.icon className="w-6 h-6" />
+                  </div>
+                  
+                  <h3 className="font-serif text-3xl font-bold text-slate-900 mb-2">
                     {category.title}
                   </h3>
-                  <p className={`text-sm font-medium ${category.iconColor} mb-3`}>
+                  <p className={`text-sm font-bold tracking-widest uppercase mb-6 ${index === 0 ? 'text-amber-600' : 'text-slate-500'}`}>
                     {category.subtitle}
                   </p>
-                  <p className="text-muted-foreground">
+                  <p className="text-slate-600 leading-relaxed mb-8 text-lg">
                     {category.description}
                   </p>
                 </div>
 
-                {/* Features */}
-                <div className="grid grid-cols-2 gap-2 mb-6">
+                {/* Feature List */}
+                <div className="relative z-10 space-y-4 mb-10">
                   {category.features.map((feature, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2 text-sm text-muted-foreground"
-                    >
-                      <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${category.gradient}`} />
-                      {feature}
+                    <div key={i} className="flex items-center gap-3 text-slate-700">
+                      <CheckCircle2 className={`w-5 h-5 ${index === 0 ? 'text-amber-500' : 'text-slate-400'}`} />
+                      <span className="font-medium text-sm">{feature}</span>
                     </div>
                   ))}
                 </div>
 
-                {/* CTA */}
-                <Link to={category.link}>
-                  <Button
-                    variant={index === 0 ? "default" : "secondary"}
-                    className="w-full group-hover:gap-4 transition-all"
-                  >
-                    {category.cta}
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
+                {/* Action */}
+                <div className="relative z-10">
+                  <Link to={category.link}>
+                    <Button
+                      variant="outline"
+                      className={`w-full h-14 rounded-full border-2 font-bold transition-all duration-300 ${
+                        index === 0 
+                        ? 'border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white' 
+                        : 'border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white'
+                      }`}
+                    >
+                      {category.cta}
+                      <ArrowRight className="ml-2 w-4 h-4" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))}

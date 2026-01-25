@@ -1,138 +1,129 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { BookOpen, Package, ShieldCheck, Zap, Truck } from "lucide-react";
+import { BookOpen, Package, ShieldCheck, Zap, ArrowRight, Star } from "lucide-react";
 
 const Hero = () => {
   const trustBadges = [
-    { icon: ShieldCheck, text: "Secure Payments" },
-    { icon: BookOpen, text: "NIOS Focused" },
-    { icon: Truck, text: "Fast Delivery" },
+    { icon: ShieldCheck, text: "Verified Content" },
+    { icon: BookOpen, text: "NIOS Curriculum" },
+    { icon: Star, text: "4.9/5 Rating" },
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center gradient-hero overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary rounded-full blur-3xl" />
+    <section className="relative min-h-screen flex items-center bg-[#fdfcf8] overflow-hidden pt-28 lg:pt-20">
+      {/* Classical Background Elements */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-amber-100/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-slate-200/50 rounded-full blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
       </div>
       
-      <div className="container-wide relative z-10 pt-24 pb-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          
+          {/* Right Content: The Image (Now appears first on mobile) */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center lg:text-left"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+            className="relative flex justify-center items-center order-first lg:order-last"
+          >
+            {/* Decorative Golden Ring */}
+            <div className="absolute inset-0 border-[1px] border-amber-200 rounded-full scale-90 animate-[spin_20s_linear_infinite] opacity-50" />
+            
+            <div className="relative z-10 w-full max-w-[320px] md:max-w-[450px] lg:max-w-[500px]">
+              <div className="relative rounded-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] bg-white p-3 md:p-4 group">
+                <img 
+                  src="./krish_logo.jpeg" 
+                  alt="NIOS Study Excellence" 
+                  className="w-full h-auto rounded-4xl transition-transform duration-700 group-hover:scale-105"
+                />
+                
+                {/* Floating Stat Card Overlay (Hidden on very small mobile for cleanliness) */}
+                <motion.div 
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute bottom-6 -left-4 md:bottom-10 md:-left-6 bg-white shadow-2xl rounded-2xl p-3 md:p-4 border border-slate-100 hidden xs:block"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-[8px] md:text-[10px] uppercase tracking-wider text-slate-400 font-bold">Success Rate</p>
+                      <p className="text-sm md:text-lg font-bold text-slate-900 font-serif">99.8% Passed</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Left Content: Typography Focused */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center lg:text-left mt-8 lg:mt-0"
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-amber-400 text-xs font-bold tracking-widest uppercase mb-6 lg:mb-8 shadow-xl shadow-slate-900/10"
             >
-              <Zap className="w-4 h-4" />
-              Trusted by 10,000+ NIOS Students
+              <Zap className="w-3.5 h-3.5 fill-current" />
+              India's Premier NIOS Resource
             </motion.div>
             
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6">
-              NIOS Study Material
-              <br />
-              <span className="text-accent">You Can Trust</span>
+            <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.1] mb-6 lg:mb-8">
+              Academic Excellence <br />
+              <span className="text-amber-600 italic font-medium">Simplified.</span>
             </h1>
             
-            <p className="text-primary-foreground/80 text-lg md:text-xl mb-8 max-w-xl mx-auto lg:mx-0">
-              Instant TMA Downloads & Home-Delivered Project Files. Get verified study materials designed specifically for NIOS students.
+            <p className="text-slate-600 text-base md:text-xl mb-8 lg:mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              Premium TMA solutions and professionally crafted Project Files. Designed by experts to help NIOS students achieve top marks with confidence.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
+            <div className="flex flex-col sm:flex-row gap-4 lg:gap-5 justify-center lg:justify-start mb-10 lg:mb-12">
               <Link to="/tma-files">
-                <Button variant="accent" size="xl" className="w-full sm:w-auto">
-                  <BookOpen className="w-5 h-5" />
-                  Buy TMA Files
+                <Button size="lg" className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-8 h-12 lg:h-14 text-sm lg:text-base shadow-lg hover:shadow-slate-900/20 transition-all hover:-translate-y-1 group">
+                  Get TMA Files
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link to="/project-files">
-                <Button variant="heroOutline" size="xl" className="w-full sm:w-auto">
-                  <Package className="w-5 h-5" />
-                  Order Project Files
+                <Button variant="outline" size="lg" className="border-slate-300 text-slate-700 hover:bg-slate-50 rounded-full px-8 h-12 lg:h-14 text-sm lg:text-base">
+                  <Package className="mr-2 w-4 h-4" />
+                  Project Files
                 </Button>
               </Link>
             </div>
             
-            {/* Trust Badges */}
+            {/* Trust Badges - Minimalist */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-6"
+              transition={{ delay: 0.6 }}
+              className="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-8 border-t border-slate-200 pt-8"
             >
               {trustBadges.map((badge, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 text-primary-foreground/70"
-                >
-                  <badge.icon className="w-5 h-5 text-accent" />
-                  <span className="text-sm font-medium">{badge.text}</span>
+                <div key={index} className="flex items-center gap-2.5 text-slate-500">
+                  <div className="p-1.5 rounded-full bg-amber-50">
+                    <badge.icon className="w-4 h-4 text-amber-600" />
+                  </div>
+                  <span className="text-[10px] md:text-sm font-semibold tracking-tight uppercase">{badge.text}</span>
                 </div>
               ))}
             </motion.div>
           </motion.div>
           
-          {/* Right Content - Stats Cards */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="hidden lg:grid grid-cols-2 gap-4"
-          >
-            <div className="space-y-4">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 rounded-2xl p-6"
-              >
-                <div className="text-4xl font-bold text-accent mb-2">10K+</div>
-                <div className="text-primary-foreground/70">Happy Students</div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 rounded-2xl p-6"
-              >
-                <div className="text-4xl font-bold text-secondary mb-2">500+</div>
-                <div className="text-primary-foreground/70">TMA Files</div>
-              </motion.div>
-            </div>
-            <div className="space-y-4 pt-8">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 rounded-2xl p-6"
-              >
-                <div className="text-4xl font-bold text-primary-foreground mb-2">100+</div>
-                <div className="text-primary-foreground/70">Project Files</div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 rounded-2xl p-6"
-              >
-                <div className="text-4xl font-bold text-accent mb-2">4.9★</div>
-                <div className="text-primary-foreground/70">Student Rating</div>
-              </motion.div>
-            </div>
-          </motion.div>
         </div>
       </div>
-      
-      {/* Wave Divider */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" className="w-full">
-          <path
-            d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
-            fill="hsl(var(--background))"
-          />
-        </svg>
-      </div>
+
+      {/* Elegant Bottom Transition */}
+      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent" />
     </section>
   );
 };
