@@ -35,7 +35,8 @@ const ProjectFiles = () => {
   const [selectedClass, setSelectedClass] = useState("all");
   const [isAddressOpen, setIsAddressOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+
   // Form State
   const [address, setAddress] = useState("");
   const [pincode, setPincode] = useState("");
@@ -64,7 +65,7 @@ const ProjectFiles = () => {
     }
     setSelectedProduct(product);
     setPhoneNumber(user.phoneNumber || "");
-    
+
     // Auto-fill address if available
     if (user.addresses && user.addresses.length > 0) {
       const lastAddr = user.addresses[user.addresses.length - 1];
@@ -157,15 +158,15 @@ const ProjectFiles = () => {
             Custom-bound, hand-curated project files delivered across India. Verified scholarly content ready for submission.
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3 bg-[#fdfcf8] border border-slate-100 p-4 rounded-2xl shadow-sm">
-           <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
-              <Box className="w-5 h-5 text-amber-600" />
-           </div>
-           <div>
-              <p className="text-[10px] font-bold uppercase text-slate-400">Dispatch Timeline</p>
-              <p className="text-sm font-bold text-slate-900">3-5 Business Days</p>
-           </div>
+          <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
+            <Box className="w-5 h-5 text-amber-600" />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase text-slate-400">Dispatch Timeline</p>
+            <p className="text-sm font-bold text-slate-900">3-5 Business Days</p>
+          </div>
         </div>
       </div>
 
@@ -229,13 +230,16 @@ const ProjectFiles = () => {
 
                   <div className="flex items-center justify-between pt-6 border-t border-slate-50">
                     <div>
-                        <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Fee & Shipping</span>
-                        <div className="text-2xl font-serif font-bold text-slate-900">
-                            ₹{file.price}
-                        </div>
+                      <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Fee & Shipping</span>
+                      <div className="text-2xl font-serif font-bold text-slate-900">
+                        ₹{file.price}
+                      </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:border-slate-900 hover:text-slate-900 transition-all">
+                      <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:border-slate-900 hover:text-slate-900 transition-all" onClick={() => {
+                        setSelectedProduct(file);
+                        setIsViewDialogOpen(true);
+                      }}>
                         <Eye className="w-4 h-4" />
                       </Button>
                       <Button onClick={() => handleOrderClick(file)} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-6 font-bold shadow-lg transition-all active:scale-95">
@@ -259,19 +263,67 @@ const ProjectFiles = () => {
         </div>
       )}
 
+      {/* Product Details Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-md rounded-[2rem] bg-[#fdfcf8] border-none shadow-2xl">
+          <DialogHeader>
+            <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <Package className="w-6 h-6 text-amber-600" />
+            </div>
+            <DialogTitle className="text-center font-serif text-2xl font-bold text-slate-900">Project Details</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {selectedProduct && (
+              <>
+                <div className="text-center mb-6">
+                  <h3 className="font-serif text-xl font-bold text-slate-900">{selectedProduct.name}</h3>
+                  <p className="text-slate-500 italic text-sm">{selectedProduct.medium} Medium</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Description</Label>
+                  <div className="p-4 bg-white rounded-xl border border-slate-100 text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">
+                    {selectedProduct.description || "No description provided for this project."}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-slate-50 rounded-xl">
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Class</span>
+                    <span className="font-bold text-slate-700">{selectedProduct.class}th Grade</span>
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-xl">
+                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Price</span>
+                    <span className="font-bold text-slate-700">₹{selectedProduct.price}</span>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => {
+              setIsViewDialogOpen(false);
+              handleOrderClick(selectedProduct!);
+            }} className="w-full bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800">
+              Acquire Project
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Shipment Folio Dialog */}
       <Dialog open={isAddressOpen} onOpenChange={setIsAddressOpen}>
         <DialogContent className="sm:max-w-[500px] rounded-[2rem] bg-[#fdfcf8] border-none shadow-2xl overflow-hidden p-0">
           <div className="bg-slate-900 p-8 text-white relative">
-             <div className="absolute top-0 right-0 p-6 opacity-10">
-                <Truck size={100} />
-             </div>
-             <DialogTitle className="font-serif text-3xl font-bold mb-2">Shipment Folio</DialogTitle>
-             <DialogDescription className="text-slate-400 italic">
-                Provide the coordinates for the physical delivery of your project files.
-             </DialogDescription>
+            <div className="absolute top-0 right-0 p-6 opacity-10">
+              <Truck size={100} />
+            </div>
+            <DialogTitle className="font-serif text-3xl font-bold mb-2">Shipment Folio</DialogTitle>
+            <DialogDescription className="text-slate-400 italic">
+              Provide the coordinates for the physical delivery of your project files.
+            </DialogDescription>
           </div>
-          
+
           <div className="p-8 space-y-6">
             <div className="space-y-2">
               <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Delivery Address</Label>
@@ -282,7 +334,7 @@ const ProjectFiles = () => {
                 placeholder="House Number, Street, Landmarks..."
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">City</Label>
@@ -295,7 +347,7 @@ const ProjectFiles = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">State</Label>
                 <Input value={state} onChange={(e) => setState(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
               </div>
@@ -306,8 +358,8 @@ const ProjectFiles = () => {
             </div>
 
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex gap-3 italic text-xs text-slate-500">
-               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-               Your project files will be physically bound and dispatched to this address.
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              Your project files will be physically bound and dispatched to this address.
             </div>
           </div>
 

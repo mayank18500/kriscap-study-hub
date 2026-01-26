@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Plus, Search, FileText, Package, Edit, Trash2, MoreVertical, Eye, ToggleLeft, ToggleRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -35,6 +36,10 @@ const AdminProducts = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editProductId, setEditProductId] = useState<string | null>(null);
 
   // Add Product Form State
   const [newProduct, setNewProduct] = useState({
@@ -44,7 +49,8 @@ const AdminProducts = () => {
     medium: "English",
     price: "",
     fileUrl: "",
-    previewUrl: ""
+    previewUrl: "",
+    description: ""
   });
 
 
@@ -65,12 +71,33 @@ const AdminProducts = () => {
       queryClient.invalidateQueries({ queryKey: ["adminProducts"] });
       toast({ title: "Product Created", description: "Product has been added successfully" });
       setIsDialogOpen(false);
-      setNewProduct({ name: "", type: "TMA", class: "12", medium: "English", price: "", fileUrl: "", previewUrl: "" });
+      resetForm();
     },
     onError: (error) => {
       toast({ variant: "destructive", title: "Error", description: "Failed to create product" });
     }
   });
+
+  const updateProductMutation = useMutation({
+    mutationFn: async (data: { id: string, productData: any }) => {
+      await api.put(`/api/admin/products/${data.id}`, data.productData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminProducts"] });
+      toast({ title: "Product Updated", description: "Product has been updated successfully" });
+      setIsDialogOpen(false);
+      resetForm();
+    },
+    onError: (error) => {
+      toast({ variant: "destructive", title: "Error", description: "Failed to update product" });
+    }
+  });
+
+  const resetForm = () => {
+    setNewProduct({ name: "", type: "TMA", class: "12", medium: "English", price: "", fileUrl: "", previewUrl: "", description: "" });
+    setIsEditMode(false);
+    setEditProductId(null);
+  };
 
   const toggleStatusMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -94,11 +121,37 @@ const AdminProducts = () => {
     }
   });
 
-  const handleCreateProduct = () => {
-    createProductMutation.mutate({
-      ...newProduct,
-      price: Number(newProduct.price)
+  const handleSaveProduct = () => {
+    if (isEditMode && editProductId) {
+      updateProductMutation.mutate({
+        id: editProductId,
+        productData: {
+          ...newProduct,
+          price: Number(newProduct.price)
+        }
+      });
+    } else {
+      createProductMutation.mutate({
+        ...newProduct,
+        price: Number(newProduct.price)
+      });
+    }
+  };
+
+  const openEditDialog = (product: any) => {
+    setNewProduct({
+      name: product.name,
+      type: product.type,
+      class: product.class,
+      medium: product.medium,
+      price: product.price,
+      fileUrl: product.fileUrl || "",
+      previewUrl: product.previewUrl || "",
+      description: product.description || ""
     });
+    setEditProductId(product.id);
+    setIsEditMode(true);
+    setIsDialogOpen(true);
   };
 
   const filteredProducts = products?.filter((product: any) =>
@@ -122,16 +175,16 @@ const AdminProducts = () => {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={resetForm}>
               <Plus className="w-4 h-4 mr-2" />
               Add Product
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Add New Product</DialogTitle>
+              <DialogTitle>{isEditMode ? "Edit Product" : "Add New Product"}</DialogTitle>
               <DialogDescription>
-                Create a new TMA or Project file product
+                {isEditMode ? "Update existing product details" : "Create a new TMA or Project file product"}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -141,6 +194,14 @@ const AdminProducts = () => {
                   placeholder="e.g., Mathematics Class 12 TMA"
                   value={newProduct.name}
                   onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Description</Label>
+                <Textarea
+                  placeholder="Product description..."
+                  value={newProduct.description}
+                  onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -219,14 +280,70 @@ const AdminProducts = () => {
                 </div>
               </div>
 
-              <Button className="w-full" onClick={handleCreateProduct} disabled={createProductMutation.isPending}>
-                {createProductMutation.isPending ? <Loader2 className="animate-spin mr-2" /> : null}
-                Create Product
+              <Button className="w-full" onClick={handleSaveProduct} disabled={createProductMutation.isPending || updateProductMutation.isPending}>
+                {(createProductMutation.isPending || updateProductMutation.isPending) ? <Loader2 className="animate-spin mr-2" /> : null}
+                {isEditMode ? "Update Product" : "Create Product"}
               </Button>
             </div>
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* View Product Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Product Details</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {selectedProduct && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-muted-foreground">Name</Label>
+                    <p className="font-medium">{selectedProduct.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Type</Label>
+                    <p className="font-medium">{selectedProduct.type}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Class</Label>
+                    <p className="font-medium">{selectedProduct.class}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Medium</Label>
+                    <p className="font-medium">{selectedProduct.medium}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Price</Label>
+                    <p className="font-medium">₹{selectedProduct.price}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Sales</Label>
+                    <p className="font-medium">{selectedProduct.sales}</p>
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Description</Label>
+                  <div className="mt-1 p-3 bg-muted rounded-md text-sm whitespace-pre-wrap">
+                    {selectedProduct.description || "No description available."}
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Status</Label>
+                  <div className="mt-1">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${selectedProduct.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                      }`}>
+                      {selectedProduct.active ? "Active" : "Inactive"}
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Products Table */}
       <Card>
@@ -295,11 +412,14 @@ const AdminProducts = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            setSelectedProduct(product);
+                            setIsViewDialogOpen(true);
+                          }}>
                             <Eye className="w-4 h-4 mr-2" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openEditDialog(product)}>
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
@@ -324,7 +444,7 @@ const AdminProducts = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </div >
   );
 };
 

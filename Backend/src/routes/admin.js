@@ -5,6 +5,7 @@ const {
     getAdminStats,
     getAdminProducts,
     createProduct,
+    updateProduct,
     toggleProductStatus,
     getAdminOrders,
     updateOrderStatus,
@@ -25,6 +26,7 @@ router.get("/stats", getAdminStats);
 // Products
 router.get("/products", getAdminProducts);
 router.post("/products", createProduct);
+router.put("/products/:id", updateProduct);
 router.patch("/products/:id/toggle", toggleProductStatus);
 router.delete("/products/:id", deleteProduct);
 

@@ -73,6 +73,7 @@ exports.getAdminProducts = async (req, res) => {
             medium: p.medium,
             price: p.price,
             active: p.active,
+            description: p.description,
             sales: 0 // We would need to count this from orders ideally
         }));
 
@@ -84,11 +85,13 @@ exports.getAdminProducts = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     try {
-        const { name, type, class: grade, medium, price } = req.body;
+        const { name, description, type, class: grade, medium, price } = req.body;
+        console.log("Create Product Request Body:", req.body); // Debug log
         // File handling would go here (e.g. S3 upload), for now assuming just data or fileUrl passed
 
         const product = await Product.create({
             name,
+            description,
             type,
             class: grade,
             medium,
@@ -99,6 +102,33 @@ exports.createProduct = async (req, res) => {
         });
 
         res.status(201).json(product);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+}
+
+exports.updateProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, type, class: grade, medium, price, fileUrl, previewUrl } = req.body;
+
+        const product = await Product.findByIdAndUpdate(
+            id,
+            {
+                name,
+                description,
+                type,
+                class: grade,
+                medium,
+                price,
+                fileUrl,
+                previewUrl
+            },
+            { new: true }
+        );
+
+        if (!product) return res.status(404).json({ message: "Product not found" });
+        res.json(product);
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
