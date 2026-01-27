@@ -265,31 +265,48 @@ const AdminOrders = () => {
 
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-medium text-muted-foreground mb-2">Product Details</h4>
-                  <div className="bg-muted/30 p-3 rounded-lg flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedOrder.type === "TMA" ? "bg-primary/10 text-primary" : "bg-secondary/10 text-secondary"}`}>
-                      {selectedOrder.type === "TMA" ? <FileText className="w-5 h-5" /> : <Package className="w-5 h-5" />}
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">{selectedOrder.product}</div>
-                      <div className="text-xs text-muted-foreground">{selectedOrder.type}</div>
+                  <div>
+                    <h4 className="font-medium text-muted-foreground mb-2">Product Details ({selectedOrder.products?.length || 1})</h4>
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
+                      {selectedOrder.products?.map((item: any, idx: number) => (
+                        <div key={idx} className="bg-muted/30 p-3 rounded-lg flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${item.type === "TMA" ? "bg-primary/10 text-primary" : "bg-secondary/10 text-secondary"}`}>
+                            {item.type === "TMA" ? <FileText className="w-5 h-5" /> : <Package className="w-5 h-5" />}
+                          </div>
+                          <div>
+                            <div className="font-medium text-sm">{item.name}</div>
+                            <div className="text-xs text-muted-foreground">{item.type} • ₹{item.price}</div>
+                          </div>
+                        </div>
+                      )) || (
+                          /* Fallback for old single-product structure just in case */
+                          <div className="bg-muted/30 p-3 rounded-lg flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedOrder.type === "TMA" ? "bg-primary/10 text-primary" : "bg-secondary/10 text-secondary"}`}>
+                              {selectedOrder.type === "TMA" ? <FileText className="w-5 h-5" /> : <Package className="w-5 h-5" />}
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm">{selectedOrder.product}</div>
+                              <div className="text-xs text-muted-foreground">{selectedOrder.type}</div>
+                            </div>
+                          </div>
+                        )}
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <h4 className="font-medium text-muted-foreground mb-2">Shipping Address</h4>
-                  {selectedOrder.shippingAddress ? (
-                    <div className="bg-muted/30 p-3 rounded-lg text-sm space-y-1">
-                      <div>{selectedOrder.shippingAddress.addressLine1}</div>
-                      <div>{selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state}</div>
-                      <div>{selectedOrder.shippingAddress.pincode}</div>
-                    </div>
-                  ) : (
-                    <div className="bg-muted/30 p-3 rounded-lg text-sm text-muted-foreground italic">
-                      No shipping address provided (Digital Order)
-                    </div>
-                  )}
+                  <div>
+                    <h4 className="font-medium text-muted-foreground mb-2">Shipping Address</h4>
+                    {selectedOrder.shippingAddress ? (
+                      <div className="bg-muted/30 p-3 rounded-lg text-sm space-y-1">
+                        <div>{selectedOrder.shippingAddress.addressLine1}</div>
+                        <div>{selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state}</div>
+                        <div>{selectedOrder.shippingAddress.pincode}</div>
+                      </div>
+                    ) : (
+                      <div className="bg-muted/30 p-3 rounded-lg text-sm text-muted-foreground italic">
+                        No shipping address provided (Digital Order)
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

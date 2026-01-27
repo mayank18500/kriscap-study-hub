@@ -156,18 +156,30 @@ exports.getAdminOrders = async (req, res) => {
             .sort({ createdAt: -1 });
 
         const formattedOrders = orders.map(order => {
-            const product = order.products[0]?.product;
             const user = order.user;
             // Use order shipping address if available, fallback to user's default address
             const shippingAddress = order.shippingAddress || (user.addresses && user.addresses[0]);
+
+            // Map all products
+            const productsList = order.products.map(p => ({
+                name: p.product?.name || "Unknown Product",
+                type: p.product?.type || "Unknown",
+                price: p.priceAtPurchase
+            }));
 
             return {
                 id: order._id,
                 customer: user?.name,
                 email: user?.email,
                 phone: order.phoneNumber || user?.phoneNumber,
-                type: product?.type,
-                product: product?.name,
+                // Primary type logic: if any physical -> Project, else if any TMA -> TMA
+                type: productsList.some(p => p.type === "PROJECT") ? "PROJECT" : "TMA",
+                // Summary string for table display (e.g., "Physics Lab + 2 others")
+                product: productsList.length > 1
+                    ? `${productsList[0].name} + ${productsList.length - 1} more`
+                    : productsList[0]?.name || "Empty Order",
+                // Full products list for detail view
+                products: productsList,
                 amount: order.totalAmount,
                 status: order.status,
                 date: order.createdAt,

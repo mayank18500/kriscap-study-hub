@@ -16,39 +16,26 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { Product } from "@/types/product";
-import { loadRazorpayScript } from "@/lib/razorpay";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useCart } from "@/contexts/CartContext";
 
 const ProjectFiles = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
   const [selectedClass, setSelectedClass] = useState("all");
-  const [isAddressOpen, setIsAddressOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
-  // Form State
-  const [address, setAddress] = useState("");
-  const [pincode, setPincode] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
+  // Cart Context
+  const { addToCart } = useCart();
 
-  const { user } = useAuth();
-  const { toast } = useToast();
-
-  const { data: products, isLoading, isError } = useQuery({
+  const { data: products, isLoading } = useQuery({
     queryKey: ["products", "PROJECT"],
     queryFn: async () => {
       const response = await api.get<Product[]>("/api/products", {
@@ -57,85 +44,6 @@ const ProjectFiles = () => {
       return response.data;
     },
   });
-
-  const handleOrderClick = (product: Product) => {
-    if (!user) {
-      toast({ variant: "destructive", title: "Authentication Required", description: "Please login to order files." });
-      return;
-    }
-    setSelectedProduct(product);
-    setPhoneNumber(user.phoneNumber || "");
-
-    // Auto-fill address if available
-    if (user.addresses && user.addresses.length > 0) {
-      const lastAddr = user.addresses[user.addresses.length - 1];
-      setAddress(lastAddr.addressLine1 || "");
-      setPincode(lastAddr.pincode || "");
-      setCity(lastAddr.city || "");
-      setState(lastAddr.state || "");
-    }
-    setIsAddressOpen(true);
-  };
-
-  const handleProcessOrder = async (product: Product, isNewAddress = false) => {
-    setIsProcessing(true);
-    try {
-      if (isNewAddress) {
-        await api.post("/api/user/address", {
-          addresses: [{ addressLine1: address, pincode, city, state, isDefault: true }]
-        });
-      }
-
-      const isScriptLoaded = await loadRazorpayScript();
-      if (!isScriptLoaded) throw new Error("Payment gateway failed to initialize.");
-
-      const { data: orderData } = await api.post("/api/orders/create", {
-        productId: product._id,
-        amount: product.price,
-        addressId: "latest",
-        phoneNumber: phoneNumber
-      });
-
-      const options = {
-        key: orderData.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "Kriscap Education",
-        description: `Fulfillment: ${product.name}`,
-        order_id: orderData.id,
-        handler: async function (response: any) {
-          try {
-            await api.post("/api/payments/verify", {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            });
-            toast({ title: "Order Confirmed", description: "Project acquisition finalized. Shipment follows shortly." });
-            setIsAddressOpen(false);
-          } catch (verifyError) {
-            toast({ variant: "destructive", title: "Verification Failed", description: "Please contact support." });
-          }
-        },
-        prefill: { name: user.name, email: user.email },
-        theme: { color: "#0F172A" },
-      };
-
-      const paymentObject = new (window as any).Razorpay(options);
-      paymentObject.open();
-    } catch (error: any) {
-      toast({ variant: "destructive", title: "Order Error", description: "Could not finalize transaction." });
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleConfirmOrder = async () => {
-    if (!address || !pincode || !city || !state || !phoneNumber) {
-      toast({ variant: "destructive", title: "Incomplete Folio", description: "Please provide all required shipment details." });
-      return;
-    }
-    if (selectedProduct) await handleProcessOrder(selectedProduct, true);
-  };
 
   const filteredFiles = products?.filter((file) => {
     const matchesSearch = file.name.toLowerCase().includes(debouncedSearch.toLowerCase());
@@ -242,9 +150,9 @@ const ProjectFiles = () => {
                       }}>
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button onClick={() => handleOrderClick(file)} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-6 font-bold shadow-lg transition-all active:scale-95">
+                      <Button onClick={() => addToCart(file)} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-6 font-bold shadow-lg transition-all active:scale-95">
                         <ShoppingCart className="w-4 h-4 mr-2" />
-                        Acquire
+                        Add to Cart
                       </Button>
                     </div>
                   </div>
@@ -303,71 +211,11 @@ const ProjectFiles = () => {
           <DialogFooter>
             <Button onClick={() => {
               setIsViewDialogOpen(false);
-              handleOrderClick(selectedProduct!);
+              addToCart(selectedProduct!);
             }} className="w-full bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800">
-              Acquire Project
+              Add to Folio
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Shipment Folio Dialog */}
-      <Dialog open={isAddressOpen} onOpenChange={setIsAddressOpen}>
-        <DialogContent className="sm:max-w-[500px] rounded-[2rem] bg-[#fdfcf8] border-none shadow-2xl overflow-hidden p-0">
-          <div className="bg-slate-900 p-8 text-white relative">
-            <div className="absolute top-0 right-0 p-6 opacity-10">
-              <Truck size={100} />
-            </div>
-            <DialogTitle className="font-serif text-3xl font-bold mb-2">Shipment Folio</DialogTitle>
-            <DialogDescription className="text-slate-400 italic">
-              Provide the coordinates for the physical delivery of your project files.
-            </DialogDescription>
-          </div>
-
-          <div className="p-8 space-y-6">
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Delivery Address</Label>
-              <Textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="rounded-xl border-slate-200 bg-white min-h-[100px] focus:ring-amber-500/20"
-                placeholder="House Number, Street, Landmarks..."
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">City</Label>
-                <Input value={city} onChange={(e) => setCity(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Pincode</Label>
-                <Input value={pincode} onChange={(e) => setPincode(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">State</Label>
-                <Input value={state} onChange={(e) => setState(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Contact Phone</Label>
-                <Input value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="h-12 rounded-xl border-slate-200 bg-white" />
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex gap-3 italic text-xs text-slate-500">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-              Your project files will be physically bound and dispatched to this address.
-            </div>
-          </div>
-
-          <div className="p-8 pt-0">
-            <Button onClick={handleConfirmOrder} className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-xl transition-all active:scale-95">
-              {isProcessing ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "Authorize & Pay"}
-            </Button>
-          </div>
         </DialogContent>
       </Dialog>
     </div>

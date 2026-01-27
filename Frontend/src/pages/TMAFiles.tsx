@@ -85,7 +85,7 @@ const TMAFiles = () => {
 
     try {
       const { data: orderData } = await api.post("/api/orders/create", {
-        productId: product._id,
+        products: [{ product: product._id, quantity: 1 }],
         amount: product.price,
         phoneNumber: phoneNumber
       });

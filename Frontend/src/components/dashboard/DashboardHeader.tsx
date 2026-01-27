@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, Bell, User } from "lucide-react";
+import { Menu, Bell, User, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSocket } from "@/contexts/SocketContext";
+import { useCart } from "@/contexts/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 
@@ -20,6 +21,7 @@ interface DashboardHeaderProps {
 const DashboardHeader = ({ onMenuClick, title }: DashboardHeaderProps) => {
   const { logout, user } = useAuth();
   const { socket } = useSocket();
+  const { items, setIsOpen } = useCart();
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -69,6 +71,16 @@ const DashboardHeader = ({ onMenuClick, title }: DashboardHeaderProps) => {
 
         {/* Right */}
         <div className="flex items-center gap-2">
+          {/* Cart Trigger */}
+          <Button variant="ghost" size="icon" className="relative" onClick={() => setIsOpen(true)}>
+            <ShoppingCart className="w-5 h-5" />
+            {items.length > 0 && (
+              <span className="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-[10px] font-bold text-white flex items-center justify-center rounded-full">
+                {items.length}
+              </span>
+            )}
+          </Button>
+
           {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="w-5 h-5" />

@@ -27,6 +27,8 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { SocketProvider } from "./contexts/SocketContext";
+import { CartProvider } from "./contexts/CartContext";
+import { CartSheet } from "./components/cart/CartSheet";
 
 const queryClient = new QueryClient();
 
@@ -61,59 +63,62 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <SocketProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
+          <CartProvider>
+            <BrowserRouter>
+              <CartSheet />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
 
-              {/* Client Dashboard Routes - Protected */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<DashboardLayout />}>
-                  <Route index element={<Navigate to="/dashboard/tma" replace />} />
-                  <Route path="tma" element={<TMAFiles />} />
-                  <Route path="projects" element={<ProjectFiles />} />
-                  <Route path="orders" element={<Orders />} />
-                  <Route path="downloads" element={<Downloads />} />
-                  <Route path="profile" element={<Profile />} />
+                {/* Client Dashboard Routes - Protected */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/dashboard" element={<DashboardLayout />}>
+                    <Route index element={<Navigate to="/dashboard/tma" replace />} />
+                    <Route path="tma" element={<TMAFiles />} />
+                    <Route path="projects" element={<ProjectFiles />} />
+                    <Route path="orders" element={<Orders />} />
+                    <Route path="downloads" element={<Downloads />} />
+                    <Route path="profile" element={<Profile />} />
+                  </Route>
                 </Route>
-              </Route>
 
-              {/* Admin Dashboard Routes - Protected */}
-              <Route element={<AdminRoute />}>
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminOverview />} />
-                  <Route path="products" element={<AdminProducts />} />
-                  <Route path="orders" element={<AdminOrders />} />
-                  <Route path="users" element={<AdminUsers />} />
-                  <Route path="payments" element={<AdminPayments />} />
-                  <Route path="uploads" element={<AdminUploads />} />
-                  <Route path="settings" element={<AdminSettings />} />
+                {/* Admin Dashboard Routes - Protected */}
+                <Route element={<AdminRoute />}>
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminOverview />} />
+                    <Route path="products" element={<AdminProducts />} />
+                    <Route path="orders" element={<AdminOrders />} />
+                    <Route path="users" element={<AdminUsers />} />
+                    <Route path="payments" element={<AdminPayments />} />
+                    <Route path="uploads" element={<AdminUploads />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                  </Route>
                 </Route>
-              </Route>
 
-              {/* Protected pages with Public Layout */}
-              <Route element={<ProtectedRoute />}>
-                <Route element={<PublicLayout />}>
-                  <Route path="/tma-files" element={<TMAFiles />} />
-                  <Route path="/project-files" element={<ProjectFiles />} />
+                {/* Protected pages with Public Layout */}
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<PublicLayout />}>
+                    <Route path="/tma-files" element={<TMAFiles />} />
+                    <Route path="/project-files" element={<ProjectFiles />} />
+                  </Route>
                 </Route>
-              </Route>
 
-              {/* Catch-all */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+                {/* Catch-all */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </CartProvider>
         </SocketProvider>
       </AuthProvider>
     </TooltipProvider>
-  </QueryClientProvider>
+  </QueryClientProvider >
 );
 
 export default App;
