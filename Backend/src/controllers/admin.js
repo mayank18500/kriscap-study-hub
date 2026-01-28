@@ -74,6 +74,7 @@ exports.getAdminProducts = async (req, res) => {
             price: p.price,
             active: p.active,
             description: p.description,
+            category: p.category,
             sales: 0 // We would need to count this from orders ideally
         }));
 
@@ -85,7 +86,7 @@ exports.getAdminProducts = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     try {
-        const { name, description, type, class: grade, medium, price } = req.body;
+        const { name, description, type, class: grade, medium, price, category } = req.body;
         console.log("Create Product Request Body:", req.body); // Debug log
         // File handling would go here (e.g. S3 upload), for now assuming just data or fileUrl passed
 
@@ -98,7 +99,8 @@ exports.createProduct = async (req, res) => {
             price,
             active: true,
             fileUrl: req.body.fileUrl || "",
-            previewUrl: req.body.previewUrl || ""
+            previewUrl: req.body.previewUrl || "",
+            category: type === "TMA" ? category : undefined
         });
 
         res.status(201).json(product);
@@ -110,7 +112,7 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, type, class: grade, medium, price, fileUrl, previewUrl } = req.body;
+        const { name, description, type, class: grade, medium, price, fileUrl, previewUrl, category } = req.body;
 
         const product = await Product.findByIdAndUpdate(
             id,
@@ -122,7 +124,8 @@ exports.updateProduct = async (req, res) => {
                 medium,
                 price,
                 fileUrl,
-                previewUrl
+                previewUrl,
+                category: type === "TMA" ? category : undefined
             },
             { new: true }
         );

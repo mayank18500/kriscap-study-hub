@@ -10,7 +10,9 @@ const requiredKeys = [
     "CLOUDINARY_API_KEY",
     "CLOUDINARY_API_SECRET",
     "EMAIL_USER",
-    "EMAIL_PASS"
+    "EMAIL_USER",
+    "EMAIL_PASS",
+    "FRONTEND_URL"
 ];
 
 const missingKeys = requiredKeys.filter(key => !process.env[key]);
@@ -43,7 +45,9 @@ const config = {
         : ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080"],
     NODE_ENV: process.env.NODE_ENV || "development",
     EMAIL_USER: process.env.EMAIL_USER,
-    EMAIL_PASS: process.env.EMAIL_PASS
+    EMAIL_USER: process.env.EMAIL_USER,
+    EMAIL_PASS: process.env.EMAIL_PASS,
+    FRONTEND_URL: process.env.FRONTEND_URL
 };
 
 module.exports = config;

@@ -47,10 +47,11 @@ const AdminProducts = () => {
     type: "TMA",
     class: "12",
     medium: "English",
-    price: "",
     fileUrl: "",
     previewUrl: "",
-    description: ""
+    description: "",
+    price: "",
+    category: "TEXT"
   });
 
 
@@ -94,7 +95,7 @@ const AdminProducts = () => {
   });
 
   const resetForm = () => {
-    setNewProduct({ name: "", type: "TMA", class: "12", medium: "English", price: "", fileUrl: "", previewUrl: "", description: "" });
+    setNewProduct({ name: "", type: "TMA", class: "12", medium: "English", price: "", fileUrl: "", previewUrl: "", description: "", category: "TEXT" });
     setIsEditMode(false);
     setEditProductId(null);
   };
@@ -147,7 +148,8 @@ const AdminProducts = () => {
       price: product.price,
       fileUrl: product.fileUrl || "",
       previewUrl: product.previewUrl || "",
-      description: product.description || ""
+      description: product.description || "",
+      category: product.category || "TEXT"
     });
     setEditProductId(product.id);
     setIsEditMode(true);
@@ -230,6 +232,22 @@ const AdminProducts = () => {
                   </Select>
                 </div>
               </div>
+
+              {newProduct.type === "TMA" && (
+                <div className="space-y-2">
+                  <Label>Category</Label>
+                  <Select value={newProduct.category} onValueChange={(v) => setNewProduct({ ...newProduct, category: v })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="TEXT">Text</SelectItem>
+                      <SelectItem value="HANDWRITTEN">Handwritten</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Medium</Label>

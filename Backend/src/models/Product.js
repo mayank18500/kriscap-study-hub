@@ -12,6 +12,7 @@ const ProductSchema = new Schema(
         medium: { type: String },
         fileUrl: { type: String },
         previewUrl: { type: String },
+        category: { type: String, enum: ["TEXT", "HANDWRITTEN"] },
         isPhysical: { type: Boolean, default: false },
         active: { type: Boolean, default: true },
         rating: { type: Number, default: 0 },

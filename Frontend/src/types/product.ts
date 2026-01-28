@@ -10,4 +10,5 @@ export interface Product {
     fileUrl?: string; // Only present if purchased/unlocked? Actually usually backend hides this until purchased.
     rating?: number;
     reviews?: number;
+    category?: 'TEXT' | 'HANDWRITTEN';
 }

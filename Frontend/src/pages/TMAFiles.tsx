@@ -227,6 +227,16 @@ const TMAFiles = () => {
                     <p className="text-slate-500 text-sm italic">
                       {file.medium} Medium Section
                     </p>
+                    {file.category && (
+                      <div className="mt-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${file.category === 'HANDWRITTEN'
+                            ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                            : 'bg-blue-100 text-blue-700 border border-blue-200'
+                          }`}>
+                          {file.category} Format
+                        </span>
+                      </div>
+                    )}
                     <div className="mt-4 flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className={`w-3.5 h-3.5 ${i < (file.rating || 4) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
