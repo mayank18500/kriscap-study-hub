@@ -1,22 +1,24 @@
+import React, { Suspense, lazy, useRef } from "react";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
-import Index from "./pages/Index";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-// import Dashboard from "./pages/Dashboard";
-import TMAFiles from "./pages/TMAFiles";
-import ProjectFiles from "./pages/ProjectFiles";
 import Orders from "./pages/Orders";
 import Downloads from "./pages/Downloads";
 import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
+
 import DashboardLayout from "./layouts/DashboardLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import PublicLayout from "./layouts/PublicLayout";
+
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
@@ -24,101 +26,130 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminUploads from "./pages/admin/AdminUploads";
 import AdminSettings from "./pages/admin/AdminSettings";
-import NotFound from "./pages/NotFound";
+
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { SocketProvider } from "./contexts/SocketContext";
 import { CartProvider } from "./contexts/CartContext";
 import { CartSheet } from "./components/cart/CartSheet";
 
-const queryClient = new QueryClient();
+/* ---------------- Lazy Pages ---------------- */
+const Index = lazy(() => import("./pages/Index"));
+const TMAFiles = lazy(() => import("./pages/TMAFiles"));
+const ProjectFiles = lazy(() => import("./pages/ProjectFiles"));
 
-// Protected Route Component
+/* ---------------- Route Guards ---------------- */
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
-// Admin Route Component
 const AdminRoute = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
 
-  if (!isAuthenticated) return <Navigate to="/login" />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   if (user?.role !== "admin") {
-    return <Navigate to="/dashboard/tma" />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-        <SocketProvider>
-          <CartProvider>
-            <BrowserRouter>
-              <CartSheet />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
+/* ---------------- App ---------------- */
+const App = () => {
+  const queryClientRef = useRef(new QueryClient());
 
-                {/* Client Dashboard Routes - Protected */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/dashboard" element={<DashboardLayout />}>
-                    <Route index element={<Navigate to="/dashboard/tma" replace />} />
-                    <Route path="tma" element={<TMAFiles />} />
-                    <Route path="projects" element={<ProjectFiles />} />
-                    <Route path="orders" element={<Orders />} />
-                    <Route path="downloads" element={<Downloads />} />
-                    <Route path="profile" element={<Profile />} />
-                  </Route>
-                </Route>
+  return (
+    <QueryClientProvider client={queryClientRef.current}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
 
-                {/* Admin Dashboard Routes - Protected */}
-                <Route element={<AdminRoute />}>
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<AdminOverview />} />
-                    <Route path="products" element={<AdminProducts />} />
-                    <Route path="orders" element={<AdminOrders />} />
-                    <Route path="users" element={<AdminUsers />} />
-                    <Route path="payments" element={<AdminPayments />} />
-                    <Route path="uploads" element={<AdminUploads />} />
-                    <Route path="settings" element={<AdminSettings />} />
-                  </Route>
-                </Route>
+        <AuthProvider>
+          <SocketProvider>
+            <CartProvider>
+              <BrowserRouter>
+                <CartSheet />
 
-                {/* Protected pages with Public Layout */}
-                <Route element={<ProtectedRoute />}>
-                  <Route element={<PublicLayout />}>
-                    <Route path="/tma-files" element={<TMAFiles />} />
-                    <Route path="/project-files" element={<ProjectFiles />} />
-                  </Route>
-                </Route>
+                <Suspense
+                  fallback={
+                    <div className="min-h-screen flex items-center justify-center">
+                      Loading...
+                    </div>
+                  }
+                >
+                  <Routes>
+                    {/* ---------- Public Routes ---------- */}
+                    <Route path="/" element={<Index />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route
+                      path="/reset-password/:resetToken"
+                      element={<ResetPassword />}
+                    />
 
-                {/* Catch-all */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </CartProvider>
-        </SocketProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider >
-);
+                    {/* ---------- Protected User Dashboard ---------- */}
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/dashboard" element={<DashboardLayout />}>
+                        <Route index element={<Navigate to="tma" replace />} />
+                        <Route path="tma" element={<TMAFiles />} />
+                        <Route path="projects" element={<ProjectFiles />} />
+                        <Route path="orders" element={<Orders />} />
+                        <Route path="downloads" element={<Downloads />} />
+                        <Route path="profile" element={<Profile />} />
+                      </Route>
+                    </Route>
+
+                    {/* ---------- Admin Dashboard ---------- */}
+                    <Route element={<AdminRoute />}>
+                      <Route path="/admin" element={<AdminLayout />}>
+                        <Route index element={<AdminOverview />} />
+                        <Route path="products" element={<AdminProducts />} />
+                        <Route path="orders" element={<AdminOrders />} />
+                        <Route path="users" element={<AdminUsers />} />
+                        <Route path="payments" element={<AdminPayments />} />
+                        <Route path="uploads" element={<AdminUploads />} />
+                        <Route path="settings" element={<AdminSettings />} />
+                      </Route>
+                    </Route>
+
+                    {/* ---------- Protected Public Layout Pages ---------- */}
+                    <Route element={<ProtectedRoute />}>
+                      <Route element={<PublicLayout />}>
+                        <Route path="/tma-files" element={<TMAFiles />} />
+                        <Route path="/project-files" element={<ProjectFiles />} />
+                      </Route>
+                    </Route>
+
+                    {/* ---------- 404 ---------- */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </CartProvider>
+          </SocketProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
