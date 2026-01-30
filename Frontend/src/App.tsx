@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useRef } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -77,8 +78,12 @@ const App = () => {
   const queryClientRef = useRef(new QueryClient());
 
   return (
+    <HelmetProvider>
     <QueryClientProvider client={queryClientRef.current}>
       <TooltipProvider>
+        <Helmet>
+            <title>Kriscap Education | NIOS Study Hub</title>
+        </Helmet>
         <Toaster />
         <Sonner />
 
@@ -149,6 +154,7 @@ const App = () => {
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 
