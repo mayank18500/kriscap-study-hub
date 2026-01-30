@@ -208,7 +208,7 @@ const Profile = () => {
                 disabled={isLoading}
                 className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-full transition-all"
               >
-                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Authorize Update"}
+                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Update Info"}
               </Button>
             </div>
           </motion.div>
