@@ -3,6 +3,7 @@ import Hero from "@/components/landing/Hero";
 import Categories from "@/components/landing/Categories";
 import HowItWorks from "@/components/landing/HowItWorks";
 import WhyUs from "@/components/landing/WhyUs";
+import CommentsSection from "@/components/landing/CommentsSection";
 import Footer from "@/components/landing/Footer";
 
 const Index = () => {
@@ -14,6 +15,7 @@ const Index = () => {
         <Categories />
         <HowItWorks />
         <WhyUs />
+        <CommentsSection />
       </main>
       <Footer />
     </div>

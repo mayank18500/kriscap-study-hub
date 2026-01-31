@@ -32,6 +32,7 @@ const paymentRoutes = require("./routes/payment");
 const userRoutes = require("./routes/user");
 const notificationRoutes = require("./routes/notification");
 const adminRoutes = require("./routes/admin");
+const commentRoutes = require("./routes/comment");
 
 app.use("/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -40,6 +41,7 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/comments", commentRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

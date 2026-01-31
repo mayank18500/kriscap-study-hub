@@ -11,6 +11,7 @@ import {
   GraduationCap,
   X,
   Settings,
+  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -28,6 +29,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
     { icon: ShoppingBag, name: "Orders", href: "/admin/orders" },
     { icon: Users, name: "Users", href: "/admin/users" },
     { icon: Upload, name: "Upload Files", href: "/admin/uploads" },
+    { icon: MessageSquare, name: "Comments", href: "/admin/comments" },
     { icon: CreditCard, name: "Payments", href: "/admin/payments" },
     { icon: Settings, name: "Settings", href: "/admin/settings" },
   ];

@@ -7,7 +7,7 @@ const {
     forgotPassword,
     resetPassword
 } = require("../controllers/auth");
-const verifyToken = require("../middleware/auth");
+const { protect: verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 

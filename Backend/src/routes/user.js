@@ -1,6 +1,6 @@
 const express = require("express");
 const { getDashboardStats, saveAddress, getDownloads, updateProfile } = require("../controllers/user");
-const verifyToken = require("../middleware/auth");
+const { protect: verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 

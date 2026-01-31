@@ -1,6 +1,6 @@
 const express = require("express");
 const { createOrder, verifyPayment, getMyOrders, getInvoice } = require("../controllers/order");
-const verifyToken = require("../middleware/auth");
+const { protect: verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 

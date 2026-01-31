@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/env");
+const User = require("../models/User");
 
-const verifyToken = async (req, res, next) => {
+const protect = async (req, res, next) => {
     let token = req.cookies.token;
 
     if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
@@ -22,4 +23,17 @@ const verifyToken = async (req, res, next) => {
     }
 };
 
-module.exports = verifyToken;
+const admin = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (user && user.role === "admin") {
+            next();
+        } else {
+            res.status(403).json({ message: "Not authorized as admin" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Server error checking admin status" });
+    }
+};
+
+module.exports = { protect, admin };
