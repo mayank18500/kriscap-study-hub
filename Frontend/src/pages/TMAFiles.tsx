@@ -228,13 +228,21 @@ const TMAFiles = () => {
                       {file.medium} Medium Section
                     </p>
                     {file.category && (
-                      <div className="mt-2">
+                      <div className="mt-2 flex gap-2">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${file.category === 'HANDWRITTEN'
-                            ? 'bg-purple-100 text-purple-700 border border-purple-200'
-                            : 'bg-blue-100 text-blue-700 border border-blue-200'
+                          ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                          : 'bg-blue-100 text-blue-700 border border-blue-200'
                           }`}>
                           {file.category} Format
                         </span>
+                        {file.copyrightStatus && (
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${file.copyrightStatus === 'NON_COPYRIGHT'
+                            ? 'bg-green-100 text-green-700 border border-green-200'
+                            : 'bg-red-100 text-red-700 border border-red-200'
+                            }`}>
+                            {file.copyrightStatus === 'NON_COPYRIGHT' ? 'No Copyright' : 'Copyright'}
+                          </span>
+                        )}
                       </div>
                     )}
                     <div className="mt-4 flex items-center gap-1">
@@ -247,11 +255,16 @@ const TMAFiles = () => {
 
                   {/* Price & Action Ledger */}
                   <div className="flex items-center justify-between pt-6 border-t border-slate-50">
-                    <div>
+                    <div className="flex flex-col">
                       <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Enrollment Fee</span>
-                      <div className="text-2xl font-serif font-bold text-slate-900">
-                        ₹{file.price}
-                      </div>
+                      {file.offerPrice && file.offerPrice > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl font-bold text-slate-900">₹{file.offerPrice}</span>
+                          <span className="text-xs text-slate-500 line-through">₹{file.price}</span>
+                        </div>
+                      ) : (
+                        <span className="text-xl font-bold text-slate-900">₹{file.price}</span>
+                      )}
                     </div>
                     <div className="flex gap-2">
                       <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:text-slate-900 hover:border-slate-900 transition-all" onClick={() => {
@@ -260,12 +273,17 @@ const TMAFiles = () => {
                       }}>
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button onClick={() => handleBuy(file)} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-6 font-bold shadow-lg transition-all active:scale-95">
+                      <Button onClick={() => handleBuy(file)} disabled={file.stock < 1} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-6 font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                         <ShoppingCart className="w-4 h-4 mr-2" />
-                        Enroll
+                        {file.stock > 0 ? "Enroll" : "Out of Stock"}
                       </Button>
                     </div>
                   </div>
+                  {file.stock !== undefined && (
+                    <div className="mt-2 text-[10px] font-bold text-right text-slate-400 uppercase tracking-widest">
+                      {file.stock > 0 ? `Only ${file.stock} Left` : "Currently Unavailable"}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -273,13 +291,15 @@ const TMAFiles = () => {
         </AnimatePresence>
       </div>
 
-      {filteredFiles.length === 0 && (
-        <div className="text-center py-20 bg-white border border-dashed border-slate-200 rounded-[3rem]">
-          <GraduationCap className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-          <h3 className="font-serif text-2xl font-bold text-slate-400">Subject Not Found</h3>
-          <p className="text-slate-400 italic">Adjust your filters to browse our academic archives.</p>
-        </div>
-      )}
+      {
+        filteredFiles.length === 0 && (
+          <div className="text-center py-20 bg-white border border-dashed border-slate-200 rounded-[3rem]">
+            <GraduationCap className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+            <h3 className="font-serif text-2xl font-bold text-slate-400">Subject Not Found</h3>
+            <p className="text-slate-400 italic">Adjust your filters to browse our academic archives.</p>
+          </div>
+        )
+      }
 
       {/* Product Details Dialog */}
       <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
@@ -312,7 +332,21 @@ const TMAFiles = () => {
                   </div>
                   <div className="p-3 bg-slate-50 rounded-xl">
                     <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Price</span>
-                    <span className="font-bold text-slate-700">₹{selectedProduct.price}</span>
+                    <div className="flex items-center gap-2 mb-4">
+                      {selectedProduct?.offerPrice && selectedProduct.offerPrice > 0 ? (
+                        <div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-3xl font-bold text-slate-900">₹{selectedProduct.offerPrice}</span>
+                            <span className="text-xl text-slate-500 line-through">₹{selectedProduct.price}</span>
+                          </div>
+                          <span className="inline-block mt-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                            {Math.round(((selectedProduct.price - selectedProduct.offerPrice) / selectedProduct.price) * 100)}% DISCOUNT
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-3xl font-bold text-slate-900">₹{selectedProduct?.price}</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </>
@@ -322,7 +356,7 @@ const TMAFiles = () => {
             <Button onClick={() => {
               setIsViewDialogOpen(false);
               handleBuy(selectedProduct!);
-            }} className="w-full bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800">
+            }} className="w-full bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed" disabled={selectedProduct ? selectedProduct.stock < 1 : true}>
               Enroll Now
             </Button>
           </DialogFooter>
@@ -370,7 +404,7 @@ const TMAFiles = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   );
 };
 

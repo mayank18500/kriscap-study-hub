@@ -11,4 +11,7 @@ export interface Product {
     rating?: number;
     reviews?: number;
     category?: 'TEXT' | 'HANDWRITTEN';
+    copyrightStatus?: 'COPYRIGHT' | 'NON_COPYRIGHT';
+    stock: number;
+    offerPrice?: number;
 }

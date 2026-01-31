@@ -42,7 +42,7 @@ const config = {
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS
         ? process.env.ALLOWED_ORIGINS.split(",")
-        : ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080"],
+        : (process.env.NODE_ENV === "production" ? [] : ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080"]),
     NODE_ENV: process.env.NODE_ENV || "development",
     EMAIL_USER: process.env.EMAIL_USER,
     EMAIL_USER: process.env.EMAIL_USER,

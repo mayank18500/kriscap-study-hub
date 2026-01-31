@@ -51,7 +51,10 @@ const AdminProducts = () => {
     previewUrl: "",
     description: "",
     price: "",
-    category: "TEXT"
+    offerPrice: "",
+    stock: "0",
+    category: "TEXT",
+    copyrightStatus: "NON_COPYRIGHT"
   });
 
 
@@ -95,7 +98,7 @@ const AdminProducts = () => {
   });
 
   const resetForm = () => {
-    setNewProduct({ name: "", type: "TMA", class: "12", medium: "English", price: "", fileUrl: "", previewUrl: "", description: "", category: "TEXT" });
+    setNewProduct({ name: "", type: "TMA", class: "12", medium: "English", price: "", offerPrice: "", fileUrl: "", previewUrl: "", description: "", category: "TEXT", copyrightStatus: "NON_COPYRIGHT", stock: "0" });
     setIsEditMode(false);
     setEditProductId(null);
   };
@@ -128,13 +131,17 @@ const AdminProducts = () => {
         id: editProductId,
         productData: {
           ...newProduct,
-          price: Number(newProduct.price)
+          price: Number(newProduct.price),
+          offerPrice: newProduct.offerPrice ? Number(newProduct.offerPrice) : 0,
+          stock: Number(newProduct.stock)
         }
       });
     } else {
       createProductMutation.mutate({
         ...newProduct,
-        price: Number(newProduct.price)
+        price: Number(newProduct.price),
+        offerPrice: newProduct.offerPrice ? Number(newProduct.offerPrice) : 0,
+        stock: Number(newProduct.stock)
       });
     }
   };
@@ -144,12 +151,15 @@ const AdminProducts = () => {
       name: product.name,
       type: product.type,
       class: product.class,
-      medium: product.medium,
-      price: product.price,
+      medium: product.medium || "English",
+      price: product.price?.toString() || "",
+      offerPrice: product.offerPrice?.toString() || "",
       fileUrl: product.fileUrl || "",
       previewUrl: product.previewUrl || "",
       description: product.description || "",
-      category: product.category || "TEXT"
+      category: product.category || "TEXT",
+      copyrightStatus: product.copyrightStatus || "NON_COPYRIGHT",
+      stock: product.stock?.toString() || "0"
     });
     setEditProductId(product.id);
     setIsEditMode(true);
@@ -234,17 +244,31 @@ const AdminProducts = () => {
               </div>
 
               {newProduct.type === "TMA" && (
-                <div className="space-y-2">
-                  <Label>Category</Label>
-                  <Select value={newProduct.category} onValueChange={(v) => setNewProduct({ ...newProduct, category: v })}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="TEXT">Text</SelectItem>
-                      <SelectItem value="HANDWRITTEN">Handwritten</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Category</Label>
+                    <Select value={newProduct.category} onValueChange={(v) => setNewProduct({ ...newProduct, category: v })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="TEXT">Text</SelectItem>
+                        <SelectItem value="HANDWRITTEN">Handwritten</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Copyright Status</Label>
+                    <Select value={newProduct.copyrightStatus} onValueChange={(v) => setNewProduct({ ...newProduct, copyrightStatus: v })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NON_COPYRIGHT">Non-Copyright</SelectItem>
+                        <SelectItem value="COPYRIGHT">Copyright</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               )}
 
@@ -268,6 +292,24 @@ const AdminProducts = () => {
                     placeholder="199"
                     value={newProduct.price}
                     onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Offer Price (Optional)</Label>
+                  <Input
+                    type="number"
+                    placeholder="149"
+                    value={newProduct.offerPrice}
+                    onChange={(e) => setNewProduct({ ...newProduct, offerPrice: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Stock</Label>
+                  <Input
+                    type="number"
+                    placeholder="100"
+                    value={newProduct.stock}
+                    onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
                   />
                 </div>
               </div>
@@ -377,6 +419,7 @@ const AdminProducts = () => {
                   <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Type</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Class</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Price</th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Stock</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Sales</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Status</th>
                   <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">Actions</th>
@@ -411,7 +454,17 @@ const AdminProducts = () => {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-muted-foreground">Class {product.class}</td>
-                    <td className="py-3 px-4 font-medium text-foreground">₹{product.price}</td>
+                    <td className="py-3 px-4 font-medium text-foreground">
+                      {product.offerPrice && product.offerPrice > 0 ? (
+                        <div className="flex flex-col">
+                          <span className="text-red-500 font-bold">₹{product.offerPrice}</span>
+                          <span className="text-xs text-muted-foreground line-through">₹{product.price}</span>
+                        </div>
+                      ) : (
+                        `₹${product.price}`
+                      )}
+                    </td>
+                    <td className="py-3 px-4 font-medium text-foreground">{product.stock ?? 0}</td>
                     <td className="py-3 px-4 text-muted-foreground">{product.sales}</td>
                     <td className="py-3 px-4">
                       <button className="flex items-center gap-1" onClick={() => toggleStatusMutation.mutate(product.id)}>

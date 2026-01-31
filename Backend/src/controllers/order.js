@@ -48,14 +48,24 @@ exports.createOrder = async (req, res) => {
             const dbProduct = dbProducts.find(p => p._id.toString() === item.product);
             if (!dbProduct) continue; // Should be caught above but safe check
 
-            totalAmount += dbProduct.price * (item.quantity || 1);
+            const effectivePrice = (dbProduct.offerPrice && dbProduct.offerPrice > 0) ? dbProduct.offerPrice : dbProduct.price;
+
+            totalAmount += effectivePrice * (item.quantity || 1);
             orderProducts.push({
                 product: dbProduct._id,
-                priceAtPurchase: dbProduct.price
+                priceAtPurchase: effectivePrice
             });
 
             if (dbProduct.type === "PROJECT") {
                 requiresShipping = true;
+            }
+
+            // Check Stock
+            if (dbProduct.stock < (item.quantity || 1)) {
+                return res.status(400).json({
+                    message: `Out of stock: ${dbProduct.name}`,
+                    code: "OUT_OF_STOCK"
+                });
             }
         }
 
@@ -176,6 +186,11 @@ exports.verifyPayment = async (req, res) => {
             }
 
             await order.save();
+
+            // Deduct Stock
+            for (const item of order.products) {
+                await Product.findByIdAndUpdate(item.product, { $inc: { stock: -1 } });
+            }
 
             // Emit global/user socket event
             if (io) {

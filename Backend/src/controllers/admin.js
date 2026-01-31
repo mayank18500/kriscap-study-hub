@@ -74,7 +74,11 @@ exports.getAdminProducts = async (req, res) => {
             price: p.price,
             active: p.active,
             description: p.description,
+            description: p.description,
             category: p.category,
+            copyrightStatus: p.copyrightStatus,
+            stock: p.stock,
+            offerPrice: p.offerPrice,
             sales: 0 // We would need to count this from orders ideally
         }));
 
@@ -86,7 +90,7 @@ exports.getAdminProducts = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     try {
-        const { name, description, type, class: grade, medium, price, category } = req.body;
+        const { name, description, type, class: grade, medium, price, offerPrice, category, copyrightStatus, stock } = req.body;
         console.log("Create Product Request Body:", req.body); // Debug log
         // File handling would go here (e.g. S3 upload), for now assuming just data or fileUrl passed
 
@@ -97,10 +101,13 @@ exports.createProduct = async (req, res) => {
             class: grade,
             medium,
             price,
+            offerPrice: offerPrice || 0,
+            stock: stock || 0,
             active: true,
             fileUrl: req.body.fileUrl || "",
             previewUrl: req.body.previewUrl || "",
-            category: type === "TMA" ? category : undefined
+            category: type === "TMA" ? category : undefined,
+            copyrightStatus: type === "TMA" ? copyrightStatus : undefined
         });
 
         res.status(201).json(product);
@@ -112,7 +119,7 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, type, class: grade, medium, price, fileUrl, previewUrl, category } = req.body;
+        const { name, description, type, class: grade, medium, price, offerPrice, fileUrl, previewUrl, category, copyrightStatus, stock } = req.body;
 
         const product = await Product.findByIdAndUpdate(
             id,
@@ -123,9 +130,12 @@ exports.updateProduct = async (req, res) => {
                 class: grade,
                 medium,
                 price,
+                offerPrice,
+                stock,
                 fileUrl,
                 previewUrl,
-                category: type === "TMA" ? category : undefined
+                category: type === "TMA" ? category : undefined,
+                copyrightStatus: type === "TMA" ? copyrightStatus : undefined
             },
             { new: true }
         );
