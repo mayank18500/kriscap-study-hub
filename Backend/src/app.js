@@ -42,6 +42,8 @@ app.use("/api/user", userRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/comments", commentRoutes);
+const wishlistRoutes = require("./routes/wishlist");
+app.use("/api/wishlist", wishlistRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

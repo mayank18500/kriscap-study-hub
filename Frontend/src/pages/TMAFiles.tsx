@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, FileText, Eye, ShoppingCart, Star, Loader2, BookOpen, GraduationCap, CheckCircle, ShieldCheck } from "lucide-react";
+import { Search, Filter, FileText, Eye, ShoppingCart, Star, Loader2, BookOpen, GraduationCap, CheckCircle, ShieldCheck, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { Product } from "@/types/product";
 import { loadRazorpayScript } from "@/lib/razorpay";
@@ -42,6 +42,19 @@ const TMAFiles = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const addToWishlistMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      await api.post("/api/wishlist", { productId });
+    },
+    onSuccess: () => {
+      toast({ title: "Added to wishlist", description: "Product saved to your wishlist." });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "Error", description: "Failed to add to wishlist." });
+    },
+  });
 
   const { data: products, isLoading, isError } = useQuery({
     queryKey: ["products", "TMA"],
@@ -193,7 +206,7 @@ const TMAFiles = () => {
       </div>
 
       {/* Archive Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-8">
         <AnimatePresence>
           {filteredFiles.map((file, index) => (
             <motion.div
@@ -204,78 +217,92 @@ const TMAFiles = () => {
               transition={{ delay: index * 0.05 }}
               className="group"
             >
-              <Card className="h-full bg-white border-slate-100 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] hover:-translate-y-2">
-                <CardContent className="p-8">
+              <Card
+                className="group relative h-full bg-white border-slate-100 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] hover:-translate-y-2 cursor-pointer"
+                onClick={() => {
+                  setSelectedProduct(file);
+                  setIsViewDialogOpen(true);
+                }}
+              >
+                {/* Absolute Wishlist Button */}
+                <button
+                  className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-slate-100 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToWishlistMutation.mutate(file._id);
+                  }}
+                >
+                  <Heart className="w-4 h-4" />
+                </button>
+
+                <CardContent className="p-4 sm:p-8">
                   {/* Subject Badge & Class */}
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-[#fdfcf8] border border-slate-100 flex items-center justify-center group-hover:scale-110 group-hover:bg-amber-50 group-hover:border-amber-200 transition-all duration-500">
-                      <FileText className="w-7 h-7 text-slate-900 group-hover:text-amber-600" />
+                  <div className="flex items-start justify-between mb-4 sm:mb-8">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-[#fdfcf8] border border-slate-100 flex items-center justify-center group-hover:scale-110 group-hover:bg-amber-50 group-hover:border-amber-200 transition-all duration-500">
+                      <FileText className="w-5 h-5 sm:w-7 sm:h-7 text-slate-900 group-hover:text-amber-600" />
                     </div>
-                    <div className="text-right">
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Grade Level</span>
-                      <span className="px-3 py-1 rounded-full bg-slate-900 text-white text-[10px] font-bold tracking-tighter">
+                    <div className="text-right mr-8 sm:mr-0">
+                      <span className="hidden sm:block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Grade Level</span>
+                      <span className="px-2 py-1 sm:px-3 sm:py-1 rounded-full bg-slate-900 text-white text-[8px] sm:text-[10px] font-bold tracking-tighter">
                         Class {file.class}
                       </span>
                     </div>
                   </div>
 
                   {/* Subject Details */}
-                  <div className="mb-8 min-h-[100px]">
-                    <h3 className="font-serif text-2xl font-bold text-slate-900 mb-2 group-hover:text-amber-700 transition-colors">
+                  <div className="mb-4 sm:mb-8 min-h-[80px] sm:min-h-[100px]">
+                    <h3 className="font-serif text-base sm:text-2xl font-bold text-slate-900 mb-1 sm:mb-2 group-hover:text-amber-700 transition-colors line-clamp-2">
                       {file.name}
                     </h3>
-                    <p className="text-slate-500 text-sm italic">
-                      {file.medium} Medium Section
+                    <p className="text-slate-500 text-[10px] sm:text-sm italic">
+                      {file.medium} Medium
                     </p>
                     {file.category && (
-                      <div className="mt-2 flex gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${file.category === 'HANDWRITTEN'
+                      <div className="mt-2 flex flex-wrap gap-1 sm:gap-2">
+                        <span className={`px-1.5 py-0.5 rounded text-[8px] sm:text-[10px] font-bold uppercase tracking-wider ${file.category === 'HANDWRITTEN'
                           ? 'bg-purple-100 text-purple-700 border border-purple-200'
                           : 'bg-blue-100 text-blue-700 border border-blue-200'
                           }`}>
-                          {file.category} Format
+                          {file.category}
                         </span>
                         {file.copyrightStatus && (
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${file.copyrightStatus === 'NON_COPYRIGHT'
+                          <span className={`px-1.5 py-0.5 rounded text-[8px] sm:text-[10px] font-bold uppercase tracking-wider ${file.copyrightStatus === 'NON_COPYRIGHT'
                             ? 'bg-green-100 text-green-700 border border-green-200'
                             : 'bg-red-100 text-red-700 border border-red-200'
                             }`}>
-                            {file.copyrightStatus === 'NON_COPYRIGHT' ? 'No Copyright' : 'Copyright'}
+                            {file.copyrightStatus === 'NON_COPYRIGHT' ? 'No Copy' : 'Copyright'}
                           </span>
                         )}
                       </div>
                     )}
-                    <div className="mt-4 flex items-center gap-1">
+                    <div className="mt-4 flex items-center gap-1 hidden sm:flex">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className={`w-3.5 h-3.5 ${i < (file.rating || 4) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
                       ))}
-                      <span className="ml-2 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Verified Solutions</span>
+                      <span className="ml-2 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Verified</span>
                     </div>
                   </div>
 
                   {/* Price & Action Ledger */}
-                  <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                  <div className="flex items-center justify-between pt-4 sm:pt-6 border-t border-slate-50">
                     <div className="flex flex-col">
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Enrollment Fee</span>
+                      <span className="hidden sm:block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Enrollment Fee</span>
                       {file.offerPrice && file.offerPrice > 0 ? (
                         <div className="flex items-center gap-2">
-                          <span className="text-xl font-bold text-slate-900">₹{file.offerPrice}</span>
-                          <span className="text-xs text-slate-500 line-through">₹{file.price}</span>
+                          <span className="text-lg sm:text-xl font-bold text-slate-900">₹{file.offerPrice}</span>
+                          <span className="text-[10px] sm:text-xs text-slate-500 line-through">₹{file.price}</span>
                         </div>
                       ) : (
-                        <span className="text-xl font-bold text-slate-900">₹{file.price}</span>
+                        <span className="text-lg sm:text-xl font-bold text-slate-900">₹{file.price}</span>
                       )}
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:text-slate-900 hover:border-slate-900 transition-all" onClick={() => {
-                        setSelectedProduct(file);
-                        setIsViewDialogOpen(true);
-                      }}>
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button onClick={() => handleBuy(file)} disabled={file.stock < 1} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-6 font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <ShoppingCart className="w-4 h-4 mr-2" />
-                        {file.stock > 0 ? "Enroll" : "Out of Stock"}
+                    <div>
+                      <Button onClick={(e) => {
+                        e.stopPropagation();
+                        handleBuy(file);
+                      }} disabled={file.stock < 1} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white w-10 h-10 p-0 sm:w-auto sm:px-6 sm:py-2 font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+                        <ShoppingCart className="w-4 h-4 sm:mr-2" />
+                        <span className="hidden sm:inline">{file.stock > 0 ? "Enroll" : "Void"}</span>
                       </Button>
                     </div>
                   </div>

@@ -19,6 +19,7 @@ const UserSchema = new Schema(
         ],
         resetPasswordToken: String,
         resetPasswordExpire: Date,
+        wishlist: [{ type: Schema.Types.ObjectId, ref: "Product" }],
     },
     { timestamps: true }
 );

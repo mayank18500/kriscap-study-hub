@@ -95,6 +95,9 @@ exports.createProduct = async (req, res) => {
         console.log("Create Product Request Body:", req.body); // Debug log
         // File handling would go here (e.g. S3 upload), for now assuming just data or fileUrl passed
 
+        // Generate random rating between 4.5 and 4.9
+        const randomRating = (Math.random() * (4.9 - 4.5) + 4.5).toFixed(1);
+
         const product = await Product.create({
             name,
             description,
@@ -105,6 +108,7 @@ exports.createProduct = async (req, res) => {
             offerPrice: offerPrice || 0,
             stock: stock || 0,
             active: true,
+            rating: Number(randomRating),
             fileUrl: req.body.fileUrl || "",
             previewUrl: req.body.previewUrl || "",
             category: type === "TMA" ? category : undefined,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Package, Eye, ShoppingCart, Star, Truck, Loader2, MapPin, GraduationCap, ShieldCheck, Box } from "lucide-react";
+import { Search, Package, Eye, ShoppingCart, Star, Truck, Loader2, MapPin, GraduationCap, ShieldCheck, Box, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,7 +19,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 import api from "@/lib/api";
 import { Product } from "@/types/product";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -27,6 +28,20 @@ import { useCart } from "@/contexts/CartContext";
 
 const ProjectFiles = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const addToWishlistMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      await api.post("/api/wishlist", { productId });
+    },
+    onSuccess: () => {
+      toast({ title: "Added to wishlist", description: "Product saved to your wishlist." });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "Error", description: "Failed to add to wishlist." });
+    },
+  });
   const debouncedSearch = useDebounce(searchQuery, 300);
   const [selectedClass, setSelectedClass] = useState("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -79,34 +94,32 @@ const ProjectFiles = () => {
       </div>
 
       {/* Search & Filter Ledger */}
-      <Card className="bg-white border-slate-100 rounded-2xl shadow-sm overflow-hidden">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder="Search subject project files..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 bg-[#fdfcf8] border-none rounded-xl focus:ring-amber-500/20"
-              />
-            </div>
-            <Select value={selectedClass} onValueChange={setSelectedClass}>
-              <SelectTrigger className="w-full sm:w-48 h-12 rounded-xl border-slate-200 font-bold text-slate-600">
-                <SelectValue placeholder="Grade Level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Grades</SelectItem>
-                <SelectItem value="10">Class 10</SelectItem>
-                <SelectItem value="12">Class 12</SelectItem>
-              </SelectContent>
-            </Select>
+      <div className="sticky top-20 z-30 bg-[#fdfcf8]/80 backdrop-blur-md py-4 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              placeholder="Search subject project files..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-12 bg-white border-slate-200 rounded-xl font-medium focus:ring-amber-500/20"
+            />
           </div>
-        </CardContent>
-      </Card>
+          <Select value={selectedClass} onValueChange={setSelectedClass}>
+            <SelectTrigger className="w-full sm:w-48 h-12 rounded-xl border-slate-200 font-bold text-slate-600 bg-white">
+              <SelectValue placeholder="Grade Level" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Grades</SelectItem>
+              <SelectItem value="10">Class 10</SelectItem>
+              <SelectItem value="12">Class 12</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {/* Project Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
         <AnimatePresence>
           {filteredFiles.map((file, index) => (
             <motion.div
@@ -116,43 +129,59 @@ const ProjectFiles = () => {
               transition={{ delay: index * 0.05 }}
               className="group"
             >
-              <Card className="h-full bg-white border-slate-100 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2">
-                <CardContent className="p-8">
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center group-hover:bg-amber-500 group-hover:rotate-6 transition-all duration-500">
-                      <Package className="w-7 h-7 text-amber-400 group-hover:text-slate-900" />
+              <Card
+                className="group relative h-full bg-white border-slate-100 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
+                onClick={() => {
+                  setSelectedProduct(file);
+                  setIsViewDialogOpen(true);
+                }}
+              >
+                {/* Absolute Wishlist Button */}
+                <button
+                  className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-slate-100 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToWishlistMutation.mutate(file._id);
+                  }}
+                >
+                  <Heart className="w-4 h-4" />
+                </button>
+
+                <CardContent className="p-4 sm:p-8">
+                  <div className="flex items-start justify-between mb-4 sm:mb-8">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 flex items-center justify-center group-hover:bg-amber-500 group-hover:rotate-6 transition-all duration-500">
+                      <Package className="w-5 h-5 sm:w-7 sm:h-7 text-amber-400 group-hover:text-slate-900" />
                     </div>
-                    <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold tracking-widest uppercase">
+                    <span className="px-2 py-1 sm:px-3 sm:py-1 rounded-full bg-slate-100 text-slate-500 text-[8px] sm:text-[10px] font-bold tracking-widest uppercase self-start mr-8 sm:mr-0">
                       Class {file.class}
                     </span>
                   </div>
 
-                  <div className="mb-8 min-h-[90px]">
-                    <h3 className="font-serif text-2xl font-bold text-slate-900 mb-2 group-hover:text-amber-700 transition-colors">
+                  <div className="mb-4 sm:mb-8 min-h-[60px] sm:min-h-[90px]">
+                    <h3 className="font-serif text-base sm:text-2xl font-bold text-slate-900 mb-1 sm:mb-2 group-hover:text-amber-700 transition-colors line-clamp-2">
                       {file.name}
                     </h3>
-                    <div className="flex items-center gap-3 text-slate-500 text-xs italic">
-                      <Truck className="w-3.5 h-3.5" /> Direct Home Delivery
+                    <div className="flex items-center gap-2 sm:gap-3 text-slate-500 text-[10px] sm:text-xs italic">
+                      <Truck className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                      <span className="hidden sm:inline">Direct Home Delivery</span>
+                      <span className="sm:hidden">Home Delivery</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                  <div className="flex items-center justify-between pt-4 sm:pt-6 border-t border-slate-50">
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Fee & Shipping</span>
-                      <div className="text-2xl font-serif font-bold text-slate-900">
+                      <span className="hidden sm:block text-[10px] font-bold text-slate-400 uppercase mb-1">Fee & Shipping</span>
+                      <div className="text-lg sm:text-2xl font-serif font-bold text-slate-900">
                         ₹{file.price}
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:border-slate-900 hover:text-slate-900 transition-all" onClick={() => {
-                        setSelectedProduct(file);
-                        setIsViewDialogOpen(true);
-                      }}>
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button onClick={() => addToCart(file)} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-6 font-bold shadow-lg transition-all active:scale-95">
-                        <ShoppingCart className="w-4 h-4 mr-2" />
-                        Add to Cart
+                    <div>
+                      <Button onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(file);
+                      }} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white w-10 h-10 p-0 sm:w-auto sm:px-6 sm:py-2 font-bold shadow-lg transition-all active:scale-95 flex items-center justify-center">
+                        <ShoppingCart className="w-4 h-4 sm:mr-2" />
+                        <span className="hidden sm:inline">Add to Cart</span>
                       </Button>
                     </div>
                   </div>

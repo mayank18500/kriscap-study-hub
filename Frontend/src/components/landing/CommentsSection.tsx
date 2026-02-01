@@ -149,7 +149,7 @@ const CommentsSection = () => {
                                                 <p className="text-slate-600 leading-relaxed">{comment.text}</p>
                                             </div>
                                         </div>
-                                        {user?.role === 'admin' && (
+                                        {(user?.role === 'admin' || user?._id === comment.user._id) && (
                                             <Button
                                                 variant="ghost"
                                                 size="icon"

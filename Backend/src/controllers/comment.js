@@ -39,9 +39,22 @@ exports.deleteComment = async (req, res) => {
             return res.status(404).json({ message: "Comment not found" });
         }
 
-        // Admin check is done in middleware, safely delete
-        await comment.deleteOne();
-        res.json({ message: "Comment deleted" });
+        // Check if user is owner
+        if (comment.user.toString() === req.userId) {
+            await comment.deleteOne();
+            return res.json({ message: "Comment deleted" });
+        }
+
+        // Check if user is admin
+        const User = require("../models/User");
+        const user = await User.findById(req.userId);
+
+        if (user && user.role === "admin") {
+            await comment.deleteOne();
+            return res.json({ message: "Comment deleted" });
+        }
+
+        return res.status(403).json({ message: "Not authorized to delete this comment" });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }

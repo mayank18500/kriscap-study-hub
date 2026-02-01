@@ -5,6 +5,6 @@ const { protect, admin } = require("../middleware/auth");
 
 router.get("/", commentController.getComments);
 router.post("/", protect, commentController.createComment);
-router.delete("/:id", protect, admin, commentController.deleteComment);
+router.delete("/:id", protect, commentController.deleteComment);
 
 module.exports = router;

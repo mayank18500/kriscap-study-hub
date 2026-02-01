@@ -11,7 +11,7 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative min-h-[80vh] lg:min-h-screen flex items-center bg-[#fdfcf8] overflow-hidden pt-16 lg:pt-20">
+    <section className="relative min-h-screen flex items-center bg-[#fdfcf8] overflow-hidden pt-16 lg:pt-20">
       {/* Classical Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-amber-100/40 rounded-full blur-3xl" />
@@ -27,7 +27,7 @@ const Hero = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-            className="relative flex justify-center items-center order-first lg:order-last"
+            className="relative flex flex-col justify-center items-center order-first lg:order-last"
           >
             {/* Decorative Golden Ring */}
             <div className="absolute inset-0 border-[1px] border-amber-200 rounded-full scale-90 animate-[spin_20s_linear_infinite] opacity-50" />
@@ -58,6 +58,21 @@ const Hero = () => {
                 </motion.div>
               </div>
             </div>
+
+            {/* Trust Badges - Moved below photo */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6 flex flex-wrap justify-center gap-2 w-full max-w-lg mx-auto"
+            >
+              {trustBadges.map((badge, index) => (
+                <div key={index} className="flex items-center gap-1.5 text-slate-700 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                  <badge.icon className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="text-[9px] sm:text-[10px] font-bold tracking-wide uppercase">{badge.text}</span>
+                </div>
+              ))}
+            </motion.div>
           </motion.div>
 
           {/* Left Content: Typography Focused */}
@@ -83,7 +98,7 @@ const Hero = () => {
             </h1>
 
             <p className="text-slate-600 text-base md:text-xl mb-6 lg:mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Premium TMA solutions and professionally crafted Project Files. Designed by experts to help NIOS students achieve top marks with confidence.
+              Unlock your full potential with our premium TMA solutions and professionally crafted Project Files. Meticulously designed by academic experts, our resources are tailored to help NIOS students streamline their studies, submit with confidence, and achieve top-tier marks effortlessly.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 lg:gap-5 justify-center lg:justify-start mb-10 lg:mb-12">
@@ -101,22 +116,7 @@ const Hero = () => {
               </Link>
             </div>
 
-            {/* Trust Badges - Minimalist */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-4 md:gap-8 border-t border-slate-200 pt-8"
-            >
-              {trustBadges.map((badge, index) => (
-                <div key={index} className="flex items-center gap-2.5 text-slate-500">
-                  <div className="p-1.5 rounded-full bg-amber-50">
-                    <badge.icon className="w-4 h-4 text-amber-600" />
-                  </div>
-                  <span className="text-[10px] md:text-sm font-semibold tracking-tight uppercase">{badge.text}</span>
-                </div>
-              ))}
-            </motion.div>
+
           </motion.div>
 
         </div>
