@@ -49,10 +49,24 @@ const TMAFiles = () => {
       await api.post("/api/wishlist", { productId });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
       toast({ title: "Added to wishlist", description: "Product saved to your wishlist." });
     },
     onError: () => {
       toast({ variant: "destructive", title: "Error", description: "Failed to add to wishlist." });
+    },
+  });
+
+  const removeFromWishlistMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      await api.delete(`/api/wishlist/${productId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      toast({ title: "Removed from wishlist", description: "Product removed from your wishlist." });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "Error", description: "Failed to remove from wishlist." });
     },
   });
 
@@ -65,6 +79,16 @@ const TMAFiles = () => {
       return response.data;
     },
   });
+
+  const { data: wishlistItems } = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: async () => {
+      const res = await api.get<Product[]>("/api/wishlist");
+      return res.data;
+    },
+  });
+
+  const isInWishlist = (productId: string) => wishlistItems?.some((item) => item._id === productId);
 
   const handleBuy = (product: Product) => {
     if (!user) {
@@ -229,10 +253,14 @@ const TMAFiles = () => {
                   className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-slate-100 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    addToWishlistMutation.mutate(file._id);
+                    if (isInWishlist(file._id)) {
+                      removeFromWishlistMutation.mutate(file._id);
+                    } else {
+                      addToWishlistMutation.mutate(file._id);
+                    }
                   }}
                 >
-                  <Heart className="w-4 h-4" />
+                  <Heart className={`w-4 h-4 ${isInWishlist(file._id) ? "fill-red-500 text-red-500" : ""}`} />
                 </button>
 
                 <CardContent className="p-4 sm:p-8">

@@ -38,6 +38,7 @@ import { CartSheet } from "./components/cart/CartSheet";
 const Index = lazy(() => import("./pages/Index"));
 const TMAFiles = lazy(() => import("./pages/TMAFiles"));
 const ProjectFiles = lazy(() => import("./pages/ProjectFiles"));
+const Wishlist = lazy(() => import("./pages/Wishlist"));
 
 /* ---------------- Route Guards ---------------- */
 const ProtectedRoute = () => {
@@ -120,6 +121,7 @@ const App = () => {
                           <Route path="projects" element={<ProjectFiles />} />
                           <Route path="orders" element={<Orders />} />
                           <Route path="downloads" element={<Downloads />} />
+                          <Route path="wishlist" element={<Wishlist />} />
                           <Route path="profile" element={<Profile />} />
                         </Route>
                       </Route>

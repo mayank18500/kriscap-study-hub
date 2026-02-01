@@ -54,7 +54,7 @@ const Wishlist = () => {
             <div className="container mx-auto px-6 max-w-7xl">
                 <div className="flex items-center gap-4 mb-8">
                     <Button variant="ghost" className="rounded-full w-10 h-10 p-0" asChild>
-                        <Link to="/">
+                        <Link to="/dashboard/tma">
                             <ArrowLeft className="w-5 h-5 text-slate-500" />
                         </Link>
                     </Button>
@@ -77,7 +77,7 @@ const Wishlist = () => {
                             Looks like you haven't saved any items yet. Explore our collection and find something you love!
                         </p>
                         <Button className="rounded-xl px-8 font-bold bg-slate-900 text-white hover:bg-slate-800" asChild>
-                            <Link to="/">Explore Products</Link>
+                            <Link to="/dashboard/tma">Explore Products</Link>
                         </Button>
                     </div>
                 ) : (

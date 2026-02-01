@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { Menu, Bell, User, ShoppingCart } from "lucide-react";
+import { Menu, Heart, User, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,10 +7,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSocket } from "@/contexts/SocketContext";
-import { useCart } from "@/contexts/CartContext";
 import { Link, useNavigate } from "react-router-dom";
-import api from "@/lib/api";
+import { useCart } from "@/contexts/CartContext";
 
 interface DashboardHeaderProps {
   onMenuClick: () => void;
@@ -19,34 +16,11 @@ interface DashboardHeaderProps {
 }
 
 const DashboardHeader = ({ onMenuClick, title }: DashboardHeaderProps) => {
-  const { logout, user } = useAuth();
-  const { socket } = useSocket();
+  const { logout } = useAuth();
   const { items, setIsOpen } = useCart();
+
   const navigate = useNavigate();
-  const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const { data } = await api.get("/api/notifications/unread-count");
-        setUnreadCount(data.count);
-      } catch (error) {
-        console.error("Failed to fetch notifications");
-      }
-    };
-
-    fetchNotifications();
-
-    if (socket) {
-      socket.on("notification", () => {
-        setUnreadCount((prev) => prev + 1);
-      });
-
-      return () => {
-        socket.off("notification");
-      };
-    }
-  }, [socket]);
 
   const handleLogout = async () => {
     await logout();
@@ -81,13 +55,12 @@ const DashboardHeader = ({ onMenuClick, title }: DashboardHeaderProps) => {
             )}
           </Button>
 
-          {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="w-5 h-5" />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
-            )}
-          </Button>
+          {/* Wishlist */}
+          <Link to="/dashboard/wishlist">
+            <Button variant="ghost" size="icon" className="relative">
+              <Heart className="w-5 h-5" />
+            </Button>
+          </Link>
 
           {/* Profile Dropdown */}
           <DropdownMenu>

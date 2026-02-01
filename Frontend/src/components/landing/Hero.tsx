@@ -37,7 +37,7 @@ const Hero = () => {
                 <img
                   src="./krish_logo.jpeg"
                   alt="NIOS Study Excellence"
-                  className="w-full h-auto rounded-4xl transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-auto rounded-3xl transition-transform duration-700 group-hover:scale-105"
                 />
 
                 {/* Floating Stat Card Overlay (Hidden on very small mobile for cleanliness) */}
@@ -97,8 +97,9 @@ const Hero = () => {
               <span className="text-amber-600 italic font-medium">Simplified.</span>
             </h1>
 
-            <p className="text-slate-600 text-base md:text-xl mb-6 lg:mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Unlock your full potential with our premium TMA solutions and professionally crafted Project Files. Meticulously designed by academic experts, our resources are tailored to help NIOS students streamline their studies, submit with confidence, and achieve top-tier marks effortlessly.
+            <p className="text-slate-600 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+              Score <span className="text-slate-900 font-bold">20/20</span> with expert-solved NIOS TMA and Project Files.
+              Streamline your studies and submit with confidence.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 lg:gap-5 justify-center lg:justify-start mb-10 lg:mb-12">
