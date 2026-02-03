@@ -155,8 +155,12 @@ const TMAFiles = () => {
 
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.open();
-    } catch (error) {
-      toast({ variant: "destructive", title: "Process Error", description: "Could not initiate purchase." });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Process Error",
+        description: error.response?.data?.message || error.message || "Could not initiate purchase."
+      });
       setIsProcessing(false);
     }
   };
@@ -178,9 +182,9 @@ const TMAFiles = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-amber-400 text-[10px] font-bold uppercase tracking-widest">
             <BookOpen className="w-3 h-3" /> Digital Repository
           </div>
-          <h1 className="font-serif text-4xl font-bold text-slate-900">TMA Study Materials</h1>
+          <h1 className="font-serif text-4xl font-bold text-slate-900">Study Materials Download</h1>
           <p className="text-slate-500 italic leading-relaxed max-w-xl">
-            Professionally curated Tutor Marked Assignments designed to meet the rigorous standards of the NIOS curriculum.
+            Professionally curated Study Materials designed to meet the rigorous standards of the NIOS curriculum.
           </p>
         </div>
 

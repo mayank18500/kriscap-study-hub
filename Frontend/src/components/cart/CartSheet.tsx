@@ -113,9 +113,13 @@ export const CartSheet = () => {
             const paymentObject = new (window as any).Razorpay(options);
             paymentObject.open();
 
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast({ variant: "destructive", title: "Checkout Error", description: "Could not finalize transaction." });
+            toast({
+                variant: "destructive",
+                title: "Checkout Error",
+                description: error.response?.data?.message || error.message || "Could not finalize transaction."
+            });
         } finally {
             setIsProcessing(false);
         }
