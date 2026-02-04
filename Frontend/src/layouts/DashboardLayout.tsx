@@ -9,7 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const getPageTitle = (pathname: string): string => {
   const routes: Record<string, string> = {
     "/dashboard": "Dashboard",
-    "/dashboard/tma": "Buy TMA Files",
+    "/dashboard/tma": "Buy PDF Files",
     "/dashboard/projects": "Buy Project Files",
     "/dashboard/orders": "My Orders",
     "/dashboard/downloads": "My Downloads",
