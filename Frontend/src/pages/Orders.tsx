@@ -21,7 +21,7 @@ const Orders = () => {
   });
 
   const tmaCount = orders?.filter(o => o.type === "TMA").length || 0;
-  const projectCount = orders?.filter(o => o.type === "Project").length || 0;
+  const projectCount = orders?.filter(o => o.type === "PROJECT").length || 0;
   const totalSpent = orders?.reduce((acc, curr) => acc + (curr.price || curr.amount), 0) || 0;
 
   const getStatusStyles = (status: string) => {
@@ -116,9 +116,8 @@ const Orders = () => {
             >
               <div className="flex flex-col sm:flex-row items-center justify-between p-5 rounded-[1.5rem] bg-white border border-slate-100 hover:border-amber-200 transition-all duration-300 hover:shadow-lg hover:shadow-slate-100/50">
                 <div className="flex items-center gap-5 w-full">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-sm ${
-                    order.type === "TMA" ? "bg-amber-50 border-amber-100" : "bg-slate-50 border-slate-100"
-                  }`}>
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-sm ${order.type === "TMA" ? "bg-amber-50 border-amber-100" : "bg-slate-50 border-slate-100"
+                    }`}>
                     {order.type === "TMA" ? (
                       <FileText className="w-6 h-6 text-amber-600" />
                     ) : (
@@ -156,7 +155,7 @@ const Orders = () => {
                         <Eye className="w-4 h-4 mr-2 text-slate-400" />
                         View Statement
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => handleDownloadInvoice(order.id)}
                         className="text-xs font-medium py-2 text-amber-600"
                       >

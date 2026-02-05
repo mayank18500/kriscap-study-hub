@@ -7,6 +7,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
+import ErrorBoundary from "@/components/ErrorBoundary";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -81,83 +83,85 @@ const App = () => {
 
   return (
     <HelmetProvider>
-      <QueryClientProvider client={queryClientRef.current}>
-        <TooltipProvider>
-          <Helmet>
-            <title>Kriscap Education | NIOS Study Hub</title>
-          </Helmet>
-          <Toaster />
-          <Sonner />
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClientRef.current}>
+          <TooltipProvider>
+            <Helmet>
+              <title>Kriscap Education | NIOS Study Hub</title>
+            </Helmet>
+            <Toaster />
+            <Sonner />
 
-          <AuthProvider>
-            <SocketProvider>
-              <CartProvider>
-                <BrowserRouter>
-                  <CartSheet />
+            <AuthProvider>
+              <SocketProvider>
+                <CartProvider>
+                  <BrowserRouter>
+                    <CartSheet />
 
-                  <Suspense
-                    fallback={
-                      <div className="min-h-screen flex items-center justify-center">
-                        Loading...
-                      </div>
-                    }
-                  >
-                    <Routes>
-                      {/* ---------- Public Routes ---------- */}
-                      <Route path="/" element={<Index />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/forgot-password" element={<ForgotPassword />} />
-                      <Route
-                        path="/reset-password/:resetToken"
-                        element={<ResetPassword />}
-                      />
+                    <Suspense
+                      fallback={
+                        <div className="min-h-screen flex items-center justify-center">
+                          Loading...
+                        </div>
+                      }
+                    >
+                      <Routes>
+                        {/* ---------- Public Routes ---------- */}
+                        <Route path="/" element={<Index />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route
+                          path="/reset-password/:resetToken"
+                          element={<ResetPassword />}
+                        />
 
-                      {/* ---------- Protected User Dashboard ---------- */}
-                      <Route element={<ProtectedRoute />}>
-                        <Route path="/dashboard" element={<DashboardLayout />}>
-                          <Route index element={<Navigate to="tma" replace />} />
-                          <Route path="tma" element={<TMAFiles />} />
-                          <Route path="projects" element={<ProjectFiles />} />
-                          <Route path="orders" element={<Orders />} />
-                          <Route path="downloads" element={<Downloads />} />
-                          <Route path="wishlist" element={<Wishlist />} />
-                          <Route path="profile" element={<Profile />} />
+                        {/* ---------- Protected User Dashboard ---------- */}
+                        <Route element={<ProtectedRoute />}>
+                          <Route path="/dashboard" element={<DashboardLayout />}>
+                            <Route index element={<Navigate to="tma" replace />} />
+                            <Route path="tma" element={<TMAFiles />} />
+                            <Route path="projects" element={<ProjectFiles />} />
+                            <Route path="orders" element={<Orders />} />
+                            <Route path="downloads" element={<Downloads />} />
+                            <Route path="wishlist" element={<Wishlist />} />
+                            <Route path="profile" element={<Profile />} />
+                          </Route>
                         </Route>
-                      </Route>
 
-                      {/* ---------- Admin Dashboard ---------- */}
-                      <Route element={<AdminRoute />}>
-                        <Route path="/admin" element={<AdminLayout />}>
-                          <Route index element={<AdminOverview />} />
-                          <Route path="products" element={<AdminProducts />} />
-                          <Route path="orders" element={<AdminOrders />} />
-                          <Route path="users" element={<AdminUsers />} />
-                          <Route path="payments" element={<AdminPayments />} />
-                          <Route path="uploads" element={<AdminUploads />} />
-                          <Route path="comments" element={<AdminComments />} />
-                          <Route path="settings" element={<AdminSettings />} />
+                        {/* ---------- Admin Dashboard ---------- */}
+                        <Route element={<AdminRoute />}>
+                          <Route path="/admin" element={<AdminLayout />}>
+                            <Route index element={<AdminOverview />} />
+                            <Route path="products" element={<AdminProducts />} />
+                            <Route path="orders" element={<AdminOrders />} />
+                            <Route path="users" element={<AdminUsers />} />
+                            <Route path="payments" element={<AdminPayments />} />
+                            <Route path="uploads" element={<AdminUploads />} />
+                            <Route path="comments" element={<AdminComments />} />
+                            <Route path="settings" element={<AdminSettings />} />
+                          </Route>
                         </Route>
-                      </Route>
 
-                      {/* ---------- Protected Public Layout Pages ---------- */}
-                      <Route element={<ProtectedRoute />}>
-                        <Route element={<PublicLayout />}>
-                          <Route path="/tma-files" element={<TMAFiles />} />
-                          <Route path="/project-files" element={<ProjectFiles />} />
+                        {/* ---------- Protected Public Layout Pages ---------- */}
+                        <Route element={<ProtectedRoute />}>
+                          <Route element={<PublicLayout />}>
+                            <Route path="/tma-files" element={<TMAFiles />} />
+                            <Route path="/project-files" element={<ProjectFiles />} />
+                          </Route>
                         </Route>
-                      </Route>
 
-                      {/* ---------- 404 ---------- */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </BrowserRouter>
-              </CartProvider>
-            </SocketProvider>
-          </AuthProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
+                        {/* ---------- 404 ---------- */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Suspense>
+                  </BrowserRouter>
+                </CartProvider>
+              </SocketProvider>
+            </AuthProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
     </HelmetProvider>
   );
 };

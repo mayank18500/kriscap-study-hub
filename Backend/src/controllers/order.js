@@ -103,6 +103,7 @@ exports.createOrder = async (req, res) => {
         const razorpayOrder = await razorpay.orders.create(options);
 
         // Create Internal Order
+        console.log("Creating Order for user:", userId);
         const order = await Order.create({
             user: userId,
             products: orderProducts,
@@ -113,6 +114,7 @@ exports.createOrder = async (req, res) => {
             shippingAddress: shippingAddress,
             phoneNumber: phoneNumber
         });
+        console.log("Order Created:", order._id);
 
         res.json({
             id: razorpayOrder.id,
@@ -141,6 +143,7 @@ exports.createOrderLegacy = async (req, res) => {
 exports.verifyPayment = async (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+        console.log("Verifying Payment for Order:", razorpay_order_id);
         const userId = req.userId;
 
         if (!config.RAZORPAY_KEY_SECRET) {
@@ -158,8 +161,12 @@ exports.verifyPayment = async (req, res) => {
 
         if (isAuthentic) {
             const order = await Order.findOne({ razorpayOrderId: razorpay_order_id });
-            if (!order) return res.status(404).json({ message: "Order not found" });
+            if (!order) {
+                console.error("Order not found during verification:", razorpay_order_id);
+                return res.status(404).json({ message: "Order not found" });
+            }
 
+            console.log("Payment Verified for Order:", order._id);
             order.paymentStatus = "Paid";
             order.razorpayPaymentId = razorpay_payment_id;
             order.razorpaySignature = razorpay_signature;
@@ -200,6 +207,7 @@ exports.verifyPayment = async (req, res) => {
 
             res.json({ message: "Payment verified successfully", orderId: order._id });
         } else {
+            console.error("Invalid Signature for Order:", razorpay_order_id);
             res.status(400).json({ message: "Invalid signature" });
         }
     } catch (error) {
@@ -211,7 +219,9 @@ exports.verifyPayment = async (req, res) => {
 exports.getMyOrders = async (req, res) => {
     try {
         const userId = req.userId;
+        console.log("Fetching orders for user:", userId);
         const orders = await Order.find({ user: userId }).populate("products.product").sort({ createdAt: -1 });
+        console.log("Orders found:", orders.length);
 
         // Transform for frontend
         const formattedOrders = orders.map(order => {

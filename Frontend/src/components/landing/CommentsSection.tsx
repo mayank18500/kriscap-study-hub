@@ -125,7 +125,7 @@ const CommentsSection = () => {
                         <p className="text-center text-slate-400 italic">No comments yet. Be the first!</p>
                     ) : (
                         <AnimatePresence>
-                            {comments?.map((comment) => (
+                            {comments?.filter(comment => comment.user && comment.user.name).map((comment) => (
                                 <motion.div
                                     key={comment._id}
                                     initial={{ opacity: 0, y: 10 }}
