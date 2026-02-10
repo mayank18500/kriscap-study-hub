@@ -168,7 +168,7 @@ exports.toggleProductStatus = async (req, res) => {
 
 exports.getAdminOrders = async (req, res) => {
     try {
-        const orders = await Order.find({})
+        const orders = await Order.find({ paymentStatus: "Paid" })
             .populate("user", "name email phoneNumber addresses")
             .populate("products.product", "name type")
             .sort({ createdAt: -1 });
