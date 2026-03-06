@@ -21,36 +21,37 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const { user } = useAuth();
 
     useEffect(() => {
-        if (user) {
-            // Connect only if user is authenticated
-            const socketInstance = io(API_URL, {
-                withCredentials: true,
-                transports: ["websocket"],
-            });
-
-            socketInstance.on("connect", () => {
-                console.log("Socket connected:", socketInstance.id);
-                setIsConnected(true);
-            });
-
-            socketInstance.on("disconnect", () => {
-                console.log("Socket disconnected");
-                setIsConnected(false);
-            });
-
-            setSocket(socketInstance);
-
-            return () => {
-                socketInstance.disconnect();
-            };
-        } else {
-            // Disconnect if user logs out
-            if (socket) {
-                socket.disconnect();
-                setSocket(null);
-                setIsConnected(false);
-            }
+        // Only connect when user is authenticated
+        if (!user) {
+            // When user logs out the previous effect's cleanup already called
+            // socketInstance.disconnect(). Nothing extra to do here.
+            setSocket(null);
+            setIsConnected(false);
+            return;
         }
+
+        const socketInstance = io(API_URL, {
+            withCredentials: true,
+            transports: ["websocket"],
+        });
+
+        socketInstance.on("connect", () => {
+            console.log("Socket connected:", socketInstance.id);
+            setIsConnected(true);
+        });
+
+        socketInstance.on("disconnect", () => {
+            console.log("Socket disconnected");
+            setIsConnected(false);
+        });
+
+        setSocket(socketInstance);
+
+        // This cleanup runs whenever `user` changes OR the component unmounts.
+        // It always closes the socket created in THIS effect run — no stale ref issues.
+        return () => {
+            socketInstance.disconnect();
+        };
     }, [user]);
 
     return (

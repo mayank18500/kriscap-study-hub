@@ -154,7 +154,8 @@ const TMAFiles = () => {
       };
 
       const paymentObject = new (window as any).Razorpay(options);
-      paymentObject.open();
+      // Defer Razorpay DOM injection until React has finished its current flush
+      requestAnimationFrame(() => paymentObject.open());
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -235,7 +236,7 @@ const TMAFiles = () => {
 
       {/* Archive Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-8">
-        <AnimatePresence>
+        <AnimatePresence mode="popLayout">
           {filteredFiles.map((file, index) => (
             <motion.div
               key={file._id}

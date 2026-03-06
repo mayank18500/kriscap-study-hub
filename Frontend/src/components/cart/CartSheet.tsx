@@ -111,7 +111,8 @@ export const CartSheet = () => {
             };
 
             const paymentObject = new (window as any).Razorpay(options);
-            paymentObject.open();
+            // Defer Razorpay DOM injection until React has finished its current flush
+            requestAnimationFrame(() => paymentObject.open());
 
         } catch (error: any) {
             console.error(error);
