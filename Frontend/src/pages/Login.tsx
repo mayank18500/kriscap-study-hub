@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, Lock, GraduationCap, ArrowRight, Loader2, ShieldCheck } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,29 +35,30 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#fdfcf8]">
-      {/* Classical Sidebar - Hidden on Mobile */}
-      <div className="hidden lg:flex w-1/2 bg-slate-900 relative items-center justify-center p-12 overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]" />
-        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-3xl" />
+    <div className="min-h-screen flex bg-gray-50">
+      {/* Dynamic Sidebar - Hidden on Mobile */}
+      <div className="hidden lg:flex w-1/2 bg-primary relative items-center justify-center p-12 overflow-hidden">
+        {/* Soft student background overlay */}
+        <div 
+          className="absolute inset-0 opacity-20 bg-cover bg-center mix-blend-overlay"
+          style={{ backgroundImage: `url('/img/hero-student.png')` }}
+        />
         
         <div className="relative z-10 max-w-lg text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-8"
-          >
-            <GraduationCap className="w-10 h-10 text-amber-500" />
-          </motion.div>
-          <h2 className="font-serif text-4xl font-bold text-white mb-6">
-            The Gateway to <span className="italic text-amber-400 font-medium">Academic Success</span>
+          <Link to="/" className="inline-flex flex-col items-center gap-2 group mb-8">
+            <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-white font-bold text-3xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+              S
+            </div>
+          </Link>
+          <h2 className="text-4xl font-bold text-white mb-6 leading-tight">
+            Unlock Your NIOS <span className="text-blue-400">Success</span>
           </h2>
-          <p className="text-slate-400 text-lg leading-relaxed mb-12">
+          <p className="text-blue-100/80 text-lg leading-relaxed mb-12">
             Log in to access your curated NIOS materials, track your project deliveries, and manage your academic portfolio.
           </p>
           
-          <div className="flex flex-col items-center gap-4 border-t border-white/10 pt-8">
-            <div className="flex items-center gap-2 text-amber-500/80 text-sm font-medium tracking-widest uppercase">
+          <div className="flex flex-col items-center gap-4 border-t border-white/10 pt-8 mt-auto">
+            <div className="flex items-center gap-2 text-white/50 text-sm font-medium tracking-widest uppercase">
               <ShieldCheck className="w-4 h-4" />
               Verified Student Portal
             </div>
@@ -68,9 +69,11 @@ const Login = () => {
       {/* Login Form Side */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 relative">
         <div className="absolute top-8 left-8 lg:hidden">
-            <Link to="/" className="flex items-center gap-2">
-                <GraduationCap className="w-6 h-6 text-slate-900" />
-                <span className="font-serif font-bold text-slate-900">Kriscap</span>
+            <Link to="/" className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+                  S
+                </div>
+                <span className="font-bold text-slate-900 border-l border-slate-300 pl-3">K.E. Career Institute</span>
             </Link>
         </div>
 
@@ -79,9 +82,9 @@ const Login = () => {
           animate={{ opacity: 1, x: 0 }}
           className="w-full max-w-md"
         >
-          <div className="text-center lg:text-left mb-10">
-            <h1 className="font-serif text-3xl font-bold text-slate-900 mb-2">Member Login</h1>
-            <p className="text-slate-500 italic">Enter your credentials to continue your journey.</p>
+          <div className="text-center lg:text-left mb-10 mt-8 lg:mt-0">
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Member Login</h1>
+            <p className="text-slate-500">Enter your credentials to continue your journey.</p>
           </div>
 
           <div className="bg-white rounded-[2rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] p-8 md:p-10">
@@ -96,7 +99,7 @@ const Login = () => {
                     placeholder="student@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-12 h-14 rounded-xl border-slate-200 focus:border-amber-500 focus:ring-amber-500/20 bg-slate-50/50"
+                    className="pl-12 h-14 rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 bg-slate-50/50 transition-all font-medium"
                     required
                     disabled={isLoading}
                   />
@@ -106,7 +109,7 @@ const Login = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between ml-1">
                   <Label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-slate-500">Security Key</Label>
-                  <Link to="/forgot-password" className="text-xs font-semibold text-amber-600 hover:text-amber-700">
+                  <Link to="/forgot-password" className="text-xs font-semibold text-blue-600 hover:text-blue-700">
                     Recover Password?
                   </Link>
                 </div>
@@ -118,14 +121,14 @@ const Login = () => {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-12 h-14 rounded-xl border-slate-200 focus:border-amber-500 focus:ring-amber-500/20 bg-slate-50/50"
+                    className="pl-12 h-14 rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 bg-slate-50/50 transition-all font-medium"
                     required
                     disabled={isLoading}
                   />
                 </div>
               </div>
 
-              <Button type="submit" className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-lg transition-all active:scale-[0.98]" disabled={isLoading}>
+              <Button type="submit" className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]" disabled={isLoading}>
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
@@ -140,7 +143,7 @@ const Login = () => {
             <div className="mt-8 pt-8 border-t border-slate-100 text-center">
               <p className="text-sm text-slate-500">
                 New to the academy?{" "}
-                <Link to="/register" className="text-amber-600 font-bold hover:underline">
+                <Link to="/register" className="text-blue-600 font-bold hover:underline">
                   Create an Account
                 </Link>
               </p>
@@ -148,7 +151,7 @@ const Login = () => {
           </div>
           
           <p className="mt-10 text-center text-xs text-slate-400 font-medium">
-            Protected by Kriscap Security Protocol &copy; {new Date().getFullYear()}
+            Protected by K.E. Security Protocol &copy; {new Date().getFullYear()}
           </p>
         </motion.div>
       </div>

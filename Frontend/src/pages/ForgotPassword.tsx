@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, ArrowLeft, Mail, ShieldQuestion, GraduationCap } from "lucide-react";
+import { Loader2, ArrowLeft, Mail, ShieldQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -57,11 +57,11 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#fdfcf8] p-6 relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 relative overflow-hidden">
             {/* Background Aesthetic */}
             <div className="absolute inset-0 z-0">
-                <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-amber-100/30 rounded-full blur-3xl" />
-                <div className="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] bg-slate-200/40 rounded-full blur-3xl" />
+                <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-blue-100/30 rounded-full blur-3xl opacity-50" />
+                <div className="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] bg-sky-200/40 rounded-full blur-3xl opacity-50" />
             </div>
 
             <motion.div 
@@ -72,14 +72,14 @@ const ForgotPassword = () => {
                 {/* Logo & Header */}
                 <div className="text-center mb-10">
                     <Link to="/" className="inline-flex items-center gap-2 mb-6">
-                        <div className="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center shadow-xl">
-                            <GraduationCap className="w-6 h-6 text-amber-400" />
+                        <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-lg text-white font-bold text-2xl">
+                            S
                         </div>
                     </Link>
-                    <h1 className="font-serif text-3xl font-bold text-slate-900 mb-3">
+                    <h1 className="text-3xl font-bold text-slate-900 mb-3">
                         {isEmailSent ? "Check Your Inbox" : "Credential Recovery"}
                     </h1>
-                    <p className="text-slate-500 italic text-sm px-8">
+                    <p className="text-slate-500 text-sm px-8">
                         {isEmailSent 
                             ? "Instructions have been sent to your registered address." 
                             : "Provide your official email to receive a password restoration link."}
@@ -89,20 +89,20 @@ const ForgotPassword = () => {
                 <div className="bg-white rounded-[2rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] p-8 md:p-10">
                     {isEmailSent ? (
                         <div className="flex flex-col items-center space-y-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-100">
-                                <Mail className="w-8 h-8 text-emerald-600" />
+                            <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center border border-blue-100">
+                                <Mail className="w-8 h-8 text-blue-600" />
                             </div>
                             <div className="space-y-2">
                                 <p className="text-sm text-slate-500">
                                     We sent a recovery link to:
                                 </p>
-                                <p className="font-serif font-bold text-slate-900 border-b border-amber-200 inline-block">
+                                <p className="font-bold text-slate-900 border-b border-blue-200 inline-block font-medium">
                                     {form.getValues("email")}
                                 </p>
                             </div>
                             <Button
                                 variant="outline"
-                                className="w-full h-12 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50"
+                                className="w-full h-12 rounded-2xl border-slate-200 text-slate-600 hover:bg-slate-50"
                                 onClick={() => setIsEmailSent(false)}
                             >
                                 Use different email
@@ -123,7 +123,7 @@ const ForgotPassword = () => {
                                                     <Input 
                                                         placeholder="student@example.com" 
                                                         {...field} 
-                                                        className="pl-12 h-14 rounded-xl border-slate-200 focus:border-amber-500 focus:ring-amber-500/20 bg-slate-50/50 transition-all"
+                                                        className="pl-12 h-14 rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 bg-slate-50/50 transition-all font-medium"
                                                         disabled={isLoading}
                                                     />
                                                 </div>
@@ -132,7 +132,7 @@ const ForgotPassword = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <Button disabled={isLoading} className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-lg transition-all active:scale-[0.98]">
+                                <Button disabled={isLoading} className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
                                     {isLoading ? (
                                         <Loader2 className="h-5 w-5 animate-spin" />
                                     ) : (
@@ -146,7 +146,7 @@ const ForgotPassword = () => {
                     <div className="mt-8 pt-8 border-t border-slate-50 text-center">
                         <Link
                             to="/login"
-                            className="inline-flex items-center text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors group"
+                            className="inline-flex items-center text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors group"
                         >
                             <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
                             Return to Login
@@ -155,7 +155,7 @@ const ForgotPassword = () => {
                 </div>
 
                 <p className="mt-10 text-center text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
-                    Kriscap Education Academic Portal
+                    K.E. Career Institute Academic Portal
                 </p>
             </motion.div>
         </div>

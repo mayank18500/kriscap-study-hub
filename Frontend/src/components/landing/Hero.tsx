@@ -1,130 +1,143 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { BookOpen, Package, ShieldCheck, Zap, ArrowRight, Star } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const HERO_SLIDES = [
+  {
+    id: 1,
+    bgHex: "#122b3e",
+    bgImage: "url('/img/hero-student.png')",
+    title: "Unlock Your NIOS<br />Success with K.E.",
+    subtitle: "Join the registered institute delivering verifiable curriculum insights and immediate certification preparation.",
+    buttons: [
+      { text: "Start Admission", link: "/admission", primary: true },
+      { text: "Explore Courses", link: "/courses", primary: false }
+    ]
+  },
+  {
+    id: 2,
+    bgHex: "#0f172a",
+    bgImage: "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1400&auto=format&fit=crop')",
+    title: "Interactive Daily<br />Live Classes",
+    subtitle: "Engage with expert educators in real-time. Step up your game with India's best interactive learning platform.",
+    buttons: [
+      { text: "View Schedule", link: "/courses", primary: true },
+      { text: "Learn More", link: "/about", primary: false }
+    ]
+  },
+  {
+    id: 3,
+    bgHex: "#0f2c25",
+    bgImage: "url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1400&auto=format&fit=crop')",
+    title: "Comprehensive<br />Study Materials",
+    subtitle: "Access over 50,000+ notes, handwritten guides, and comprehensive past exam analysis to boost your scores.",
+    buttons: [
+      { text: "Access Library", link: "/courses", primary: true },
+      { text: "Contact Us", link: "/contact", primary: false }
+    ]
+  }
+];
 
 const Hero = () => {
-  const trustBadges = [
-    { icon: ShieldCheck, text: "Verified Content" },
-    { icon: BookOpen, text: "NIOS Curriculum" },
-    { icon: Star, text: "4.9/5 Rating" },
-  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 5500); // 5.5 seconds per slide
+    return () => clearInterval(timer);
+  }, [isPaused]);
 
   return (
-    <section className="relative min-h-screen flex items-center bg-[#fdfcf8] overflow-hidden pt-16 lg:pt-20">
-      {/* Classical Background Elements */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-amber-100/40 rounded-full blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-slate-200/50 rounded-full blur-3xl" />
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
-      </div>
-
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-
-          {/* Right Content: The Image (Now appears first on mobile) */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-            className="relative flex flex-col justify-center items-center order-first lg:order-last"
-          >
-            {/* Decorative Golden Ring */}
-            <div className="absolute inset-0 border-[1px] border-amber-200 rounded-full scale-90 animate-[spin_20s_linear_infinite] opacity-50" />
-
-            <div className="relative z-10 w-full max-w-[240px] sm:max-w-[320px] md:max-w-[450px] lg:max-w-[500px]">
-              <div className="relative rounded-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] bg-white p-3 md:p-4 group">
-                <img
-                  src="./krish_logo.jpeg"
-                  alt="NIOS Study Excellence"
-                  className="w-full h-auto rounded-3xl transition-transform duration-700 group-hover:scale-105"
+    <section className="pt-28 pb-8 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="container mx-auto">
+        <div 
+          className="relative rounded-[40px] overflow-hidden shadow-2xl min-h-[500px] bg-[#122b3e]"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="absolute inset-0 w-full h-full flex flex-col md:flex-row items-center justify-between z-0"
+              style={{ backgroundColor: HERO_SLIDES[currentIndex].bgHex }}
+            >
+              <div className="p-10 md:p-14 lg:p-20 flex-1 w-full max-w-2xl relative z-20 flex flex-col justify-center h-full">
+                <h1 
+                  className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.15] mb-6"
+                  dangerouslySetInnerHTML={{ __html: HERO_SLIDES[currentIndex].title }}
                 />
-
-                {/* Floating Stat Card Overlay (Hidden on very small mobile for cleanliness) */}
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute bottom-6 -left-4 md:bottom-10 md:-left-6 bg-white shadow-2xl rounded-2xl p-3 md:p-4 border border-slate-100 hidden xs:block"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                      <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-emerald-600" />
-                    </div>
-                    <div>
-                      <p className="text-[8px] md:text-[10px] uppercase tracking-wider text-slate-400 font-bold">Success Rate</p>
-                      <p className="text-sm md:text-lg font-bold text-slate-900 font-serif">99.8% Passed</p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-
-            {/* Trust Badges - Moved below photo */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="mt-6 flex flex-wrap justify-center gap-2 w-full max-w-lg mx-auto"
-            >
-              {trustBadges.map((badge, index) => (
-                <div key={index} className="flex items-center gap-1.5 text-slate-700 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-200 shadow-sm">
-                  <badge.icon className="w-3.5 h-3.5 text-amber-600" />
-                  <span className="text-[9px] sm:text-[10px] font-bold tracking-wide uppercase">{badge.text}</span>
+                <p className="text-blue-100/90 text-lg sm:text-xl max-w-md mb-8 leading-relaxed font-medium">
+                  {HERO_SLIDES[currentIndex].subtitle}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  {HERO_SLIDES[currentIndex].buttons.map((btn, idx) => (
+                    <Link key={idx} to={btn.link}>
+                      {btn.primary ? (
+                        <Button className="w-full sm:w-auto rounded-full px-8 h-14 bg-blue-500 hover:bg-blue-600 text-white font-bold text-[15px] transition-all shadow-xl shadow-blue-500/20">
+                          {btn.text}
+                        </Button>
+                      ) : (
+                        <Button variant="outline" className="w-full sm:w-auto rounded-full border-blue-400/50 text-blue-100 bg-transparent hover:bg-blue-400/10 hover:text-white hover:border-blue-300 h-14 px-8 font-bold text-[15px] transition-all">
+                          {btn.text}
+                        </Button>
+                      )}
+                    </Link>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              {/* Background Image Container */}
+              <div className="absolute inset-0 md:relative md:inset-auto md:flex-1 w-full h-full min-h-[350px] md:min-h-full z-10">
+                <div 
+                  className="absolute inset-0 w-full h-full bg-cover bg-center md:bg-left-top opacity-50 md:opacity-95"
+                  style={{ backgroundImage: HERO_SLIDES[currentIndex].bgImage }}
+                />
+                
+                {/* Mobile Gradient (Bottom to Top) */}
+                <div 
+                  className="absolute inset-0 md:hidden" 
+                  style={{ 
+                    background: `linear-gradient(to top, ${HERO_SLIDES[currentIndex].bgHex} 15%, ${HERO_SLIDES[currentIndex].bgHex}E6 50%, transparent 100%)` 
+                  }} 
+                />
+                
+                {/* Desktop Gradient (Left to Right) */}
+                <div 
+                  className="hidden md:block absolute inset-0"
+                  style={{ 
+                    background: `linear-gradient(to right, ${HERO_SLIDES[currentIndex].bgHex} 0%, ${HERO_SLIDES[currentIndex].bgHex}D9 40%, transparent 80%)` 
+                  }} 
+                />
+              </div>
             </motion.div>
-          </motion.div>
-
-          {/* Left Content: Typography Focused */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center lg:text-left mt-2 lg:mt-0"
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-amber-400 text-xs font-bold tracking-widest uppercase mb-6 lg:mb-8 shadow-xl shadow-slate-900/10"
-            >
-              <Zap className="w-3.5 h-3.5 fill-current" />
-              India's Premier NIOS Resource
-            </motion.div>
-
-            <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.1] mb-4 lg:mb-8">
-              Academic Excellence <br />
-              <span className="text-amber-600 italic font-medium">Simplified.</span>
-            </h1>
-
-            <p className="text-slate-600 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-              Score <span className="text-slate-900 font-bold">20/20</span> with expert-solved NIOS TMA and Project Files.
-              Streamline your studies and submit with confidence.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 lg:gap-5 justify-center lg:justify-start mb-10 lg:mb-12">
-              <Link to="/tma-files">
-                <Button size="lg" className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-8 h-12 lg:h-14 text-sm lg:text-base shadow-lg hover:shadow-slate-900/20 transition-all hover:-translate-y-1 group">
-                  Get TMA Files
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Link to="/project-files">
-                <Button variant="outline" size="lg" className="border-slate-300 text-slate-700 hover:bg-slate-50 rounded-full px-8 h-12 lg:h-14 text-sm lg:text-base">
-                  <Package className="mr-2 w-4 h-4" />
-                  Project Files
-                </Button>
-              </Link>
-            </div>
-
-
-          </motion.div>
-
+          </AnimatePresence>
+          
+          {/* Navigation Dots */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+            {HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={`transition-all duration-300 rounded-full ${
+                  idx === currentIndex 
+                    ? "w-8 h-2.5 bg-blue-500" 
+                    : "w-2.5 h-2.5 bg-white/40 hover:bg-white/70"
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
-
-      {/* Elegant Bottom Transition */}
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent" />
     </section>
   );
 };

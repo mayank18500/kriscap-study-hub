@@ -41,6 +41,10 @@ const Index = lazy(() => import("./pages/Index"));
 const TMAFiles = lazy(() => import("./pages/TMAFiles"));
 const ProjectFiles = lazy(() => import("./pages/ProjectFiles"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
+const AboutUs = lazy(() => import("./pages/AboutUs"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Courses = lazy(() => import("./pages/Courses"));
+const Admission = lazy(() => import("./pages/Admission"));
 
 /* ---------------- Route Guards ---------------- */
 const ProtectedRoute = () => {
@@ -108,6 +112,10 @@ const App = () => {
                       <Routes>
                         {/* ---------- Public Routes ---------- */}
                         <Route path="/" element={<Index />} />
+                        <Route path="/courses" element={<Courses />} />
+                        <Route path="/admission" element={<Admission />} />
+                        <Route path="/about" element={<AboutUs />} />
+                        <Route path="/contact" element={<Contact />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />

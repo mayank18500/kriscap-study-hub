@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, Lock, User, GraduationCap, ArrowRight, Loader2, Sparkles, CheckCircle2 } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, Loader2, Sparkles, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +24,7 @@ const Register = () => {
             await register({ name, email, password });
             toast({
                 title: "Registration Successful",
-                description: "Your academic journey with Kriscap begins now.",
+                description: "Your academic journey with K.E. begins now.",
             });
             navigate("/dashboard/tma");
         } catch (error: any) {
@@ -39,11 +39,13 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen flex bg-[#fdfcf8]">
-            {/* Left Sidebar: Classical Academic Branding */}
-            <div className="hidden lg:flex w-1/2 bg-slate-900 relative items-center justify-center p-16 overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="min-h-screen flex bg-gray-50">
+            {/* Left Sidebar: Dynamic Academic Branding */}
+            <div className="hidden lg:flex w-1/2 bg-primary relative items-center justify-center p-16 overflow-hidden">
+                <div 
+                  className="absolute inset-0 opacity-20 bg-cover bg-center mix-blend-overlay"
+                  style={{ backgroundImage: `url('/img/hero-student.png')` }}
+                />
                 
                 <div className="relative z-10 max-w-md">
                     <motion.div
@@ -51,13 +53,15 @@ const Register = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="mb-10"
                     >
-                        <div className="w-16 h-16 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center mb-6">
-                            <Sparkles className="w-8 h-8 text-amber-500" />
-                        </div>
-                        <h2 className="font-serif text-4xl font-bold text-white leading-tight mb-6">
-                            Begin Your <span className="italic text-amber-400">Scholastic</span> Excellence.
+                        <Link to="/" className="inline-flex flex-col items-center gap-2 group mb-8">
+                            <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-white font-bold text-3xl shadow-lg border border-white/20 group-hover:scale-105 transition-transform">
+                              S
+                            </div>
+                        </Link>
+                        <h2 className="text-4xl font-bold text-white leading-tight mb-6">
+                            Begin Your <span className="text-blue-400">Academic</span> Excellence.
                         </h2>
-                        <p className="text-slate-400 text-lg leading-relaxed">
+                        <p className="text-blue-100/80 text-lg leading-relaxed">
                             Join over 10,000 students who have streamlined their NIOS education with our verified materials.
                         </p>
                     </motion.div>
@@ -69,9 +73,9 @@ const Register = () => {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.3 + (i * 0.1) }}
-                                className="flex items-center gap-4 text-slate-300"
+                                className="flex items-center gap-4 text-white/90"
                             >
-                                <CheckCircle2 className="w-5 h-5 text-amber-500" />
+                                <CheckCircle2 className="w-5 h-5 text-blue-400" />
                                 <span className="font-medium tracking-wide">{text}</span>
                             </motion.li>
                         ))}
@@ -83,9 +87,11 @@ const Register = () => {
             <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 relative">
                 {/* Mobile Logo */}
                 <div className="absolute top-8 left-8 lg:hidden">
-                    <Link to="/" className="flex items-center gap-2">
-                        <GraduationCap className="w-6 h-6 text-slate-900" />
-                        <span className="font-serif font-bold text-slate-900">Kriscap</span>
+                    <Link to="/" className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+                            S
+                        </div>
+                        <span className="font-bold text-slate-900 border-l border-slate-300 pl-3">K.E. Career Institute</span>
                     </Link>
                 </div>
 
@@ -94,9 +100,9 @@ const Register = () => {
                     animate={{ opacity: 1, x: 0 }}
                     className="w-full max-w-md"
                 >
-                    <div className="text-center lg:text-left mb-10">
-                        <h1 className="font-serif text-3xl font-bold text-slate-900 mb-2">Create Account</h1>
-                        <p className="text-slate-500 italic">Enroll in the Kriscap Education portal today.</p>
+                    <div className="text-center lg:text-left mb-10 mt-8 lg:mt-0">
+                        <h1 className="text-3xl font-bold text-slate-900 mb-2">Create Account</h1>
+                        <p className="text-slate-500">Enroll in the K.E. Career Institute portal today.</p>
                     </div>
 
                     <div className="bg-white rounded-[2rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] p-8 md:p-10">
@@ -110,7 +116,7 @@ const Register = () => {
                                         placeholder="Enter your full name"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        className="pl-12 h-13 rounded-xl border-slate-200 focus:border-amber-500 focus:ring-amber-500/20 bg-slate-50/50 transition-all"
+                                        className="pl-12 h-14 rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 bg-slate-50/50 transition-all font-medium"
                                         required
                                         disabled={isLoading}
                                     />
@@ -127,7 +133,7 @@ const Register = () => {
                                         placeholder="you@example.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="pl-12 h-13 rounded-xl border-slate-200 focus:border-amber-500 focus:ring-amber-500/20 bg-slate-50/50 transition-all"
+                                        className="pl-12 h-14 rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 bg-slate-50/50 transition-all font-medium"
                                         required
                                         disabled={isLoading}
                                     />
@@ -144,14 +150,14 @@ const Register = () => {
                                         placeholder="Create a strong password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="pl-12 h-13 rounded-xl border-slate-200 focus:border-amber-500 focus:ring-amber-500/20 bg-slate-50/50 transition-all"
+                                        className="pl-12 h-14 rounded-2xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 bg-slate-50/50 transition-all font-medium"
                                         required
                                         disabled={isLoading}
                                     />
                                 </div>
                             </div>
 
-                            <Button type="submit" className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-lg transition-all active:scale-[0.98] mt-4" disabled={isLoading}>
+                            <Button type="submit" className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] mt-4" disabled={isLoading}>
                                 {isLoading ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
                                 ) : (
@@ -166,7 +172,7 @@ const Register = () => {
                         <div className="mt-8 pt-8 border-t border-slate-100 text-center">
                             <p className="text-sm text-slate-500">
                                 Already a member of the academy?{" "}
-                                <Link to="/login" className="text-amber-600 font-bold hover:underline">
+                                <Link to="/login" className="text-blue-600 font-bold hover:underline">
                                     Sign In
                                 </Link>
                             </p>

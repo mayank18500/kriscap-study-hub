@@ -47,31 +47,29 @@ const DashboardSidebar = ({ isOpen, onClose }: DashboardSidebarProps) => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-full w-64 bg-sidebar text-sidebar-foreground z-50 transform transition-transform duration-300 lg:translate-x-0",
+          "fixed top-0 left-0 h-full w-64 bg-sidebar text-sidebar-foreground z-50 transform transition-transform duration-300 lg:translate-x-0 border-r border-border",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex flex-col h-full relative">
-          {/* Subtle Texture Overlay */}
-          <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
 
-          {/* Header - Classical Branding */}
-          <div className="relative flex items-center justify-between p-8 border-b border-slate-800/50">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:border-amber-500/50 transition-all">
-                <img src="/krish_logo.jpeg" alt="Logo" className="w-10 h-10 rounded-full" />
+          {/* Header - K.E. Branding */}
+          <div className="relative flex items-center justify-between p-8 border-b border-border/50">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">
+                S
               </div>
               <div className="flex flex-col">
-                <span className="font-serif font-bold text-xl tracking-tight text-white leading-none">
-                  Kriscap
+                <span className="font-bold text-slate-900 leading-none">
+                  K.E. Career
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-amber-500 font-bold mt-1">
-                  Education
+                <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mt-1">
+                  Institute
                 </span>
               </div>
             </Link>
             <button 
-              className="lg:hidden p-2 rounded-full hover:bg-slate-800 text-slate-400 transition-colors" 
+              className="lg:hidden p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors" 
               onClick={onClose}
             >
               <X className="w-5 h-5" />
@@ -94,22 +92,22 @@ const DashboardSidebar = ({ isOpen, onClose }: DashboardSidebarProps) => {
                   to={item.href}
                   onClick={onClose}
                   className={cn(
-                    "group flex items-center justify-between px-4 py-3.5 rounded-xl font-medium transition-all duration-200",
+                    "group flex items-center justify-between px-4 py-3.5 rounded-2xl font-medium transition-all duration-200",
                     active
-                      ? "bg-amber-500/10 text-amber-400 shadow-sm"
-                      : "text-slate-400 hover:text-slate-100 hover:bg-slate-800/50"
+                      ? "bg-primary text-white shadow-md shadow-primary/10"
+                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className={cn(
                       "w-5 h-5 transition-colors",
-                      active ? "text-amber-500" : "text-slate-500 group-hover:text-slate-300"
+                      active ? "text-white" : "text-slate-400 group-hover:text-primary"
                     )} />
                     <span className="text-sm tracking-wide">{item.name}</span>
                   </div>
                   {active && (
                     <motion.div layoutId="activeNav" className="flex items-center">
-                      <ChevronRight className="w-4 h-4 text-amber-500" />
+                      <ChevronRight className="w-4 h-4 text-white/50" />
                     </motion.div>
                   )}
                 </Link>
@@ -118,24 +116,24 @@ const DashboardSidebar = ({ isOpen, onClose }: DashboardSidebarProps) => {
           </nav>
 
           {/* Footer - Student Identity Card */}
-          <div className="relative p-6 mt-auto border-t border-slate-800/50 bg-slate-900/50">
-            <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 mb-4">
+          <div className="relative p-6 mt-auto border-t border-border/50 bg-slate-50/50">
+            <div className="p-4 rounded-2xl bg-white border border-slate-100 shadow-sm mb-4">
               <div className="flex items-center gap-3 mb-3">
                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                     Verified Session
                  </span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-500 italic">
-                 <ShieldCheck className="w-3 h-3 text-amber-500/50" />
-                 <span>Official Student ID: KR-2026</span>
+              <div className="flex items-center gap-2 text-xs text-slate-600 font-medium">
+                 <ShieldCheck className="w-4 h-4 text-primary" />
+                 <span>Student ID: KE-{new Date().getFullYear()}</span>
               </div>
             </div>
 
             <Link to="/">
               <Button
                 variant="ghost"
-                className="w-full justify-start rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-400/10 transition-all group"
+                className="w-full justify-start rounded-2xl text-slate-500 hover:text-rose-500 hover:bg-rose-50 transition-all group h-12"
               >
                 <LogOut className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform" />
                 <span className="font-bold uppercase tracking-widest text-xs">Log Out</span>

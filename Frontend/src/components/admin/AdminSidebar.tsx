@@ -8,12 +8,13 @@ import {
   Upload,
   CreditCard,
   LogOut,
-  GraduationCap,
   X,
   Settings,
   MessageSquare,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 interface AdminSidebarProps {
   isOpen: boolean;
@@ -46,7 +47,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-foreground/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
           onClick={onClose}
         />
       )}
@@ -54,56 +55,80 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-full w-64 bg-sidebar text-sidebar-foreground z-50 transform transition-transform duration-300 lg:translate-x-0",
+          "fixed top-0 left-0 h-full w-64 bg-white z-50 transform transition-transform duration-300 lg:translate-x-0 border-r border-border",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-sidebar-border">
-            <Link to="/admin" className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-accent-foreground" />
+
+          {/* Header - K.E. Admin Branding */}
+          <div className="flex items-center justify-between p-8 border-b border-border/50">
+            <Link to="/admin" className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">
+                S
               </div>
-              <div>
-                <span className="font-heading font-bold text-lg">Admin</span>
-                <span className="block text-xs text-sidebar-foreground/60">Kriscap</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-slate-900 leading-none">
+                  K.E. Admin
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mt-1">
+                  Institute
+                </span>
               </div>
             </Link>
-            <button className="lg:hidden text-sidebar-foreground" onClick={onClose}>
+            <button className="lg:hidden p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors" onClick={onClose}>
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                onClick={onClose}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors",
-                  isActive(item.href)
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                )}
-              >
-                <item.icon className="w-5 h-5" />
-                {item.name}
-              </Link>
-            ))}
+          <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
+            <div className="px-4 mb-4">
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">
+                System Registry
+              </span>
+            </div>
+
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  onClick={onClose}
+                  className={cn(
+                    "group flex items-center justify-between px-4 py-3.5 rounded-2xl font-medium transition-all duration-200",
+                    active
+                      ? "bg-primary text-white shadow-md shadow-primary/10"
+                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className={cn(
+                      "w-5 h-5 transition-colors",
+                      active ? "text-white" : "text-slate-400 group-hover:text-primary"
+                    )} />
+                    <span className="text-sm tracking-wide">{item.name}</span>
+                  </div>
+                  {active && (
+                    <motion.div layoutId="activeNavAdmin" className="flex items-center">
+                      <ChevronRight className="w-4 h-4 text-white/50" />
+                    </motion.div>
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-sidebar-border">
+          <div className="p-6 mt-auto border-t border-border/50 bg-slate-50/50">
             <Link to="/">
               <Button
                 variant="ghost"
-                className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                className="w-full justify-start rounded-2xl text-slate-500 hover:text-rose-500 hover:bg-rose-50 transition-all group h-12"
               >
-                <LogOut className="w-5 h-5 mr-3" />
-                Logout
+                <LogOut className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform" />
+                <span className="font-bold uppercase tracking-widest text-xs">Log Out</span>
               </Button>
             </Link>
           </div>
