@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import AdminHeader from "@/components/admin/AdminHeader";
 
 const getPageTitle = (pathname: string): string => {
   const routes: Record<string, string> = {
@@ -29,7 +29,7 @@ const AdminLayout = () => {
       />
       
       <div className="lg:pl-64">
-        <DashboardHeader
+        <AdminHeader
           onMenuClick={() => setSidebarOpen(true)}
           title={title}
         />

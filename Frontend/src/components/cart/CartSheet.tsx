@@ -190,7 +190,7 @@ export const CartSheet = () => {
                             </div>
                         </div>
                         <Button
-                            className="w-full h-12 text-lg font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-xl active:scale-95 transition-all"
+                            className="w-full h-12 text-lg font-bold bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-all"
                             disabled={items.length === 0}
                             onClick={handleCheckoutInit}
                         >
@@ -203,7 +203,7 @@ export const CartSheet = () => {
             {/* Shipment/Address Dialog for Checkout */}
             <Dialog open={isAddressOpen} onOpenChange={setIsAddressOpen}>
                 <DialogContent className="sm:max-w-[500px] rounded-[2rem] bg-[#fdfcf8] border-none shadow-2xl overflow-hidden p-0">
-                    <div className="bg-slate-900 p-8 text-white relative">
+                    <div className="bg-gradient-to-r from-[#0b1f3c] to-[#1e3a5f] p-8 text-white relative">
                         <div className="absolute top-0 right-0 p-6 opacity-10">
                             <Truck size={100} />
                         </div>
@@ -251,7 +251,7 @@ export const CartSheet = () => {
                         <Button
                             onClick={handleProcessPayment}
                             disabled={isProcessing}
-                            className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-xl transition-all active:scale-95"
+                            className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-95"
                         >
                             {isProcessing ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : `Pay ₹${totalPrice}`}
                         </Button>

@@ -2,23 +2,24 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { Star, ShieldCheck, Users } from "lucide-react";
 
 const HERO_SLIDES = [
   {
     id: 1,
-    bgHex: "#122b3e",
-    bgImage: "url('/img/hero-student.png')",
-    title: "Unlock Your NIOS<br />Success with K.E.",
+    bgHex: "#0f172a", // Darker slate/navy for a more premium look
+    bgImage: "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1400&auto=format&fit=crop')",
+    title: "Become NIOS Board Exam <span class='text-amber-400'>Ready...</span>",
     subtitle: "Join the registered institute delivering verifiable curriculum insights and immediate certification preparation.",
     buttons: [
       { text: "Start Admission", link: "/admission", primary: true },
-      { text: "Explore Courses", link: "/courses", primary: false }
+      { text: "Book Free Counseling", link: "https://wa.me/917023057797", primary: false, external: true }
     ]
   },
   {
     id: 2,
-    bgHex: "#0f172a",
-    bgImage: "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1400&auto=format&fit=crop')",
+    bgHex: "#122b3e", // Navy Blue
+    bgImage: "url('/img/hero-student.png')",
     title: "Interactive Daily<br />Live Classes",
     subtitle: "Engage with expert educators in real-time. Step up your game with India's best interactive learning platform.",
     buttons: [
@@ -28,7 +29,7 @@ const HERO_SLIDES = [
   },
   {
     id: 3,
-    bgHex: "#0f2c25",
+    bgHex: "#0f2c25", // Deep forest green
     bgImage: "url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1400&auto=format&fit=crop')",
     title: "Comprehensive<br />Study Materials",
     subtitle: "Access over 50,000+ notes, handwritten guides, and comprehensive past exam analysis to boost your scores.",
@@ -38,6 +39,28 @@ const HERO_SLIDES = [
     ]
   }
 ];
+
+const TrustIndicators = () => (
+  <motion.div 
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.8, duration: 0.5 }}
+    className="mt-8 flex flex-wrap items-center gap-4 text-sm"
+  >
+    <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-3 py-1.5 backdrop-blur-sm">
+      <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+      <span className="text-white font-medium">4.9/5 Rating</span>
+    </div>
+    <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-3 py-1.5 backdrop-blur-sm">
+      <Users className="w-4 h-4 text-blue-400" />
+      <span className="text-white font-medium">50,000+ Students</span>
+    </div>
+    <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-3 py-1.5 backdrop-blur-sm">
+      <ShieldCheck className="w-4 h-4 text-green-400" />
+      <span className="text-white font-medium">Verified Platform</span>
+    </div>
+  </motion.div>
+);
 
 const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,10 +76,10 @@ const Hero = () => {
   }, [isPaused]);
 
   return (
-    <section className="pt-28 pb-8 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section className="pt-8 pb-8 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="container mx-auto">
         <div 
-          className="relative rounded-[40px] overflow-hidden shadow-2xl min-h-[500px] bg-[#122b3e]"
+          className="relative rounded-[40px] overflow-hidden shadow-2xl min-h-[550px] bg-[#122b3e]"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -75,24 +98,29 @@ const Hero = () => {
                   className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.15] mb-6"
                   dangerouslySetInnerHTML={{ __html: HERO_SLIDES[currentIndex].title }}
                 />
-                <p className="text-blue-100/90 text-lg sm:text-xl max-w-md mb-8 leading-relaxed font-medium">
+                <p className="text-slate-300 text-lg sm:text-xl max-w-md mb-8 leading-relaxed font-medium">
                   {HERO_SLIDES[currentIndex].subtitle}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   {HERO_SLIDES[currentIndex].buttons.map((btn, idx) => (
-                    <Link key={idx} to={btn.link}>
-                      {btn.primary ? (
-                        <Button className="w-full sm:w-auto rounded-full px-8 h-14 bg-blue-500 hover:bg-blue-600 text-white font-bold text-[15px] transition-all shadow-xl shadow-blue-500/20">
+                    btn.external ? (
+                      <a key={idx} href={btn.link} target="_blank" rel="noopener noreferrer">
+                        <Button variant={btn.primary ? "default" : "outline"} className={`w-full sm:w-auto rounded-full px-8 h-14 font-bold text-[15px] transition-all ${btn.primary ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-600/20' : 'border-white/30 text-white bg-white/10 hover:bg-white/20 hover:border-white/50'}`}>
                           {btn.text}
                         </Button>
-                      ) : (
-                        <Button variant="outline" className="w-full sm:w-auto rounded-full border-blue-400/50 text-blue-100 bg-transparent hover:bg-blue-400/10 hover:text-white hover:border-blue-300 h-14 px-8 font-bold text-[15px] transition-all">
+                      </a>
+                    ) : (
+                      <Link key={idx} to={btn.link}>
+                        <Button variant={btn.primary ? "default" : "outline"} className={`w-full sm:w-auto rounded-full px-8 h-14 font-bold text-[15px] transition-all ${btn.primary ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-600/20' : 'border-white/30 text-white bg-white/10 hover:bg-white/20 hover:border-white/50'}`}>
                           {btn.text}
                         </Button>
-                      )}
-                    </Link>
+                      </Link>
+                    )
                   ))}
                 </div>
+                
+                {/* Trust Indicators */}
+                <TrustIndicators />
               </div>
 
               {/* Background Image Container */}

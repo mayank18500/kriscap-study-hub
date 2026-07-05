@@ -1,12 +1,21 @@
 import { Link } from "react-router-dom";
-import { GraduationCap, Phone, Mail, MapPin, MessageCircle, ArrowRight } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle, ArrowRight, Instagram, Youtube, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   const quickLinks = [
-    { name: "TMA Files", href: "/tma-files" },
-    { name: "Project Files", href: "/project-files" },
-    { name: "How It Works", href: "/#how-it-works" },
+    { name: "Home", href: "/" },
+    { name: "All Courses", href: "/courses" },
+    { name: "Study Store", href: "/store" },
+    { name: "About Us", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ];
+
+  const supportLinks = [
+    { name: "Track Order", href: "/orders" },
+    { name: "Downloads", href: "/orders" },
+    { name: "Student Dashboard", href: "/dashboard" },
+    { name: "FAQ", href: "/#faq" },
   ];
 
   const legalLinks = [
@@ -16,44 +25,60 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative bg-[#0f172a] text-slate-200 pt-16 pb-8 overflow-hidden">
-      {/* Decorative Classical Element mapped to dark blue styling */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-      
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
+    <footer className="relative bg-[#0b1f3c] text-slate-300 pt-20 pb-8 overflow-hidden border-t border-white/10">
+      <div className="w-full px-6 md:px-12 max-w-none">
+        
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
           
-          {/* Brand & Description */}
-          <div className="lg:col-span-6 space-y-6">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 group-hover:border-blue-500/50 transition-all">
-                <span className="font-bold text-blue-500 text-xl leading-none flex items-center justify-center">S</span>
+          {/* Column 1: Brand & Contact (4 cols) */}
+          <div className="lg:col-span-4 space-y-6">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full overflow-hidden mb-1 shadow-md border border-white/10 flex-shrink-0 bg-white">
+                <img src="/krish_logo.jpeg" alt="Kriscap Logo" className="w-full h-full object-cover" />
               </div>
-              <span className="font-serif font-bold text-2xl tracking-tight text-white">
-                K.E. Career <span className="text-blue-400">Institute</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xl text-white tracking-tight">
+                  Kriscap Education
+                </span>
+                <span className="text-[10px] uppercase tracking-widest text-blue-400 font-bold mt-0.5">
+                  (Registered)
+                </span>
+              </div>
             </Link>
-            <p className="text-slate-400 leading-relaxed text-sm max-w-sm">
+            <p className="text-sm leading-relaxed text-slate-400 pr-4">
               Empowering NIOS students nationwide with premium study materials, expert-curated TMA files, and dedicated academic support.
             </p>
-            <div className="pt-2">
-               <a href="https://wa.me/917023057797" target="_blank" rel="noopener noreferrer">
-                <Button className="bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full px-6 shadow-lg shadow-[#25D366]/20 transition-all hover:-translate-y-1">
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  WhatsApp Support
-                </Button>
+            
+            <div className="space-y-3 pt-2">
+              <a href="tel:+917023057797" className="flex items-center gap-3 text-sm hover:text-white transition-colors">
+                <Phone className="w-4 h-4 text-blue-400" />
+                <span>+91 70230 57797</span>
               </a>
+              <a href="mailto:support@kriscap.com" className="flex items-center gap-3 text-sm hover:text-white transition-colors">
+                <Mail className="w-4 h-4 text-blue-400" />
+                <span>support@kriscap.com</span>
+              </a>
+              <div className="flex items-start gap-3 text-sm">
+                <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <span className="leading-relaxed">
+                  Kriscap Education Center, Sector 15,<br />
+                  New Delhi, India - 110001
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="lg:col-span-3">
-            <h4 className="text-white font-semibold mb-6 uppercase tracking-widest text-xs">Navigation</h4>
-            <ul className="space-y-4">
+          {/* Column 2: Quick Links (2 cols) */}
+          <div className="lg:col-span-2 lg:col-start-6">
+            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Quick Links</h4>
+            <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <Link to={link.href} className="text-slate-400 hover:text-blue-400 transition-colors text-sm flex items-center group">
-                    <ArrowRight className="w-3 h-3 mr-2 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                  <Link to={link.href} className="text-sm hover:text-white transition-colors flex items-center group">
+                    <span className="w-0 overflow-hidden group-hover:w-4 transition-all duration-300">
+                      <ArrowRight className="w-3 h-3 text-blue-400" />
+                    </span>
                     {link.name}
                   </Link>
                 </li>
@@ -61,30 +86,70 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Legal */}
-          <div className="lg:col-span-3">
-            <h4 className="text-white font-semibold mb-6 uppercase tracking-widest text-xs">Governance</h4>
-            <ul className="space-y-4">
-              {legalLinks.map((link) => (
+          {/* Column 3: Support (2 cols) */}
+          <div className="lg:col-span-2">
+            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Support</h4>
+            <ul className="space-y-3">
+              {supportLinks.map((link) => (
                 <li key={link.name}>
-                  <Link to={link.href} className="text-slate-400 hover:text-blue-400 transition-colors text-sm">
+                  <Link to={link.href} className="text-sm hover:text-white transition-colors flex items-center group">
+                    <span className="w-0 overflow-hidden group-hover:w-4 transition-all duration-300">
+                      <ArrowRight className="w-3 h-3 text-blue-400" />
+                    </span>
                     {link.name}
                   </Link>
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Column 4: Newsletter & Social (4 cols) */}
+          <div className="lg:col-span-3 lg:col-start-10 space-y-6">
+            <div>
+              <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Join Our Newsletter</h4>
+              <p className="text-sm text-slate-400 mb-4">
+                Get the latest NIOS updates and exam tips directly in your inbox.
+              </p>
+              <div className="flex gap-2">
+                <input 
+                  type="email" 
+                  placeholder="Your email address" 
+                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
+                />
+                <Button className="bg-blue-600 hover:bg-blue-700 rounded-xl px-4 shrink-0">
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <h4 className="text-white font-bold mb-4 uppercase tracking-widest text-xs">Follow Us</h4>
+              <div className="flex gap-3">
+                <a href="#" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
+                  <Youtube className="w-4 h-4" />
+                </a>
+                <a href="#" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a href="#" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
+                  <Facebook className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-slate-500 text-xs tracking-wide">
-            © {new Date().getFullYear()} K.E. CAREER INSTITUTE PVT LTD.
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-slate-500 text-sm">
+            © {new Date().getFullYear()} Kriscap Education Pvt Ltd. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-slate-500 text-xs italic">
-              <span>Excellence in NIOS Distance Learning</span>
-            </div>
+          <div className="flex flex-wrap items-center gap-4 md:gap-6 text-sm text-slate-500">
+            {legalLinks.map((link) => (
+              <Link key={link.name} to={link.href} className="hover:text-white transition-colors">
+                {link.name}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

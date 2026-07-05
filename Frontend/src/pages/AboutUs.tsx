@@ -11,7 +11,7 @@ const AboutUs = () => {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 overflow-hidden bg-primary px-4 lg:px-8">
         <div className="absolute inset-0 bg-[url('/img/hero-student.png')] bg-cover bg-center opacity-10 mix-blend-overlay" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
+        <div className="w-full px-6 md:px-12 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -33,7 +33,7 @@ const AboutUs = () => {
 
       {/* Stats/Trust Bar */}
       <section className="bg-white border-b border-slate-100">
-        <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="w-full px-6 md:px-12 py-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { label: "Active Students", value: "10,000+", icon: Users },
@@ -62,7 +62,7 @@ const AboutUs = () => {
 
       {/* Mission & Features */}
       <section className="py-24 px-6 relative bg-gray-50 flex-1">
-        <div className="max-w-6xl mx-auto">
+        <div className="w-full px-6 md:px-12">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div 
               initial={{ opacity: 0, x: -30 }}

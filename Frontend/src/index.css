@@ -6,16 +6,16 @@
 
 @layer base {
   :root {
-    /* Primary - Dark Blue (from mockup: #122b3e) */
-    --primary: 205 54% 15%;
+    /* Primary - Trust Navy (#0B1F3C) */
+    --primary: 215 69% 14%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary - Soft Emerald/Green */
-    --secondary: 146 54% 55%;
+    /* Secondary - Success Green (#16A34A) */
+    --secondary: 142 76% 36%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Accent - Gold/Amber */
-    --accent: 45 90% 65%;
+    /* Accent - Premium Gold (#F59E0B) */
+    --accent: 38 92% 50%;
     --accent-foreground: 222 47% 11%;
     
     /* Backgrounds */

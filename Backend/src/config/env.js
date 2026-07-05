@@ -4,15 +4,15 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const requiredKeys = [
-    "MONGO_URI",
+    "DATABASE_URL",
     "JWT_SECRET",
     "CLOUDINARY_CLOUD_NAME",
     "CLOUDINARY_API_KEY",
     "CLOUDINARY_API_SECRET",
     "EMAIL_USER",
-    "EMAIL_USER",
     "EMAIL_PASS",
-    "FRONTEND_URL"
+    "FRONTEND_URL",
+    "CLERK_WEBHOOK_SECRET"
 ];
 
 const missingKeys = requiredKeys.filter(key => !process.env[key]);
@@ -33,7 +33,7 @@ if (missingOptional.length > 0) {
 
 const config = {
     PORT: parseInt(process.env.PORT || "5000", 10),
-    MONGO_URI: process.env.MONGO_URI,
+    DATABASE_URL: process.env.DATABASE_URL,
     JWT_SECRET: process.env.JWT_SECRET,
     RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
     RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,

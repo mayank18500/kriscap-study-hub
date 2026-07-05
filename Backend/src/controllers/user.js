@@ -1,25 +1,20 @@
-const User = require("../models/User");
-const Order = require("../models/Order");
-const Product = require("../models/Product");
-const bcrypt = require("bcryptjs");
+const prisma = require("../config/prisma");
 
 exports.getDashboardStats = async (req, res) => {
     try {
         const userId = req.userId;
 
-        // Aggregations
-        const orders = await Order.find({ user: userId });
+        const orders = await prisma.order.findMany({
+            where: { userId },
+            include: { items: { include: { product: true } } },
+            orderBy: { createdAt: "desc" }
+        });
 
-        const tmaPurchased = orders.filter(o => {
-            // Assuming we check products, but for now filtering simplistically or if we populate products
-            // ideally we filter by 'type' inside population or check status
-            return o.status === 'Completed';
-        }).length; // This logic needs to be robust based on product type
-        // Since Order schema doesn't duplicate product type, we might need to populate OR just count completed orders for now
-
-        const projectOrders = orders.length; // Placeholder logic
-        const totalDownloads = 0; // Placeholder
-        const pendingDeliveries = orders.filter(o => o.status === 'In Transit' || o.status === 'Pending').length;
+        // Simplified stats calculation
+        const tmaPurchased = orders.filter(o => o.status === 'Completed').length;
+        const projectOrders = orders.length; 
+        const totalDownloads = 0; 
+        const pendingDeliveries = orders.filter(o => o.status === 'In_Transit' || o.status === 'Pending').length;
 
         res.json({
             stats: {
@@ -35,82 +30,104 @@ exports.getDashboardStats = async (req, res) => {
             },
         });
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        console.error("Error in getDashboardStats:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
 exports.saveAddress = async (req, res) => {
     try {
         const { addresses } = req.body;
-        const user = await User.findById(req.userId);
+        const userId = req.userId;
 
-        if (!user) {
+        const userExists = await prisma.user.findUnique({ where: { id: userId } });
+        if (!userExists) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        user.addresses = addresses;
-        await user.save();
+        // Replace all addresses for the user
+        await prisma.address.deleteMany({ where: { userId } });
+        
+        if (addresses && addresses.length > 0) {
+            await prisma.address.createMany({
+                data: addresses.map(a => ({
+                    addressLine1: a.addressLine1,
+                    city: a.city,
+                    state: a.state,
+                    pincode: a.pincode,
+                    isDefault: a.isDefault || false,
+                    userId
+                }))
+            });
+        }
+
+        const user = await prisma.user.findUnique({ 
+            where: { id: userId },
+            include: { addresses: true }
+        });
 
         res.json(user);
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        console.error("Error saving address:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, phoneNumber, email, password } = req.body; // Allow email/password update if needed
-        const user = await User.findById(req.userId);
+        const { name, phoneNumber } = req.body; 
+        const userId = req.userId;
+
+        const user = await prisma.user.findUnique({ where: { id: userId } });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        if (name) user.name = name;
-        if (phoneNumber) user.phoneNumber = phoneNumber;
-        // if (email) user.email = email; // Generally requires email verification
+        const data = {};
+        if (name) data.name = name;
+        if (phoneNumber) data.phoneNumber = phoneNumber;
 
-        // Simple password update (should ideally be separate)
-        if (password && password.length >= 6) {
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(password, salt);
-        }
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data,
+            include: { addresses: true }
+        });
 
-        await user.save();
-
-        // Return user without password
-        const userWithoutPassword = await User.findById(req.userId).select("-password");
-        res.json(userWithoutPassword);
+        res.json(updatedUser);
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        console.error("Error updating profile:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
 exports.getDownloads = async (req, res) => {
     try {
         const userId = req.userId;
-        const orders = await Order.find({ user: userId, status: "Completed" }).populate("products.product").sort({ createdAt: -1 });
+        const orders = await prisma.order.findMany({
+            where: { userId, status: "Completed" },
+            include: { items: { include: { product: true } } },
+            orderBy: { createdAt: "desc" }
+        });
 
         const downloads = orders.flatMap(order => {
-            // Safe check validation
-            if (!order.products || order.products.length === 0) return [];
+            if (!order.items || order.items.length === 0) return [];
 
-            const product = order.products[0].product;
-            if (product && product.type === "TMA") {
-                return {
-                    id: product._id,
-                    name: product.name,
+            return order.items
+                .filter(item => item.product.type === "TMA")
+                .map(item => ({
+                    id: item.product.id,
+                    name: item.product.name,
                     date: order.createdAt,
-                    size: "2 MB", // Mock size if not in schema
-                    downloads: product.downloads || 0, // Mock if needed
-                    fileUrl: product.fileUrl
-                };
-            }
-            return [];
+                    size: "2 MB", 
+                    downloads: item.product.downloads || 0,
+                    fileUrl: item.product.fileUrl
+                }));
         });
 
         res.json(downloads);
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        console.error("Error getting downloads:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };

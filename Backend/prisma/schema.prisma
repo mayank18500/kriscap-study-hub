@@ -1,0 +1,519 @@
+// This is your Prisma schema file — Kriscap Study Hub v2
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// ENUMS
+// ──────────────────────────────────────────────
+
+enum Role {
+  user
+  admin
+  super_admin
+  instructor
+  support
+}
+
+enum ProductType {
+  TMA
+  PROJECT
+  NOTE
+  COURSE
+  BUNDLE
+  SERVICE
+}
+
+enum DeliveryType {
+  DIGITAL
+  PHYSICAL
+  HYBRID
+}
+
+enum ProductCategory {
+  TEXT
+  HANDWRITTEN
+}
+
+enum CopyrightStatus {
+  COPYRIGHT
+  NON_COPYRIGHT
+}
+
+enum OrderStatus {
+  Pending
+  Completed
+  In_Transit  @map("In Transit")
+  Delivered
+  Cancelled
+  Refunded
+}
+
+enum PaymentStatus {
+  Pending
+  Paid
+  Failed
+  Refunded
+}
+
+enum NotificationType {
+  ORDER
+  DOWNLOAD
+  CLASS
+  PROMOTION
+  SYSTEM
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+// ──────────────────────────────────────────────
+// IDENTITY DOMAIN
+// ──────────────────────────────────────────────
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  firstName   String?
+  lastName    String?
+  email       String    @unique
+  clerkId     String?   @unique
+  role        Role      @default(user)
+  phoneNumber String?
+  avatarUrl   String?
+  isActive    Boolean   @default(true)
+  isVerified  Boolean   @default(false)
+
+  addresses     Address[]
+  wishlist      Product[]            @relation("UserWishlist")
+  orders        Order[]
+  comments      Comment[]
+  downloads     Download[]
+  notifications Notification[]
+  enrollments   Enrollment[]
+  classRegs     ClassRegistration[]
+  testimonials  Testimonial[]
+  supportTickets SupportTicket[]
+  auditLogs     AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([clerkId])
+  @@index([role])
+}
+
+model Address {
+  id           String  @id @default(uuid())
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  state        String?
+  country      String? @default("India")
+  postalCode   String?
+  isDefault    Boolean @default(false)
+  userId       String
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// COMMERCE DOMAIN
+// ──────────────────────────────────────────────
+
+model Product {
+  id               String           @id @default(uuid())
+  name             String
+  slug             String?          @unique
+  description      String?
+  shortDescription String?
+  price            Float
+  offerPrice       Float            @default(0)
+  type             ProductType
+  deliveryType     DeliveryType     @default(DIGITAL)
+  class            String
+  subject          String?
+  medium           String?
+  thumbnailUrl     String?
+  fileUrl          String?
+  previewUrl       String?
+  category         ProductCategory?
+  copyrightStatus  CopyrightStatus  @default(NON_COPYRIGHT)
+  stock            Int              @default(0)
+  isPhysical       Boolean          @default(false)
+  isFeatured       Boolean          @default(false)
+  active           Boolean          @default(true)
+  rating           Float            @default(0)
+  reviews          Int              @default(0)
+  downloadCount    Int              @default(0)
+
+  wishlistedBy User[]      @relation("UserWishlist")
+  orderItems   OrderItem[]
+  downloads    Download[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([type])
+  @@index([isFeatured])
+  @@index([active])
+}
+
+model Wishlist {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+// ──────────────────────────────────────────────
+// ORDER DOMAIN
+// ──────────────────────────────────────────────
+
+model Order {
+  id              String        @id @default(uuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+  subtotal        Float         @default(0)
+  discountAmount  Float         @default(0)
+  taxAmount       Float         @default(0)
+  shippingCost    Float         @default(0)
+  grandTotal      Float
+  totalAmount     Float
+  status          OrderStatus   @default(Pending)
+  paymentStatus   PaymentStatus @default(Pending)
+  couponId        String?
+  coupon          Coupon?       @relation(fields: [couponId], references: [id])
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  shippingAddress   Json?
+  trackingId        String?
+  phoneNumber       String?
+
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([paymentStatus])
+}
+
+model OrderItem {
+  id                   String  @id @default(uuid())
+  orderId              String
+  order                Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId            String
+  product              Product @relation(fields: [productId], references: [id])
+  productNameSnapshot  String?
+  quantity             Int     @default(1)
+  unitPrice            Float
+  priceAtPurchase      Float
+  totalPrice           Float   @default(0)
+}
+
+// ──────────────────────────────────────────────
+// PAYMENT DOMAIN
+// ──────────────────────────────────────────────
+
+model Payment {
+  id                String        @id @default(uuid())
+  orderId           String
+  order             Order         @relation(fields: [orderId], references: [id])
+  gateway           String        @default("razorpay")
+  gatewayOrderId    String?
+  gatewayPaymentId  String?
+  gatewaySignature  String?
+  amount            Float
+  status            PaymentStatus @default(Pending)
+  paidAt            DateTime?
+  createdAt         DateTime      @default(now())
+}
+
+// ──────────────────────────────────────────────
+// COUPON DOMAIN
+// ──────────────────────────────────────────────
+
+model Coupon {
+  id             String       @id @default(uuid())
+  code           String       @unique
+  discountType   DiscountType @default(PERCENTAGE)
+  discountValue  Float
+  minimumOrder   Float        @default(0)
+  maximumDiscount Float?
+  usageLimit     Int?
+  usedCount      Int          @default(0)
+  validFrom      DateTime?
+  validUntil     DateTime?
+  isActive       Boolean      @default(true)
+  orders         Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// DIGITAL ENTITLEMENT DOMAIN
+// ──────────────────────────────────────────────
+
+model Download {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId        String
+  product          Product  @relation(fields: [productId], references: [id])
+  orderId          String?
+  downloadCount    Int      @default(0)
+  lastDownloadedAt DateTime?
+  createdAt        DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
+// ──────────────────────────────────────────────
+// LEARNING DOMAIN
+// ──────────────────────────────────────────────
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String?  @unique
+  description String?
+  thumbnail   String?
+  price       Float    @default(0)
+  isPublished Boolean  @default(false)
+
+  modules     Module[]
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Module {
+  id       String   @id @default(uuid())
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title    String
+  position Int      @default(0)
+  lessons  Lesson[]
+}
+
+model Lesson {
+  id       String  @id @default(uuid())
+  moduleId String
+  module   Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title    String
+  videoUrl String?
+  duration Int?
+  position Int     @default(0)
+}
+
+model Enrollment {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId   String
+  course     Course   @relation(fields: [courseId], references: [id])
+  progress   Float    @default(0)
+  completed  Boolean  @default(false)
+  enrolledAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+// ──────────────────────────────────────────────
+// LIVE CLASS DOMAIN
+// ──────────────────────────────────────────────
+
+model LiveClass {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  teacherName String?
+  subject     String?
+  meetingUrl  String?
+  thumbnailUrl String?
+  scheduledAt DateTime
+  duration    Int      @default(60)
+  isCompleted Boolean  @default(false)
+  isFree      Boolean  @default(true)
+  maxSeats    Int?
+
+  registrations ClassRegistration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([scheduledAt])
+  @@index([isCompleted])
+}
+
+model ClassRegistration {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  liveClassId String
+  liveClass   LiveClass @relation(fields: [liveClassId], references: [id], onDelete: Cascade)
+  joined      Boolean   @default(false)
+  joinedAt    DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@unique([userId, liveClassId])
+}
+
+// ──────────────────────────────────────────────
+// COMMUNITY DOMAIN
+// ──────────────────────────────────────────────
+
+model Comment {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text      String
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+  id       String   @id @default(uuid())
+  userId   String?
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name     String
+  course   String?
+  message  String
+  rating   Int      @default(5)
+  avatarUrl String?
+  approved Boolean  @default(false)
+  featured Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([approved])
+  @@index([featured])
+}
+
+// ──────────────────────────────────────────────
+// SUPPORT DOMAIN
+// ──────────────────────────────────────────────
+
+model SupportTicket {
+  id              String       @id @default(uuid())
+  userId          String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject         String
+  message         String
+  status          TicketStatus @default(OPEN)
+  priority        String       @default("NORMAL")
+  assignedAdminId String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// CMS DOMAIN
+// ──────────────────────────────────────────────
+
+model Blog {
+  id            String   @id @default(uuid())
+  title         String
+  slug          String   @unique
+  content       String
+  featuredImage String?
+  excerpt       String?
+  published     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([slug])
+  @@index([published])
+}
+
+model FAQ {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  category  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model HomepageSection {
+  id          String   @id @default(uuid())
+  sectionName String   @unique
+  content     Json     @default("{}")
+  isVisible   Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// NOTIFICATION DOMAIN
+// ──────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType @default(SYSTEM)
+  isRead    Boolean          @default(false)
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+// ──────────────────────────────────────────────
+// AUDIT DOMAIN
+// ──────────────────────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  adminId    String
+  admin      User     @relation(fields: [adminId], references: [id])
+  action     String
+  entityType String
+  entityId   String?
+  oldData    Json?
+  newData    Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([adminId])
+  @@index([entityType])
+  @@index([createdAt])
+}

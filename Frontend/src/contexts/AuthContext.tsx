@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "@/lib/api";
-import { User } from "@/types/user"; // Assume we need to create this type or use any
+import api, { setClerkTokenGetter } from "@/lib/api";
+import { useAuth as useClerkAuth, useUser } from "@clerk/clerk-react";
 
 interface AuthContextType {
-    user: any | null; // Replace 'any' with explicit User type later
+    user: any | null; 
     isAuthenticated: boolean;
     isLoading: boolean;
     login: (credentials: any) => Promise<any>;
@@ -15,54 +15,80 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<any | null>(null);
+    const { isLoaded, isSignedIn, getToken, signOut } = useClerkAuth();
+    const { user: clerkUser } = useUser();
+    
+    const [localUser, setLocalUser] = useState<any | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const checkAuth = async () => {
+    // Provide the token getter to our Axios instance
+    useEffect(() => {
+        setClerkTokenGetter(getToken);
+    }, [getToken]);
+
+    const fetchLocalUser = async () => {
         try {
             const { data } = await api.get("/auth/me");
-            setUser(data.user);
+            setLocalUser(data.user);
         } catch (error) {
-            console.log("Not authenticated");
-            setUser(null);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const login = async (credentials: any) => {
-        const { data } = await api.post("/auth/login", credentials);
-        setUser(data.user);
-        return data.user;
-    };
-
-    const register = async (userData: any) => {
-        try {
-            const response = await api.post("/auth/register", userData);
-            // New logic: Immediate login
-            setUser(response.data.user);
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
-    };
-
-
-
-    const logout = async () => {
-        try {
-            await api.post("/auth/logout");
-        } finally {
-            setUser(null);
+            console.log("Failed to fetch local DB user data");
+            setLocalUser(null);
         }
     };
 
     useEffect(() => {
-        checkAuth();
-    }, []);
+        if (!isLoaded) {
+            setIsLoading(true);
+            return;
+        }
+
+        if (isSignedIn) {
+            // Fetch local DB user to get role, wishlist, etc.
+            fetchLocalUser().finally(() => setIsLoading(false));
+        } else {
+            setLocalUser(null);
+            setIsLoading(false);
+        }
+    }, [isLoaded, isSignedIn]);
+
+    // Dummy functions to avoid breaking existing components that call them
+    const login = async () => {
+        console.warn("Login is handled by Clerk now");
+    };
+
+    const register = async () => {
+        console.warn("Register is handled by Clerk now");
+    };
+
+    const logout = async () => {
+        await signOut();
+    };
+
+    const checkAuth = async () => {
+        if (isSignedIn) {
+            await fetchLocalUser();
+        }
+    };
+
+    const combinedUser = localUser ? {
+        ...localUser,
+        ...clerkUser,
+        id: localUser._id, // Map for compatibility
+        name: clerkUser?.fullName || localUser.name,
+        email: clerkUser?.primaryEmailAddress?.emailAddress || localUser.email,
+        role: localUser.role
+    } : null;
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, logout, checkAuth }}>
+        <AuthContext.Provider value={{ 
+            user: combinedUser, 
+            isAuthenticated: !!isSignedIn, 
+            isLoading, 
+            login, 
+            register, 
+            logout, 
+            checkAuth 
+        }}>
             {children}
         </AuthContext.Provider>
     );

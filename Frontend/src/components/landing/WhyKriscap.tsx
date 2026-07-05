@@ -74,7 +74,7 @@ const WhyKriscap = () => {
 
   return (
     <section className="py-16 bg-[#eef5fc] text-gray-900 border-t border-gray-200">
-      <div className="container mx-auto px-4 max-w-5xl">
+      <div className="w-full px-6 md:px-12 max-w-none">
         
         {/* Header */}
         <div className="text-center mb-12">
@@ -85,55 +85,6 @@ const WhyKriscap = () => {
           <p className="text-sm md:text-base text-gray-700 max-w-2xl mx-auto font-medium">
             Revolutionize your future with Kriscap Education - The high-tech bridge from skill learning to Professional employment.
           </p>
-        </div>
-
-        {/* Conversation Section */}
-        <div className="relative mb-16 max-w-3xl mx-auto flex flex-col gap-6">
-          {/* Student Message */}
-          <div className="flex flex-col md:flex-row-reverse items-end md:items-start gap-4 self-end w-max max-w-[90%] md:max-w-[70%]">
-            <div className="flex flex-col items-center gap-2">
-              <span className="font-bold text-gray-800 text-sm">Student</span>
-              <div className="w-16 h-16 rounded-full bg-slate-200 border-2 border-slate-700 flex items-center justify-center overflow-hidden">
-                <Users className="w-8 h-8 text-slate-500" />
-              </div>
-            </div>
-            <div className="bg-white p-4 rounded-3xl rounded-tr-sm md:rounded-tr-3xl md:rounded-br-sm shadow-sm border-[1.5px] border-slate-800 mt-6 relative">
-              <p className="text-gray-800 font-medium text-sm md:text-base whitespace-pre-wrap">
-                Kriscap sir, what makes K.E. different from others?
-              </p>
-              {/* Desktop Tail */}
-              <div className="hidden md:block absolute right-[-10px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[10px] border-t-transparent border-l-[12px] border-l-white border-b-[10px] border-b-transparent z-10" />
-              <div className="hidden md:block absolute right-[-12px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[11px] border-t-transparent border-l-[13px] border-l-slate-800 border-b-[11px] border-b-transparent" />
-            </div>
-          </div>
-
-          {/* Kriscap Sir Message */}
-          <div className="flex flex-col md:flex-row items-end md:items-start gap-4 self-start w-max max-w-[90%] md:max-w-[80%]">
-            <div className="flex flex-col items-center gap-2">
-              <span className="font-bold text-gray-800 text-sm">Kriscap Sir</span>
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-[#d4af37] shadow-md flex items-center justify-center overflow-hidden bg-white">
-                <img 
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-h6tPjB6EaG5rPqZy0L2YvVXHnM4cKJ.png" 
-                  alt="Kriscap Sir" 
-                  className="w-full h-full object-cover object-top"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    if(target.src !== "https://ui-avatars.com/api/?name=Kriscap+Sir&background=random") {
-                       target.src = "https://ui-avatars.com/api/?name=Kriscap+Sir&background=random";
-                    }
-                  }}
-                />
-              </div>
-            </div>
-            <div className="bg-white p-5 md:p-6 rounded-3xl rounded-tl-sm md:rounded-tl-3xl md:rounded-bl-sm shadow-sm border-[1.5px] border-slate-800 mt-8 relative">
-              <p className="text-gray-800 text-sm md:text-base leading-relaxed font-medium">
-                At K.E., we don't just give degrees; we build careers. We train you to leave behind odd jobs and step into a dignified, professional life. Here, education means employment.
-              </p>
-              {/* Desktop Tail */}
-              <div className="hidden md:block absolute left-[-10px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[10px] border-t-transparent border-r-[12px] border-r-white border-b-[10px] border-b-transparent z-10" />
-              <div className="hidden md:block absolute left-[-12px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[11px] border-t-transparent border-r-[13px] border-r-slate-800 border-b-[11px] border-b-transparent" />
-            </div>
-          </div>
         </div>
 
         {/* Features Grid */}

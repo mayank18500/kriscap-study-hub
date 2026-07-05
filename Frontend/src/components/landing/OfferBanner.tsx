@@ -1,82 +1,97 @@
 import { useState, useEffect } from "react";
-import { Tag, Sparkles, Gift } from "lucide-react";
-import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-const OFFERS = [
+interface OfferBannerProps {
+  onViewStore: () => void;
+}
+
+const BANNERS = [
   {
     id: 1,
-    icon: <Tag className="w-5 h-5 text-blue-600 fill-blue-100" />,
-    mobileIcon: <Tag className="w-4 h-4 text-blue-600 fill-blue-100 mr-2 md:hidden" />,
-    title: "Exclusive Offer for You!",
-    description: "Get ₹30 Off on all standard orders of ₹199 or more. Valid verified NIOS documents.",
-    linkText: "[Explore Content]",
-    linkTo: "/courses",
-    badgeColors: "bg-blue-50 border-blue-100"
+    image: "/Banner/banner1.png",
+    alt: "Study Material Store Offer",
+    action: "store"
   },
   {
     id: 2,
-    icon: <Sparkles className="w-5 h-5 text-amber-600 fill-amber-100" />,
-    mobileIcon: <Sparkles className="w-4 h-4 text-amber-600 fill-amber-100 mr-2 md:hidden" />,
-    title: "New Batch Starting!",
-    description: "Join our daily live interactive classes and secure your professional future.",
-    linkText: "[Enroll Now]",
-    linkTo: "/admission",
-    badgeColors: "bg-amber-50 border-amber-100"
-  },
-  {
-    id: 3,
-    icon: <Gift className="w-5 h-5 text-emerald-600 fill-emerald-100" />,
-    mobileIcon: <Gift className="w-4 h-4 text-emerald-600 fill-emerald-100 mr-2 md:hidden" />,
-    title: "Special Mentorship",
-    description: "Get 1-on-1 ecofriendly mentorship from our expert instructors.",
-    linkText: "[Learn More]",
-    linkTo: "/about",
-    badgeColors: "bg-emerald-50 border-emerald-100"
+    image: "/Banner/banner2.png",
+    alt: "Watch Live Tutorials on YouTube",
+    action: "youtube"
   }
 ];
 
-const OfferBanner = () => {
+const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % OFFERS.length);
-    }, 4500); // 4.5 seconds per slide
+      setCurrentIndex((prev) => (prev + 1) % BANNERS.length);
+    }, 5500); // 5.5 seconds per slide
     return () => clearInterval(timer);
   }, []);
 
+  const handleBannerClick = (action: string) => {
+    if (action === "store") {
+      onViewStore();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (action === "youtube") {
+      window.open("https://youtube.com", "_blank");
+    }
+  };
+
+  const handleDragEnd = (event: any, info: any) => {
+    const swipeThreshold = 50; // pixels to trigger swipe
+    if (info.offset.x < -swipeThreshold) {
+      // Swiped left -> next slide
+      setCurrentIndex((prev) => (prev + 1) % BANNERS.length);
+    } else if (info.offset.x > swipeThreshold) {
+      // Swiped right -> prev slide
+      setCurrentIndex((prev) => (prev - 1 + BANNERS.length) % BANNERS.length);
+    }
+  };
+
   return (
-    <div className="py-6 bg-gray-50 pb-8 overflow-hidden">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="relative min-h-[140px] md:min-h-[80px] w-full max-w-5xl mx-auto flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="absolute w-full"
-            >
-              <div className="bg-white rounded-2xl md:rounded-full py-4 px-4 md:px-8 shadow-sm border border-blue-100 flex flex-col md:flex-row items-center gap-4 justify-center text-center md:text-left mx-auto">
-                <div className={`p-2.5 rounded-2xl hidden md:block border ${OFFERS[currentIndex].badgeColors}`}>
-                  {OFFERS[currentIndex].icon}
-                </div>
-                <p className="text-slate-800 text-[15px] font-medium leading-relaxed">
-                  <span className="font-bold flex items-center justify-center md:inline-flex md:mr-2 text-slate-900">
-                     {OFFERS[currentIndex].mobileIcon}
-                     {OFFERS[currentIndex].title}
-                  </span>
-                  {OFFERS[currentIndex].description} 
-                  <Link to={OFFERS[currentIndex].linkTo} className="text-primary font-bold ml-2 hover:underline transition-all">
-                    {OFFERS[currentIndex].linkText}
-                  </Link>
-                </p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+    <div className="w-full overflow-hidden bg-slate-100 flex flex-col items-center">
+      <div className="relative aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] lg:aspect-[16/5] w-full group cursor-grab active:cursor-grabbing overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+            onTap={() => handleBannerClick(BANNERS[currentIndex].action)}
+            className="absolute inset-0 w-full h-full select-none touch-pan-y"
+          >
+            <img
+              src={BANNERS[currentIndex].image}
+              alt={BANNERS[currentIndex].alt}
+              className="w-full h-full object-cover pointer-events-none"
+              loading="eager"
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Indicators */}
+      <div className="py-3 flex gap-2 justify-center bg-white w-full border-b border-slate-100">
+        {BANNERS.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentIndex(idx);
+            }}
+            className={`w-2.5 h-2.5 rounded-full transition-all ${
+              idx === currentIndex ? "bg-primary w-6" : "bg-slate-300 hover:bg-slate-400"
+            }`}
+            aria-label={`Go to slide ${idx + 1}`}
+          />
+        ))}
       </div>
     </div>
   );

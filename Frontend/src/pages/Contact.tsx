@@ -39,7 +39,7 @@ const Contact = () => {
         </p>
       </div>
 
-      <section className="flex-1 max-w-6xl mx-auto px-6 py-16 grid lg:grid-cols-5 gap-12 lg:gap-20">
+      <section className="flex-1 w-full px-6 md:px-12 py-16 grid lg:grid-cols-5 gap-12 lg:gap-20">
         
         {/* Contact Info */}
         <div className="lg:col-span-2 space-y-8">

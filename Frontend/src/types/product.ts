@@ -1,5 +1,6 @@
 export interface Product {
-    _id: string; // MongoDB ID
+    _id?: string; // Legacy MongoDB ID
+    id?: string;  // New Prisma PostgreSQL ID
     name: string;
     type: 'TMA' | 'PROJECT';
     class: string;
@@ -14,4 +15,5 @@ export interface Product {
     copyrightStatus?: 'COPYRIGHT' | 'NON_COPYRIGHT';
     stock: number;
     offerPrice?: number;
+    isPhysical?: boolean;
 }

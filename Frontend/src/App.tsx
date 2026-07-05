@@ -9,34 +9,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import ErrorBoundary from "@/components/ErrorBoundary";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Orders from "./pages/Orders";
-import Downloads from "./pages/Downloads";
-import Profile from "./pages/Profile";
-import NotFound from "./pages/NotFound";
-
-import DashboardLayout from "./layouts/DashboardLayout";
-import AdminLayout from "./layouts/AdminLayout";
-import PublicLayout from "./layouts/PublicLayout";
-
-import AdminOverview from "./pages/admin/AdminOverview";
-import AdminProducts from "./pages/admin/AdminProducts";
-import AdminOrders from "./pages/admin/AdminOrders";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminPayments from "./pages/admin/AdminPayments";
-import AdminUploads from "./pages/admin/AdminUploads";
-import AdminSettings from "./pages/admin/AdminSettings";
-import AdminComments from "./pages/admin/AdminComments";
-
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { SocketProvider } from "./contexts/SocketContext";
 import { CartProvider } from "./contexts/CartContext";
 import { CartSheet } from "./components/cart/CartSheet";
 
-/* ---------------- Lazy Pages ---------------- */
+/* ---------------- Lazy Pages & Layouts ---------------- */
 const Index = lazy(() => import("./pages/Index"));
 const TMAFiles = lazy(() => import("./pages/TMAFiles"));
 const ProjectFiles = lazy(() => import("./pages/ProjectFiles"));
@@ -45,6 +23,28 @@ const AboutUs = lazy(() => import("./pages/AboutUs"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Courses = lazy(() => import("./pages/Courses"));
 const Admission = lazy(() => import("./pages/Admission"));
+const OrdersDownloads = lazy(() => import("./pages/OrdersDownloads"));
+
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Orders = lazy(() => import("./pages/Orders"));
+const Downloads = lazy(() => import("./pages/Downloads"));
+const Profile = lazy(() => import("./pages/Profile"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
+const PublicLayout = lazy(() => import("./layouts/PublicLayout"));
+
+const AdminOverview = lazy(() => import("./pages/admin/AdminOverview"));
+const AdminProducts = lazy(() => import("./pages/admin/AdminProducts"));
+const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminPayments = lazy(() => import("./pages/admin/AdminPayments"));
+const AdminUploads = lazy(() => import("./pages/admin/AdminUploads"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminComments = lazy(() => import("./pages/admin/AdminComments"));
 
 /* ---------------- Route Guards ---------------- */
 const ProtectedRoute = () => {
@@ -103,9 +103,9 @@ const App = () => {
                     <CartSheet />
 
                     <Suspense
-                      fallback={
+                      fallback = {
                         <div className="min-h-screen flex items-center justify-center">
-                          Loading...
+                          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-slate-900"></div>
                         </div>
                       }
                     >
@@ -116,26 +116,10 @@ const App = () => {
                         <Route path="/admission" element={<Admission />} />
                         <Route path="/about" element={<AboutUs />} />
                         <Route path="/contact" element={<Contact />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/forgot-password" element={<ForgotPassword />} />
-                        <Route
-                          path="/reset-password/:resetToken"
-                          element={<ResetPassword />}
-                        />
+                        <Route path="/login/*" element={<Login />} />
+                        <Route path="/register/*" element={<Register />} />
 
-                        {/* ---------- Protected User Dashboard ---------- */}
-                        <Route element={<ProtectedRoute />}>
-                          <Route path="/dashboard" element={<DashboardLayout />}>
-                            <Route index element={<Navigate to="tma" replace />} />
-                            <Route path="tma" element={<TMAFiles />} />
-                            <Route path="projects" element={<ProjectFiles />} />
-                            <Route path="orders" element={<Orders />} />
-                            <Route path="downloads" element={<Downloads />} />
-                            <Route path="wishlist" element={<Wishlist />} />
-                            <Route path="profile" element={<Profile />} />
-                          </Route>
-                        </Route>
+                        {/* ---------- Dashboard Routes Removed (Moved to Index.tsx) ---------- */}
 
                         {/* ---------- Admin Dashboard ---------- */}
                         <Route element={<AdminRoute />}>
@@ -158,6 +142,10 @@ const App = () => {
                             <Route path="/project-files" element={<ProjectFiles />} />
                           </Route>
                         </Route>
+
+                        {/* ---------- Legacy Redirects ---------- */}
+                        <Route path="/dashboard" element={<Navigate to="/" replace />} />
+                        <Route path="/dashboard/*" element={<Navigate to="/" replace />} />
 
                         {/* ---------- 404 ---------- */}
                         <Route path="*" element={<NotFound />} />

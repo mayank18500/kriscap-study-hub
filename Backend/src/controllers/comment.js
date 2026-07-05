@@ -1,14 +1,17 @@
-const Comment = require("../models/Comment");
+const prisma = require("../config/prisma");
 
 exports.getComments = async (req, res) => {
     try {
-        const comments = await Comment.find({ isVisible: true })
-            .populate("user", "name role")
-            .sort({ createdAt: -1 })
-            .limit(20);
+        const comments = await prisma.comment.findMany({
+            where: { isVisible: true },
+            include: { user: { select: { name: true, role: true } } },
+            orderBy: { createdAt: "desc" },
+            take: 20
+        });
         res.json(comments);
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        console.error("Get Comments Error:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -17,45 +20,50 @@ exports.createComment = async (req, res) => {
         const { text } = req.body;
         if (!text) return res.status(400).json({ message: "Text is required" });
 
-        const comment = await Comment.create({
-            user: req.userId,
-            text
+        const comment = await prisma.comment.create({
+            data: {
+                userId: req.userId,
+                text
+            },
+            include: { user: { select: { name: true, role: true } } }
         });
 
-        const populatedComment = await Comment.findById(comment._id).populate("user", "name role");
-
-        res.status(201).json(populatedComment);
+        res.status(201).json(comment);
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        console.error("Create Comment Error:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
 exports.deleteComment = async (req, res) => {
     try {
         const { id } = req.params;
-        const comment = await Comment.findById(id);
+        const comment = await prisma.comment.findUnique({
+            where: { id },
+            include: { user: true }
+        });
 
         if (!comment) {
             return res.status(404).json({ message: "Comment not found" });
         }
 
         // Check if user is owner
-        if (comment.user.toString() === req.userId) {
-            await comment.deleteOne();
+        if (comment.userId === req.userId) {
+            await prisma.comment.delete({ where: { id } });
             return res.json({ message: "Comment deleted" });
         }
 
         // Check if user is admin
-        const User = require("../models/User");
-        const user = await User.findById(req.userId);
+        const requestingUser = await prisma.user.findUnique({ where: { id: req.userId } });
 
-        if (user && user.role === "admin") {
-            await comment.deleteOne();
+        if (requestingUser && requestingUser.role === "ADMIN") {
+            await prisma.comment.delete({ where: { id } });
             return res.json({ message: "Comment deleted" });
         }
 
         return res.status(403).json({ message: "Not authorized to delete this comment" });
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        console.error("Delete Comment Error:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };

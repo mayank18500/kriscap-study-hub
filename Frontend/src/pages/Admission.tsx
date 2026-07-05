@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 
-const Admission = () => {
+const Admission = ({ hideHeaderFooter = false }: { hideHeaderFooter?: boolean }) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,14 +45,14 @@ const Admission = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
+    <div className={`flex flex-col ${!hideHeaderFooter ? "min-h-screen bg-gray-50" : "bg-white"}`}>
+      {!hideHeaderFooter && <Header />}
       
       {/* Structural Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden bg-primary px-4 lg:px-8">
+      <section className={`relative overflow-hidden bg-primary px-4 lg:px-8 ${hideHeaderFooter ? "py-12" : "pt-32 pb-20"}`}>
         <div className="absolute inset-0 bg-[url('/img/hero-student.png')] bg-cover bg-center opacity-[0.08]" />
         <div className="absolute inset-0 bg-gradient-to-b from-primary via-primary/95 to-primary" />
-        <div className="max-w-6xl mx-auto text-center relative z-10">
+        <div className="w-full px-6 md:px-12 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -73,7 +73,7 @@ const Admission = () => {
       </section>
 
       {/* Visual Timeline element */}
-      <section className="py-16 -mt-10 px-6 max-w-6xl mx-auto w-full relative z-20">
+      <section className="py-16 -mt-10 px-6 md:px-12 w-full relative z-20">
          <div className="grid md:grid-cols-3 gap-6">
             {timelineSteps.map((step, idx) => (
               <motion.div 
@@ -162,11 +162,13 @@ const Admission = () => {
       </section>
 
       {/* Minimum Spacer Header Matching */}
-      <footer className="bg-white border-t border-slate-100 py-10 text-center mt-auto">
-        <p className="text-slate-500 font-medium text-sm">
-          &copy; {new Date().getFullYear()} K.E. Career Institute. All rights reserved.
-        </p>
-      </footer>
+      {!hideHeaderFooter && (
+        <footer className="bg-white border-t border-slate-100 py-10 text-center mt-auto">
+          <p className="text-slate-500 font-medium text-sm">
+            &copy; {new Date().getFullYear()} K.E. Career Institute. All rights reserved.
+          </p>
+        </footer>
+      )}
     </div>
   );
 };

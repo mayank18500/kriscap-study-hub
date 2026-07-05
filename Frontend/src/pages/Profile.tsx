@@ -82,7 +82,7 @@ const Profile = () => {
   );
 
   return (
-    <div className="max-w-4xl mx-auto pb-12">
+    <div className="w-full px-6 md:px-12 pb-12">
       {/* Profile Header: Academic Badge Style */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -136,6 +136,19 @@ const Profile = () => {
                       value={formData.name}
                       onChange={handleChange}
                       className="pl-12 h-12 rounded-xl border-slate-200 focus:ring-amber-500/20 bg-[#fdfcf8]"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Official Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Input
+                      name="email"
+                      value={formData.email}
+                      disabled
+                      className="pl-12 h-12 rounded-xl border-slate-200 bg-slate-100 cursor-not-allowed text-slate-500"
                     />
                   </div>
                 </div>

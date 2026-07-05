@@ -10,7 +10,7 @@ const UpcomingClasses = () => {
 
   return (
     <section className="pt-10 pb-6 bg-gray-50 relative z-20" id="upcoming-classes">
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="w-full px-6 md:px-12">
         <h2 className="text-[22px] md:text-2xl font-bold text-slate-800 mb-5 ml-2">Upcoming Live Classes</h2>
         
         {/* Horizontal Scroll Container */}

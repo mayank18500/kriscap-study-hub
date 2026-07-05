@@ -1,8 +1,8 @@
 const http = require("http");
-const mongoose = require("mongoose");
 const { Server } = require("socket.io");
-const app = require("./app");
+// Load environment variables FIRST before importing app which relies on them
 const config = require("./config/env");
+const app = require("./app");
 
 const server = http.createServer(app);
 
@@ -28,16 +28,17 @@ io.on("connection", (socket) => {
 });
 
 // Database Connection & Server Start
-mongoose
-    .connect(config.MONGO_URI)
+const prisma = require("./config/prisma");
+
+prisma.$connect()
     .then(() => {
-        console.log("Connected to MongoDB");
+        console.log("Connected to PostgreSQL via Prisma");
         server.listen(config.PORT, () => {
             console.log(`Server running on port ${config.PORT}`);
         });
     })
     .catch((err) => {
-        console.error("MongoDB connection error:", err);
+        console.error("PostgreSQL connection error:", err);
     });
 
 module.exports = { io };

@@ -54,7 +54,8 @@ const AdminProducts = () => {
     offerPrice: "",
     stock: "0",
     category: "TEXT",
-    copyrightStatus: "NON_COPYRIGHT"
+    copyrightStatus: "NON_COPYRIGHT",
+    isPhysical: "false"
   });
 
 
@@ -98,7 +99,7 @@ const AdminProducts = () => {
   });
 
   const resetForm = () => {
-    setNewProduct({ name: "", type: "TMA", class: "12", medium: "English", price: "", offerPrice: "", fileUrl: "", previewUrl: "", description: "", category: "TEXT", copyrightStatus: "NON_COPYRIGHT", stock: "0" });
+    setNewProduct({ name: "", type: "TMA", class: "12", medium: "English", price: "", offerPrice: "", fileUrl: "", previewUrl: "", description: "", category: "TEXT", copyrightStatus: "NON_COPYRIGHT", stock: "0", isPhysical: "false" });
     setIsEditMode(false);
     setEditProductId(null);
   };
@@ -126,23 +127,20 @@ const AdminProducts = () => {
   });
 
   const handleSaveProduct = () => {
+    const payload = {
+      ...newProduct,
+      price: Number(newProduct.price),
+      offerPrice: newProduct.offerPrice ? Number(newProduct.offerPrice) : 0,
+      stock: Number(newProduct.stock),
+      isPhysical: newProduct.isPhysical === "true" || newProduct.isPhysical === true
+    };
     if (isEditMode && editProductId) {
       updateProductMutation.mutate({
         id: editProductId,
-        productData: {
-          ...newProduct,
-          price: Number(newProduct.price),
-          offerPrice: newProduct.offerPrice ? Number(newProduct.offerPrice) : 0,
-          stock: Number(newProduct.stock)
-        }
+        productData: payload
       });
     } else {
-      createProductMutation.mutate({
-        ...newProduct,
-        price: Number(newProduct.price),
-        offerPrice: newProduct.offerPrice ? Number(newProduct.offerPrice) : 0,
-        stock: Number(newProduct.stock)
-      });
+      createProductMutation.mutate(payload);
     }
   };
 
@@ -159,7 +157,8 @@ const AdminProducts = () => {
       description: product.description || "",
       category: product.category || "TEXT",
       copyrightStatus: product.copyrightStatus || "NON_COPYRIGHT",
-      stock: product.stock?.toString() || "0"
+      stock: product.stock?.toString() || "0",
+      isPhysical: product.isPhysical?.toString() || "false"
     });
     setEditProductId(product.id);
     setIsEditMode(true);
@@ -243,32 +242,45 @@ const AdminProducts = () => {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Format / Delivery</Label>
+                  <Select value={newProduct.isPhysical} onValueChange={(v) => setNewProduct({ ...newProduct, isPhysical: v })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select format" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="false">Digital PDF Download</SelectItem>
+                      <SelectItem value="true">Physical Home Delivery</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Copyright Status</Label>
+                  <Select value={newProduct.copyrightStatus} onValueChange={(v) => setNewProduct({ ...newProduct, copyrightStatus: v })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="NON_COPYRIGHT">Non-Copyright</SelectItem>
+                      <SelectItem value="COPYRIGHT">Copyright</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
               {newProduct.type === "TMA" && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Category</Label>
-                    <Select value={newProduct.category} onValueChange={(v) => setNewProduct({ ...newProduct, category: v })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="TEXT">Text</SelectItem>
-                        <SelectItem value="HANDWRITTEN">Handwritten</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Copyright Status</Label>
-                    <Select value={newProduct.copyrightStatus} onValueChange={(v) => setNewProduct({ ...newProduct, copyrightStatus: v })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="NON_COPYRIGHT">Non-Copyright</SelectItem>
-                        <SelectItem value="COPYRIGHT">Copyright</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="space-y-2">
+                  <Label>Category (TMA Only)</Label>
+                  <Select value={newProduct.category} onValueChange={(v) => setNewProduct({ ...newProduct, category: v })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="TEXT">Text</SelectItem>
+                      <SelectItem value="HANDWRITTEN">Handwritten</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
 
@@ -448,10 +460,15 @@ const AdminProducts = () => {
                       </div>
                     </td>
                     <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.type === "TMA" ? "bg-primary/10 text-primary" : "bg-secondary/10 text-secondary"
-                        }`}>
-                        {product.type}
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <span className={`w-fit px-2 py-0.5 rounded-full text-xs font-medium ${product.type === "TMA" ? "bg-primary/10 text-primary" : "bg-secondary/10 text-secondary"
+                          }`}>
+                          {product.type}
+                        </span>
+                        <span className={`w-fit px-1.5 py-0.5 rounded text-[10px] font-semibold ${product.isPhysical ? "bg-amber-100 text-amber-800 border border-amber-200" : "bg-blue-100 text-blue-800 border border-blue-200"}`}>
+                          {product.isPhysical ? "Physical" : "Digital"}
+                        </span>
+                      </div>
                     </td>
                     <td className="py-3 px-4 text-muted-foreground">Class {product.class}</td>
                     <td className="py-3 px-4 font-medium text-foreground">

@@ -333,7 +333,7 @@ const TMAFiles = () => {
                       <Button onClick={(e) => {
                         e.stopPropagation();
                         handleBuy(file);
-                      }} disabled={file.stock < 1} className="rounded-full bg-slate-900 hover:bg-slate-800 text-white w-10 h-10 p-0 sm:w-auto sm:px-6 sm:py-2 font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+                      }} disabled={file.stock < 1} className="rounded-2xl bg-primary hover:bg-primary/90 text-white w-10 h-10 p-0 sm:w-auto sm:px-6 sm:py-2 font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                         <ShoppingCart className="w-4 h-4 sm:mr-2" />
                         <span className="hidden sm:inline">{file.stock > 0 ? "Enroll" : "Void"}</span>
                       </Button>
@@ -416,7 +416,7 @@ const TMAFiles = () => {
             <Button onClick={() => {
               setIsViewDialogOpen(false);
               handleBuy(selectedProduct!);
-            }} className="w-full bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed" disabled={selectedProduct ? selectedProduct.stock < 1 : true}>
+            }} className="w-full bg-primary text-white rounded-2xl font-bold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20" disabled={selectedProduct ? selectedProduct.stock < 1 : true}>
               Enroll Now
             </Button>
           </DialogFooter>
@@ -456,7 +456,7 @@ const TMAFiles = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={confirmPurchase} className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-lg shadow-xl shadow-slate-900/10 transition-all active:scale-95">
+            <Button onClick={confirmPurchase} className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold text-lg shadow-xl shadow-primary/20 transition-all active:scale-95">
               {isProcessing ? (
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               ) : "Authorize & Proceed"}
