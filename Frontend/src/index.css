@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,99 +6,61 @@
 
 @layer base {
   :root {
-    /* Primary - Trust Navy (#0B1F3C) */
-    --primary: 215 69% 14%;
-    --primary-foreground: 0 0% 100%;
-    
-    /* Secondary - Success Green (#16A34A) */
-    --secondary: 142 76% 36%;
-    --secondary-foreground: 0 0% 100%;
-    
-    /* Accent - Premium Gold (#F59E0B) */
-    --accent: 38 92% 50%;
+    /* Primary - Sleek Midnight */
+    --primary: 222 47% 11%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary - Electric Indigo */
+    --secondary: 243 75% 59%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Accent - Vibrant Amber */
+    --accent: 43 96% 56%;
     --accent-foreground: 222 47% 11%;
-    
+
     /* Backgrounds */
-    --background: 210 40% 98%; /* gray-50 */
+    --background: 210 40% 98%;
     --foreground: 222 47% 11%;
-    
+
     /* Cards & Surfaces */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    
+
     /* Muted */
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-    
+
     /* Borders */
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 205 54% 15%;
-    
+    --ring: 243 75% 59%;
+
     /* Destructive */
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    
+    --destructive-foreground: 210 40% 98%;
+
     /* Success */
     --success: 142 71% 45%;
-    --success-foreground: 0 0% 100%;
-    
-    /* Warning */
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 10%;
-    
-    --radius: 1rem; /* Enforce rounded pill-like aesthetics everywhere */
-    
-    /* Sidebar */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 205 54% 15%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 205 54% 15%;
-    
-    /* Shadows mapped back from redesign */
-    --shadow-sm: 0 1px 2px 0 hsl(220 9% 46% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(220 9% 46% / 0.1), 0 2px 4px -2px hsl(220 9% 46% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(220 9% 46% / 0.1), 0 4px 6px -4px hsl(220 9% 46% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(220 9% 46% / 0.1), 0 8px 10px -6px hsl(220 9% 46% / 0.1);
-    --shadow-card: 0 2px 8px -2px hsl(220 9% 46% / 0.05), 0 4px 16px -4px hsl(220 9% 46% / 0.05);
-    --shadow-card-hover: 0 8px 14px -4px hsl(220 9% 46% / 0.1), 0 4px 12px -2px hsl(220 9% 46% / 0.1);
-  }
+    --success-foreground: 210 40% 98%;
 
-  .dark {
-    --background: 222 47% 8%;
-    --foreground: 220 14% 96%;
+    /* Warning */
+    --warning: 43 96% 56%;
+    --warning-foreground: 222 47% 11%;
+
+    --radius: 1rem;
+
+    /* Shadows mapped back from redesign */
+    --shadow-sm: 0 2px 4px 0 hsl(220 9% 46% / 0.05);
+    --shadow-md: 0 4px 8px -1px hsl(220 9% 46% / 0.1), 0 2px 4px -2px hsl(220 9% 46% / 0.1);
+    --shadow-lg: 0 12px 24px -4px hsl(220 9% 46% / 0.1), 0 8px 12px -6px hsl(220 9% 46% / 0.1);
+    --shadow-xl: 0 24px 48px -8px hsl(220 9% 46% / 0.1), 0 12px 24px -12px hsl(220 9% 46% / 0.1);
     
-    --card: 222 47% 11%;
-    --card-foreground: 220 14% 96%;
-    
-    --popover: 222 47% 11%;
-    --popover-foreground: 220 14% 96%;
-    
-    --primary: 205 54% 40%;
-    --primary-foreground: 0 0% 100%;
-    
-    --secondary: 146 54% 45%;
-    --secondary-foreground: 0 0% 100%;
-    
-    --muted: 222 47% 15%;
-    --muted-foreground: 220 9% 60%;
-    
-    --accent: 45 90% 55%;
-    --accent-foreground: 222 47% 11%;
-    
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 100%;
-    
-    --border: 222 47% 18%;
-    --input: 222 47% 18%;
-    --ring: 205 54% 40%;
+    /* Modern Card Shadows */
+    --shadow-card: 0 4px 20px -2px hsl(220 20% 40% / 0.05), 0 0 3px 0 hsl(220 20% 40% / 0.02);
+    --shadow-card-hover: 0 12px 30px -4px hsl(220 20% 40% / 0.1), 0 4px 10px -2px hsl(220 20% 40% / 0.05);
   }
 }
 
@@ -113,67 +75,53 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    font-family: 'Inter', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading font-semibold tracking-tight;
+    @apply font-semibold tracking-tight;
+    font-family: 'Space Grotesk', sans-serif;
   }
 }
 
 @layer components {
-  .gradient-primary {
-    background: var(--gradient-primary);
+  /* Modern Glassmorphism */
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
   }
   
-  .gradient-secondary {
-    background: var(--gradient-secondary);
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+  }
+
+  /* Animated Gradients */
+  .gradient-primary {
+    @apply bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500;
   }
   
   .gradient-hero {
-    background: var(--gradient-hero);
+    @apply bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900;
   }
-  
-  .gradient-accent {
-    background: var(--gradient-accent);
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-500;
   }
-  
+
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
-  
+
   .shadow-card-hover {
     box-shadow: var(--shadow-card-hover);
   }
-  
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background: var(--gradient-primary);
-  }
-  
+
   .card-hover {
-    @apply transition-all duration-300 ease-out;
+    @apply transition-all duration-500 ease-out;
   }
-  
+
   .card-hover:hover {
-    @apply -translate-y-1;
+    @apply -translate-y-1.5;
     box-shadow: var(--shadow-card-hover);
-  }
-  
-  /* Status Badges */
-  .badge-success {
-    @apply bg-success/10 text-success border border-success/20;
-  }
-  
-  .badge-warning {
-    @apply bg-warning/10 text-warning border border-warning/20;
-  }
-  
-  .badge-pending {
-    @apply bg-primary/10 text-primary border border-primary/20;
-  }
-  
-  .badge-destructive {
-    @apply bg-destructive/10 text-destructive border border-destructive/20;
   }
 }
 
@@ -181,11 +129,11 @@
   .container-tight {
     @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-  
+
   .container-wide {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-  
+
   .section-padding {
     @apply py-16 md:py-24;
   }

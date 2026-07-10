@@ -16,4 +16,5 @@ export interface Product {
     stock: number;
     offerPrice?: number;
     isPhysical?: boolean;
+    active?: boolean;
 }

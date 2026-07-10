@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ShoppingCart, Star, Download, ArrowRight, FileText, Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
 
 interface FeaturedProduct {
@@ -101,79 +100,82 @@ function ProductCard({ product, idx, isInView }: { product: FeaturedProduct; idx
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.45, delay: idx * 0.1 }}
-      className="group bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
+      className="group bg-white border border-slate-100 rounded-[20px] overflow-hidden hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.025)]"
     >
       {/* Thumbnail */}
-      <div className="relative overflow-hidden h-44">
+      <div className="relative overflow-hidden h-40">
         <img
           src={product.thumbnailUrl}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
 
         {/* Badge */}
         {product.badge && (
-          <span className={`absolute top-3 left-3 ${product.badgeColor} text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide`}>
+          <span className={`absolute top-3 left-3 ${product.badgeColor} text-white text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wide`}>
             {product.badge}
           </span>
         )}
 
         {/* Type */}
-        <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+        <div className="absolute bottom-3 left-3 flex items-center gap-1">
           {product.isPhysical ? (
             <Folder className="w-3.5 h-3.5 text-white" />
           ) : (
             <FileText className="w-3.5 h-3.5 text-white" />
           )}
-          <span className="text-white text-[10px] font-bold uppercase tracking-wide">
+          <span className="text-white text-[9px] font-bold uppercase tracking-wide">
             {product.type} — {product.isPhysical ? "Physical" : "Digital"}
           </span>
         </div>
 
         {/* Discount pill */}
         {discount > 0 && (
-          <span className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+          <span className="absolute top-3 right-3 bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full">
             -{discount}%
           </span>
         )}
       </div>
 
       {/* Content */}
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-bold text-slate-900 text-sm leading-snug mb-3 line-clamp-2">{product.name}</h3>
+      <div className="p-5 flex flex-col flex-1 justify-between">
+        <div>
+          <h3 className="font-bold text-slate-900 text-xs sm:text-sm leading-snug mb-2 line-clamp-2">{product.name}</h3>
 
-        {/* Meta */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center gap-1">
-            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            <span className="text-xs font-bold text-slate-700">{product.rating}</span>
-          </div>
-          <div className="flex items-center gap-1 text-slate-400">
-            <Download className="w-3.5 h-3.5" />
-            <span className="text-xs">{product.downloads.toLocaleString()}</span>
+          {/* Meta */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-1">
+              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+              <span className="text-[11px] font-bold text-slate-700">{product.rating}</span>
+            </div>
+            <div className="flex items-center gap-1 text-slate-400">
+              <Download className="w-3 h-3" />
+              <span className="text-[11px]">{product.downloads.toLocaleString()}</span>
+            </div>
           </div>
         </div>
 
-        {/* Price */}
-        <div className="flex items-center gap-2 mb-4 mt-auto">
-          <span className="text-xl font-black text-[#0b1f3c]">
-            ₹{(product.offerPrice || product.price).toLocaleString()}
-          </span>
-          {product.offerPrice > 0 && (
-            <span className="text-sm text-slate-400 line-through">₹{product.price.toLocaleString()}</span>
-          )}
-        </div>
+        <div>
+          {/* Price */}
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-lg font-black text-[#0b1f3c]">
+              ₹{(product.offerPrice || product.price).toLocaleString()}
+            </span>
+            {product.offerPrice > 0 && (
+              <span className="text-xs text-slate-400 line-through">₹{product.price.toLocaleString()}</span>
+            )}
+          </div>
 
-        {/* CTA */}
-        <Button
-          onClick={handleAdd}
-          size="sm"
-          className="w-full rounded-xl bg-[#0b1f3c] hover:bg-[#1e3a5f] text-white font-bold h-10 text-xs"
-        >
-          <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
-          Add to Cart
-        </Button>
+          {/* CTA (Touch friendly height 44px) */}
+          <Button
+            onClick={handleAdd}
+            className="w-full rounded-xl bg-[#0b1f3c] hover:bg-[#1e3a5f] text-white font-bold h-11 text-xs"
+          >
+            <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
+            Add to Cart
+          </Button>
+        </div>
       </div>
     </motion.div>
   );
@@ -184,44 +186,45 @@ const FeaturedProducts = ({ onViewStore }: { onViewStore?: () => void }) => {
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section className="py-20 bg-slate-50" ref={ref}>
+    <section className="py-16 md:py-20 bg-slate-50" ref={ref}>
       <div className="w-full px-6 md:px-12 max-w-none">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-12">
           <div>
-            <span className="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest rounded-full mb-4">
+            <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-widest rounded-full mb-3">
               Top Products
             </span>
-            <h2 className="text-3xl md:text-5xl font-black text-[#0b1f3c]">
-              Most Popular{" "}
-              <span className="text-[#2563EB]">Study Files</span>
+            <h2 className="text-2xl md:text-5xl font-black text-[#0b1f3c] tracking-tight">
+              Most Popular <span className="text-[#2563EB]">Study Files</span>
             </h2>
-            <p className="text-slate-500 mt-2">
+            <p className="text-slate-500 text-sm mt-1">
               Trusted by thousands of NIOS students across India.
             </p>
           </div>
           <Button
             variant="outline"
-            className="rounded-full px-6 border-slate-200 text-slate-700 hover:bg-slate-100 shrink-0 font-bold"
+            className="rounded-xl px-5 border-slate-200 text-slate-700 hover:bg-slate-100 shrink-0 font-bold text-xs h-11 self-start md:self-auto"
             onClick={onViewStore}
           >
-            View All Products <ArrowRight className="w-4 h-4 ml-2" />
+            View All Products <ArrowRight className="w-4 h-4 ml-1.5" />
           </Button>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Product Grid - Scrollable on mobile, Grid on desktop */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-5 pb-6 px-4 -mx-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:px-0 md:mx-auto">
           {FEATURED.map((product, idx) => (
-            <ProductCard key={product.id} product={product} idx={idx} isInView={isInView} />
+            <div key={product.id} className="flex-shrink-0 w-[250px] sm:w-[280px] md:w-auto snap-center">
+              <ProductCard product={product} idx={idx} isInView={isInView} />
+            </div>
           ))}
         </div>
 
         {/* Trust Row */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
-          <span className="flex items-center gap-1.5">✅ Instant Downloads</span>
-          <span className="flex items-center gap-1.5">🔒 Secure Payment via Razorpay</span>
-          <span className="flex items-center gap-1.5">📦 Physical Delivery Available</span>
-          <span className="flex items-center gap-1.5">💬 24×7 WhatsApp Support</span>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-400 font-medium">
+          <span className="flex items-center gap-1">✅ Instant Downloads</span>
+          <span className="flex items-center gap-1">🔒 Secure Payment</span>
+          <span className="flex items-center gap-1">📦 Physical Delivery</span>
+          <span className="flex items-center gap-1">💬 WhatsApp Support</span>
         </div>
       </div>
     </section>

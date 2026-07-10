@@ -92,12 +92,12 @@ const SuccessStories = () => {
       <div className="w-full px-6 md:px-12 max-w-none">
         {/* Header */}
         <div className="text-center mb-14">
-          <span className="inline-block px-4 py-1.5 bg-green-100 text-green-700 text-xs font-bold uppercase tracking-widest rounded-full mb-4">
-            Student Success Stories
+          <span className="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest rounded-full mb-4">
+            Testimonials
           </span>
-          <h2 className="text-3xl md:text-5xl font-black text-[#0b1f3c] mb-4">
+          <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">
             Real Students,{" "}
-            <span className="text-[#2563EB]">Real Results</span>
+            <span className="text-blue-600">Real Reviews</span>
           </h2>
           <p className="text-slate-500 max-w-xl mx-auto text-base">
             These are real stories from students who transformed their academic journey with Kriscap Study Hub.
@@ -139,25 +139,25 @@ const SuccessStories = () => {
                 </div>
 
                 {/* Right — Before/After */}
-                <div className="bg-gradient-to-br from-[#0b1f3c] to-[#1e3a5f] p-8 md:p-12 flex flex-col justify-center gap-6">
+                <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-8 md:p-12 flex flex-col justify-center gap-6">
                   <div className="inline-flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <span className="text-green-400 text-lg font-black">✓</span>
+                    <span className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <span className="text-emerald-400 text-lg font-black">✓</span>
                     </span>
-                    <span className="text-green-400 font-bold text-sm uppercase tracking-widest">
+                    <span className="text-emerald-400 font-bold text-sm uppercase tracking-widest">
                       Result
                     </span>
                   </div>
                   <p className="text-2xl font-black text-white">{story.result}</p>
 
                   <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4">
-                      <p className="text-red-400 text-xs font-bold uppercase mb-2">Before</p>
-                      <p className="text-slate-300 text-sm">{story.before}</p>
+                    <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4">
+                      <p className="text-amber-400 text-xs font-bold uppercase mb-2">Before</p>
+                      <p className="text-blue-50 text-sm font-medium">{story.before}</p>
                     </div>
-                    <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4">
-                      <p className="text-green-400 text-xs font-bold uppercase mb-2">After</p>
-                      <p className="text-slate-300 text-sm">{story.after}</p>
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
+                      <p className="text-emerald-400 text-xs font-bold uppercase mb-2">After</p>
+                      <p className="text-blue-50 text-sm font-medium">{story.after}</p>
                     </div>
                   </div>
                 </div>

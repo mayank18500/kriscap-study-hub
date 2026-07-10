@@ -7,6 +7,12 @@ interface OfferBannerProps {
 
 const BANNERS = [
   {
+    id: 0,
+    image: "/Banner/banner0.png",
+    alt: "Latest Admission Offer",
+    action: "admission"
+  },
+  {
     id: 1,
     image: "/Banner/banner1.png",
     alt: "Study Material Store Offer",
@@ -22,13 +28,15 @@ const BANNERS = [
 
 const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    if (isPaused) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % BANNERS.length);
-    }, 5500); // 5.5 seconds per slide
+    }, 6000); // 6 seconds per slide
     return () => clearInterval(timer);
-  }, []);
+  }, [isPaused]);
 
   const handleBannerClick = (action: string) => {
     if (action === "store") {
@@ -36,6 +44,8 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (action === "youtube") {
       window.open("https://youtube.com", "_blank");
+    } else if (action === "admission") {
+      window.location.href = "/admission";
     }
   };
 
@@ -51,43 +61,46 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
   };
 
   return (
-    <div className="w-full overflow-hidden bg-slate-100 flex flex-col items-center">
-      <div className="relative aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] lg:aspect-[16/5] w-full group cursor-grab active:cursor-grabbing overflow-hidden">
+    <div className="w-full px-4 pt-4 pb-2 bg-white flex flex-col items-center">
+      <div 
+        className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] lg:aspect-[16/5] cursor-grab active:cursor-grabbing overflow-hidden rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)]"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
-            onTap={() => handleBannerClick(BANNERS[currentIndex].action)}
+            onClick={() => handleBannerClick(BANNERS[currentIndex].action)}
             className="absolute inset-0 w-full h-full select-none touch-pan-y"
           >
             <img
               src={BANNERS[currentIndex].image}
               alt={BANNERS[currentIndex].alt}
-              className="w-full h-full object-cover pointer-events-none"
+              className="w-full h-full object-contain pointer-events-none"
               loading="eager"
             />
+            {/* Premium soft overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent pointer-events-none" />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Indicators */}
-      <div className="py-3 flex gap-2 justify-center bg-white w-full border-b border-slate-100">
+      {/* Nothing OS style pills indicator */}
+      <div className="mt-4 flex gap-1.5 justify-center">
         {BANNERS.map((_, idx) => (
           <button
             key={idx}
-            onClick={(e) => {
-              e.stopPropagation();
-              setCurrentIndex(idx);
-            }}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${
-              idx === currentIndex ? "bg-primary w-6" : "bg-slate-300 hover:bg-slate-400"
+            onClick={() => setCurrentIndex(idx)}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              idx === currentIndex ? "bg-slate-900 w-6" : "bg-slate-200 w-1.5"
             }`}
             aria-label={`Go to slide ${idx + 1}`}
           />

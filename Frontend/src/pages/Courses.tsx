@@ -33,7 +33,7 @@ const Courses = ({ hideHeaderFooter = false }: { hideHeaderFooter?: boolean }) =
   };
 
   return (
-    <div className={`flex flex-col ${!hideHeaderFooter ? "min-h-screen bg-gray-50" : "bg-white"}`}>
+    <div className={`flex flex-col ${!hideHeaderFooter ? "min-h-screen bg-gray-50 pt-16" : "bg-white"}`}>
       {!hideHeaderFooter && <Header />}
       
       {/* Dynamic Hero Section */}
@@ -84,7 +84,7 @@ const Courses = ({ hideHeaderFooter = false }: { hideHeaderFooter?: boolean }) =
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-5 flex flex-row gap-3 sm:gap-6 hover:shadow-md hover:border-slate-300 transition-all cursor-pointer relative"
+                className="bg-white rounded-[20px] border border-slate-100 p-3.5 sm:p-5 flex flex-row gap-3.5 sm:gap-6 hover:shadow-[0_15px_30px_rgba(0,0,0,0.04)] hover:border-slate-200 transition-all cursor-pointer relative shadow-[0_8px_30px_rgba(0,0,0,0.015)]"
               >
                 {/* Thumbnail Box */}
                 <div className="w-24 h-24 sm:w-48 sm:h-44 bg-slate-50 flex-shrink-0 flex items-center justify-center rounded-xl border border-slate-100 relative overflow-hidden">
@@ -187,7 +187,7 @@ const Courses = ({ hideHeaderFooter = false }: { hideHeaderFooter?: boolean }) =
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-white rounded-2xl border border-slate-200 p-3 sm:p-5 flex flex-row gap-3 sm:gap-6 hover:shadow-md hover:border-slate-300 transition-all cursor-pointer relative"
+                className="bg-white rounded-[20px] border border-slate-100 p-3.5 sm:p-5 flex flex-row gap-3.5 sm:gap-6 hover:shadow-[0_15px_30px_rgba(0,0,0,0.04)] hover:border-slate-200 transition-all cursor-pointer relative shadow-[0_8px_30px_rgba(0,0,0,0.015)]"
               >
                 {/* Thumbnail Box */}
                 <div className="w-24 h-24 sm:w-48 sm:h-44 bg-slate-50 flex-shrink-0 flex items-center justify-center rounded-xl border border-slate-100 relative overflow-hidden">
