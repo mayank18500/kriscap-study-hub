@@ -6,7 +6,7 @@ const AdmissionOptions = () => {
     <section className="py-12 bg-gray-50 pb-24 border-b border-slate-100" id="admission-options">
       <div className="container mx-auto px-4 md:px-6 text-center">
         <h2 className="text-3xl font-bold text-slate-900 mb-2">Validated Admission Pipelines</h2>
-        <p className="text-slate-500 max-w-lg mx-auto mb-10">Select the enrollment structure perfectly suited to your graduation requirements guided seamlessly by K.E.</p>
+        <p className="text-slate-500 max-w-lg mx-auto mb-10">Select the enrollment structure perfectly suited to your graduation requirements guided seamlessly by Kriscap Education.</p>
 
         <div className="w-full max-w-4xl mx-auto mb-10 rounded-2xl shadow-xl border border-slate-200 overflow-hidden bg-slate-900 flex items-center justify-center">
           <img 

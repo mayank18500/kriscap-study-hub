@@ -66,7 +66,7 @@ const Admission = ({ hideHeaderFooter = false }: { hideHeaderFooter?: boolean })
               Secure Your Academic <span className="text-blue-400">Future</span>
             </h1>
             <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed max-w-2xl mx-auto">
-              Join K.E. Career Institute for guaranteed admission protocols, stress-free documentation, and immediate verified coursework access.
+              Join Kriscap Education for guaranteed admission protocols, stress-free documentation, and immediate verified coursework access.
             </p>
           </motion.div>
         </div>
@@ -378,7 +378,7 @@ const Admission = ({ hideHeaderFooter = false }: { hideHeaderFooter?: boolean })
       {!hideHeaderFooter && (
         <footer className="bg-white border-t border-slate-100 py-10 text-center mt-auto">
           <p className="text-slate-500 font-medium text-sm">
-            &copy; {new Date().getFullYear()} K.E. Career Institute. All rights reserved.
+            &copy; {new Date().getFullYear()} Kriscap Education. All rights reserved.
           </p>
         </footer>
       )}

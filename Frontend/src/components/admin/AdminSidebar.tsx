@@ -61,7 +61,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
       >
         <div className="flex flex-col h-full">
 
-          {/* Header - K.E. Admin Branding */}
+          {/* Header - Kriscap Admin Branding */}
           <div className="flex items-center justify-between p-8 border-b border-border/50">
             <Link to="/admin" className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">
@@ -69,7 +69,7 @@ const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-slate-900 leading-none">
-                  K.E. Admin
+                  Kriscap Admin
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mt-1">
                   Institute

@@ -20,7 +20,7 @@ const StudentConvo = () => {
       <div className="w-full px-6 md:px-12 max-w-3xl flex flex-col gap-8">
 
         {/* Student Message */}
-        <Message align="end">
+        <Message align="start">
           <MessageAvatar className="flex flex-col items-center gap-1">
             <span className="font-bold text-slate-500 text-[10px] uppercase tracking-wider">Student</span>
             <Avatar className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-100 border border-slate-200 shadow-sm">
@@ -32,14 +32,14 @@ const StudentConvo = () => {
           <MessageContent>
             <Bubble>
               <BubbleContent className="text-sm sm:text-base font-semibold font-body leading-relaxed bg-white text-slate-800 shadow-sm border border-slate-200">
-                Kriscap sir, what makes K.E. different from others?
+                Kriscap sir, what makes Kriscap Education different from others?
               </BubbleContent>
             </Bubble>
           </MessageContent>
         </Message>
 
         {/* Kriscap Sir Message */}
-        <Message>
+        <Message align="end">
           <MessageAvatar className="flex flex-col items-center gap-1">
             <span className="font-bold text-slate-500 text-[10px] uppercase tracking-wider">Kriscap</span>
             <Avatar className="w-12 h-12 sm:w-16 sm:h-16 border-2 border-amber-400 shadow-md bg-white">
@@ -54,7 +54,7 @@ const StudentConvo = () => {
           <MessageContent>
             <Bubble variant="muted">
               <BubbleContent className="text-sm sm:text-base font-semibold font-body leading-relaxed bg-white text-slate-800 shadow-sm border border-slate-200">
-                At K.E., we don't just give degrees; we build careers. We train you to leave behind odd jobs and step into a dignified, professional life. Here, education means employment.
+                At Kriscap Education, we don't just give degrees; we build careers. We train you to leave behind odd jobs and step into a dignified, professional life. Here, education means employment.
               </BubbleContent>
             </Bubble>
           </MessageContent>

@@ -155,7 +155,7 @@ const ForgotPassword = () => {
                 </div>
 
                 <p className="mt-10 text-center text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
-                    K.E. Career Institute Academic Portal
+                    Kriscap Education Academic Portal
                 </p>
             </motion.div>
         </div>

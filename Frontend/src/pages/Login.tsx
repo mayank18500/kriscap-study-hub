@@ -43,7 +43,7 @@ const Login = () => {
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
                   S
                 </div>
-                <span className="font-bold text-slate-900 border-l border-slate-300 pl-3">K.E. Career Institute</span>
+                <span className="font-bold text-slate-900 border-l border-slate-300 pl-3">Kriscap Education</span>
             </Link>
         </div>
 
@@ -55,7 +55,7 @@ const Login = () => {
           <SignIn routing="path" path="/login" signUpUrl="/register" fallbackRedirectUrl="/dashboard/tma" />
           
           <p className="mt-10 text-center text-xs text-slate-400 font-medium">
-            Protected by K.E. Security Protocol &copy; {new Date().getFullYear()}
+            Protected by Kriscap Education Security Protocol &copy; {new Date().getFullYear()}
           </p>
         </motion.div>
       </div>

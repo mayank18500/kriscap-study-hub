@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface OfferBannerProps {
   onViewStore: () => void;
@@ -60,10 +61,20 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
     }
   };
 
+  const goToNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev + 1) % BANNERS.length);
+  };
+
+  const goToPrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev - 1 + BANNERS.length) % BANNERS.length);
+  };
+
   return (
     <div className="w-full px-4 pt-4 pb-1 bg-white flex flex-col items-center">
       <div
-        className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] lg:aspect-[16/5] cursor-grab active:cursor-grabbing overflow-hidden rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)]"
+        className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] lg:aspect-[16/5] cursor-grab active:cursor-grabbing overflow-hidden rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)] group"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
@@ -91,6 +102,22 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent pointer-events-none" />
           </motion.div>
         </AnimatePresence>
+
+        {/* Navigation Arrows */}
+        <button
+          onClick={goToPrev}
+          className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/70 backdrop-blur-sm text-slate-800 shadow-sm opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 hover:bg-white flex items-center justify-center"
+          aria-label="Previous banner"
+        >
+          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+        </button>
+        <button
+          onClick={goToNext}
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/70 backdrop-blur-sm text-slate-800 shadow-sm opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 hover:bg-white flex items-center justify-center"
+          aria-label="Next banner"
+        >
+          <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+        </button>
       </div>
 
       {/* Nothing OS style pills indicator */}

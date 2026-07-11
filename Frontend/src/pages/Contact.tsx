@@ -138,7 +138,7 @@ const Contact = () => {
       {/* Minimal Footer */}
       <footer className="bg-white border-t border-slate-100 py-10 text-center mt-auto">
         <p className="text-slate-500 font-medium text-sm">
-          &copy; {new Date().getFullYear()} K.E. Career Institute. All rights reserved.
+          &copy; {new Date().getFullYear()} Kriscap Education. All rights reserved.
         </p>
       </footer>
     </div>

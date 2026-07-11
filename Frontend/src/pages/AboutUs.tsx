@@ -25,7 +25,7 @@ const AboutUs = () => {
               Empowering Your <span className="text-blue-400">NIOS</span> Education Journey
             </h1>
             <p className="text-lg md:text-xl text-blue-100/90 leading-relaxed max-w-2xl mx-auto">
-              K.E. Career Institute provides highly curated, expertly verified study materials, assignments, and practicals to ensure you achieve academic excellence with ease.
+              Kriscap Education provides highly curated, expertly verified study materials, assignments, and practicals to ensure you achieve academic excellence with ease.
             </p>
           </motion.div>
         </div>
@@ -124,7 +124,7 @@ const AboutUs = () => {
       {/* Minimal Footer */}
       <footer className="bg-white border-t border-slate-100 py-10 text-center">
         <p className="text-slate-500 font-medium text-sm">
-          &copy; {new Date().getFullYear()} K.E. Career Institute. All rights reserved.
+          &copy; {new Date().getFullYear()} Kriscap Education. All rights reserved.
         </p>
       </footer>
     </div>
