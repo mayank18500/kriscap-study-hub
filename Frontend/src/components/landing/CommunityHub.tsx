@@ -28,24 +28,10 @@ const PLATFORMS = [
     textColor: "text-[#0088cc]",
     borderColor: "border-[#0088cc]/20",
     bgLight: "bg-[#0088cc]/5",
-    link: "https://t.me/kriscapeducation",
+    link: "https://t.me/kriscapvlogs",
     cta: "Join Telegram",
     emoji: "📢",
-  },
-  {
-    name: "Student Forum",
-    icon: Users,
-    members: "5,000+",
-    description:
-      "Ask questions, share your progress, and learn from fellow NIOS students in our moderated online student community.",
-    color: "bg-[#5865F2]",
-    textColor: "text-[#5865F2]",
-    borderColor: "border-[#5865F2]/20",
-    bgLight: "bg-[#5865F2]/5",
-    link: "https://wa.me/917023057797",
-    cta: "Join Community",
-    emoji: "🎓",
-  },
+  }
 ];
 
 const CommunityHub = () => {
@@ -53,10 +39,10 @@ const CommunityHub = () => {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-20 bg-slate-50 dark:bg-slate-950" ref={ref}>
+    <section className="py-8 bg-slate-50 dark:bg-slate-950" ref={ref}>
       <div className="w-full px-6 md:px-12 max-w-none">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-8">
           <span className="inline-block px-4 py-1.5 bg-purple-100 text-purple-700 text-xs font-bold uppercase tracking-widest rounded-full mb-4">
             Student Community
           </span>

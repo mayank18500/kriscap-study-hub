@@ -125,13 +125,13 @@ const Footer = () => {
             <div className="pt-4">
               <h4 className="text-white font-bold mb-4 uppercase tracking-widest text-xs">Follow Us</h4>
               <div className="flex gap-3">
-                <a href="#" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
+                <a href="https://youtube.com/@kriscapeducation?si=NlN3mUMGulpVxYPg" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
                   <Youtube className="w-4 h-4" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
+                <a href="https://www.instagram.com/kriscapeducation" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
                   <Instagram className="w-4 h-4" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
+                <a href="https://www.facebook.com/profile.php?id=61573232708616" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 flex items-center justify-center transition-all">
                   <Facebook className="w-4 h-4" />
                 </a>
               </div>

@@ -44,7 +44,7 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
       onViewStore();
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (action === "youtube") {
-      window.open("https://youtube.com", "_blank");
+      window.open("https://youtube.com/@kriscapeducation?si=NlN3mUMGulpVxYPg", "_blank");
     } else if (action === "admission") {
       window.location.href = "/admission";
     }

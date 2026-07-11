@@ -24,9 +24,9 @@ const WhyKriscap = () => {
     },
     {
       icon: <Truck className="w-8 h-8 text-blue-500" />,
-      title: "Physical files",
-      subtitle: "Home Delivery & Notes",
-      description: ""
+      title: "Physical Files & Notes",
+      subtitle: "",
+      description: "Home Delivery"
     },
     {
       icon: <Users className="w-8 h-8 text-orange-500" />,
