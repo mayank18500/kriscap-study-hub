@@ -55,26 +55,26 @@ const WhyKriscap = () => {
   ];
 
   return (
-    <section className="py-16 bg-[#eef5fc] text-gray-900 border-t border-gray-200">
+    <section className="py-16 bg-[#eef5fc] dark:bg-slate-950 text-gray-900 dark:text-slate-100 border-t border-gray-200 dark:border-slate-900">
       <div className="w-full px-6 md:px-12 max-w-none">
 
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-[#1a2b4b]">
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-[#1a2b4b] dark:text-slate-100">
             Empowering India's <br className="hidden md:block" />
-            <span className="text-[#3a7bd5]">Trusted Professional</span> Future
+            <span className="text-[#3a7bd5] dark:text-blue-500">Trusted Professional</span> Future
           </h2>
-          <p className="text-sm md:text-base text-gray-700 max-w-2xl mx-auto font-medium">
+          <p className="text-sm md:text-base text-gray-700 dark:text-slate-300 max-w-2xl mx-auto font-medium">
             Revolutionize your future with Kriscap Education - The high-tech bridge from skill learning to Professional employment.
           </p>
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 bg-white border-t border-l border-gray-800 mx-auto rounded-md overflow-hidden max-w-4xl shadow-md">
+        <div className="grid grid-cols-2 md:grid-cols-3 bg-white dark:bg-slate-900 border-t border-l border-gray-800 dark:border-slate-800 mx-auto rounded-md overflow-hidden max-w-4xl shadow-md">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="border-b border-r border-gray-800 p-4 md:p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors"
+              className="border-b border-r border-gray-800 dark:border-slate-800 p-4 md:p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
             >
               <div className="flex items-center gap-3 mb-2 w-full justify-center">
                 <div className="flex-shrink-0 relative">
@@ -86,14 +86,14 @@ const WhyKriscap = () => {
                   )}
                 </div>
                 <div className="flex flex-col items-start leading-tight">
-                  <span className="font-extrabold text-base md:text-xl text-gray-900">{feature.title}</span>
+                  <span className="font-extrabold text-base md:text-xl text-gray-900 dark:text-slate-100">{feature.title}</span>
                   {feature.subtitle && (
-                    <span className="font-semibold text-sm md:text-base text-gray-800">{feature.subtitle}</span>
+                    <span className="font-semibold text-sm md:text-base text-gray-800 dark:text-slate-300">{feature.subtitle}</span>
                   )}
                 </div>
               </div>
               {feature.description && (
-                <p className="text-xs md:text-sm text-gray-600 font-medium w-full text-center mt-1">
+                <p className="text-xs md:text-sm text-gray-600 dark:text-slate-400 font-medium w-full text-center mt-1">
                   {feature.description}
                 </p>
               )}

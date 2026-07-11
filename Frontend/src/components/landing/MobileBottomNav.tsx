@@ -14,7 +14,7 @@ const MobileBottomNav = ({ activeView, setActiveView }: { activeView: string, se
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-slate-200 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-none">
       <div className="flex justify-around items-center px-2 py-2 h-16 relative">
         {navItems.map((item) => {
           const isActive = activeView === item.id || (item.id === "admission" && activeView === "courses"); // Mapping if needed

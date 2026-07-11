@@ -74,8 +74,8 @@ const Index = () => {
           <div className="w-full max-w-7xl mx-auto flex flex-col gap-1 md:gap-2 py-0 md:py-1 px-0 sm:px-2">
             <TargetToday />
             <UpcomingClasses />
-            <WhyKriscap />
             <SuccessStories />
+            <WhyKriscap />
             <CommunityHub />
             <FAQSection />
             <FinalCTA />
@@ -88,7 +88,7 @@ const Index = () => {
 
   return (
     <HelmetProvider>
-      <div className="min-h-screen bg-slate-50 text-slate-900 antialiased flex flex-col pt-16">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased flex flex-col pt-16">
         <Helmet>
           <title>{title}</title>
           <meta name="description" content={desc} />
@@ -102,7 +102,7 @@ const Index = () => {
 
         <div className="flex-grow w-full max-w-[1920px] mx-auto">
           <Suspense fallback={
-            <div className="min-h-[75vh] flex flex-col items-center justify-center gap-5 glass m-6 rounded-3xl">
+            <div className="min-h-[75vh] flex flex-col items-center justify-center gap-5 glass dark:glass-dark m-6 rounded-3xl">
               <Loader2 className="h-12 w-12 animate-spin text-indigo-600" />
               <p className="text-slate-600 font-medium animate-pulse">Loading...</p>
             </div>

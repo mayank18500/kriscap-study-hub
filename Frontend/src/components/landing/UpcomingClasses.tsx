@@ -9,20 +9,20 @@ const UpcomingClasses = () => {
   ];
 
   return (
-    <section className="pt-10 pb-6 bg-gray-50 relative z-20" id="upcoming-classes">
+    <section className="pt-10 pb-6 bg-gray-50 dark:bg-slate-950 relative z-20" id="upcoming-classes">
       <div className="w-full px-6 md:px-12">
-        <h2 className="text-[22px] md:text-2xl font-bold text-slate-800 mb-5 ml-2">Upcoming Live Classes</h2>
+        <h2 className="text-[22px] md:text-2xl font-bold text-slate-800 dark:text-slate-100 mb-5 ml-2">Upcoming Live Classes</h2>
         
         {/* Horizontal Scroll Container */}
         <div className="flex overflow-x-auto pb-4 gap-4 snap-x hide-scrollbar scrollbar-hide py-2">
           {classes.map((cls) => (
-            <div key={cls.id} className="min-w-[260px] md:min-w-[280px] bg-white rounded-[1.25rem] p-4 shadow-sm hover:shadow-md border border-slate-100 flex items-center gap-4 snap-start cursor-pointer transition-all">
+            <div key={cls.id} className="min-w-[260px] md:min-w-[280px] bg-white dark:bg-slate-900 rounded-[1.25rem] p-4 shadow-sm hover:shadow-md border border-slate-100 dark:border-slate-800 flex items-center gap-4 snap-start cursor-pointer transition-all">
               <div className={`w-12 h-12 rounded-[1rem] flex items-center justify-center ${cls.bg}`}>
                 <cls.icon className={`w-6 h-6 ${cls.color}`} />
               </div>
               <div className="flex flex-col">
-                <h3 className="font-bold text-[15px] text-slate-800 leading-tight">{cls.title}</h3>
-                <p className="text-[13px] text-slate-500 mt-1">{cls.date}</p>
+                <h3 className="font-bold text-[15px] text-slate-800 dark:text-slate-100 leading-tight">{cls.title}</h3>
+                <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-1">{cls.date}</p>
               </div>
             </div>
           ))}

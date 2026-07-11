@@ -72,18 +72,18 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
   };
 
   return (
-    <div className="w-full px-4 pt-4 pb-1 bg-white flex flex-col items-center">
+    <div className="w-full pb-1 bg-white dark:bg-slate-950 flex flex-col items-center">
       <div
-        className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] lg:aspect-[16/5] cursor-grab active:cursor-grabbing overflow-hidden rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)] group"
+        className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] lg:aspect-[16/5] cursor-grab active:cursor-grabbing overflow-hidden border-b border-slate-100 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-none group"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
@@ -106,14 +106,14 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
         {/* Navigation Arrows */}
         <button
           onClick={goToPrev}
-          className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/70 backdrop-blur-sm text-slate-800 shadow-sm opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 hover:bg-white flex items-center justify-center"
+          className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm text-slate-800 dark:text-slate-200 shadow-sm opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 hover:bg-white dark:hover:bg-slate-800 flex items-center justify-center"
           aria-label="Previous banner"
         >
           <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <button
           onClick={goToNext}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/70 backdrop-blur-sm text-slate-800 shadow-sm opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 hover:bg-white flex items-center justify-center"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm text-slate-800 dark:text-slate-200 shadow-sm opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 hover:bg-white dark:hover:bg-slate-800 flex items-center justify-center"
           aria-label="Next banner"
         >
           <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -126,7 +126,7 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
           <button
             key={idx}
             onClick={() => setCurrentIndex(idx)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "bg-slate-900 w-6" : "bg-slate-200 w-1.5"
+            className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "bg-slate-900 dark:bg-slate-100 w-6" : "bg-slate-200 dark:bg-slate-800 w-1.5"
               }`}
             aria-label={`Go to slide ${idx + 1}`}
           />

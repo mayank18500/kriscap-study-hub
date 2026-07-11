@@ -56,11 +56,11 @@ export default function SuccessStories() {
   const story = STORIES[current];
 
   return (
-    <section className="py-4 bg-gradient-to-b from-blue-50/50 to-slate-50 px-4 max-w-sm mx-auto overflow-visible">
+    <section className="py-4 bg-gradient-to-b from-blue-50/50 to-slate-50 dark:from-slate-900/50 dark:to-slate-950 px-4 max-w-sm mx-auto overflow-visible">
       {/* Header */}
       <div className="flex items-center justify-center gap-2 mb-8">
         <MessageCircleHeart className="w-5 h-5 text-blue-500" />
-        <h2 className="text-sm font-bold text-slate-800 tracking-wide uppercase">Student Comments</h2>
+        <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-wide uppercase">Success Stories</h2>
       </div>
 
       {/* Floating Cloud Container */}
@@ -70,7 +70,7 @@ export default function SuccessStories() {
         className="relative z-10"
       >
         {/* Main Cloud Body */}
-        <div className="bg-white/95 backdrop-blur-md rounded-[2.5rem] p-5 shadow-[0_20px_40px_-15px_rgba(37,99,235,0.15)] border border-white relative z-10">
+        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-[2.5rem] p-5 shadow-[0_20px_40px_-15px_rgba(37,99,235,0.15)] dark:shadow-none border border-white dark:border-slate-800 relative z-10">
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -90,7 +90,7 @@ export default function SuccessStories() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <span className="font-bold text-sm text-slate-900 block leading-none mb-1">{story.name}</span>
+                  <span className="font-bold text-sm text-slate-900 dark:text-slate-100 block leading-none mb-1">{story.name}</span>
                   <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md inline-block">
                     {story.course}
                   </span>
@@ -102,22 +102,22 @@ export default function SuccessStories() {
               </div>
 
               {/* The Comment */}
-              <p className="text-sm leading-relaxed text-slate-700 font-medium px-1">
+              <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-medium px-1">
                 "{story.message}"
               </p>
 
               {/* Verified Result (Embedded Reply) */}
-              <div className="bg-slate-50/80 rounded-2xl p-3 border border-slate-100">
+              <div className="bg-slate-50/80 dark:bg-slate-800/80 rounded-2xl p-3 border border-slate-100 dark:border-slate-700">
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mb-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Result: {story.result}
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-[10px] bg-white p-2 rounded-xl shadow-sm border border-slate-50">
-                  <div className="text-slate-500 truncate border-r border-slate-100 pr-2">
+                <div className="grid grid-cols-2 gap-2 text-[10px] bg-white dark:bg-slate-950 p-2 rounded-xl shadow-sm border border-slate-50 dark:border-slate-800">
+                  <div className="text-slate-500 dark:text-slate-400 truncate border-r border-slate-100 dark:border-slate-800 pr-2">
                     <span className="font-bold text-slate-400 uppercase text-[8px] tracking-wider block mb-0.5">Before</span>
                     {story.before}
                   </div>
-                  <div className="text-slate-700 truncate font-semibold pl-1">
+                  <div className="text-slate-700 dark:text-slate-200 truncate font-semibold pl-1">
                     <span className="font-bold text-blue-400 uppercase text-[8px] tracking-wider block mb-0.5">After</span>
                     {story.after}
                   </div>
@@ -128,7 +128,7 @@ export default function SuccessStories() {
         </div>
 
         {/* Cloud Tail (Speech Bubble effect) */}
-        <div className="absolute -bottom-3 left-12 w-8 h-8 bg-white transform rotate-45 rounded-sm shadow-[10px_10px_20px_-5px_rgba(37,99,235,0.1)] z-0" />
+        <div className="absolute -bottom-3 left-12 w-8 h-8 bg-white dark:bg-slate-900 transform rotate-45 rounded-sm shadow-[10px_10px_20px_-5px_rgba(37,99,235,0.1)] dark:shadow-none z-0" />
       </motion.div>
 
       {/* Pagination Controls (Outside the cloud) */}
@@ -137,7 +137,7 @@ export default function SuccessStories() {
           variant="ghost"
           size="icon"
           onClick={() => setCurrent((c) => (c - 1 + STORIES.length) % STORIES.length)}
-          className="w-8 h-8 rounded-full bg-white shadow-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+          className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400"
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
@@ -146,7 +146,7 @@ export default function SuccessStories() {
           {STORIES.map((_, idx) => (
             <span
               key={idx}
-              className={`h-1.5 rounded-full transition-all duration-300 ${idx === current ? "w-5 bg-blue-500 shadow-sm shadow-blue-200" : "w-1.5 bg-slate-200"
+              className={`h-1.5 rounded-full transition-all duration-300 ${idx === current ? "w-5 bg-blue-500 shadow-sm shadow-blue-200 dark:shadow-none" : "w-1.5 bg-slate-200 dark:bg-slate-700"
                 }`}
             />
           ))}
@@ -156,7 +156,7 @@ export default function SuccessStories() {
           variant="ghost"
           size="icon"
           onClick={() => setCurrent((c) => (c + 1) % STORIES.length)}
-          className="w-8 h-8 rounded-full bg-white shadow-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+          className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400"
         >
           <ChevronRight className="w-4 h-4" />
         </Button>

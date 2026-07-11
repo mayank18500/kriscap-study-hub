@@ -49,14 +49,14 @@ function FAQItem({ question, answer, idx, isOpen, onClick }: {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: idx * 0.05 }}
-      className="border border-slate-200 rounded-2xl overflow-hidden bg-white hover:border-blue-200 transition-colors"
+      className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900 hover:border-blue-200 dark:hover:border-blue-500/50 transition-colors"
     >
       <button
         onClick={onClick}
         className="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left"
         aria-expanded={isOpen}
       >
-        <span className="font-semibold text-slate-900 text-sm md:text-base">{question}</span>
+        <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm md:text-base">{question}</span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.25 }}
@@ -76,7 +76,7 @@ function FAQItem({ question, answer, idx, isOpen, onClick }: {
           >
             <div className="px-5 md:px-6 pb-5 md:pb-6">
               <div className="h-px bg-slate-100 mb-4" />
-              <p className="text-slate-600 text-sm leading-relaxed">{answer}</p>
+              <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{answer}</p>
             </div>
           </motion.div>
         )}
@@ -91,18 +91,18 @@ const FAQSection = () => {
   const isInView = useInView(ref, { once: true });
 
   return (
-    <section className="py-20 bg-white" ref={ref}>
+    <section className="py-20 bg-white dark:bg-slate-950" ref={ref}>
       <div className="w-full px-6 md:px-12 max-w-none">
         {/* Header */}
         <div className="text-center mb-12">
           <span className="inline-block px-4 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-widest rounded-full mb-4">
             FAQs
           </span>
-          <h2 className="text-3xl md:text-4xl font-black text-[#0b1f3c] mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-[#0b1f3c] dark:text-slate-100 mb-4">
             Frequently Asked{" "}
             <span className="text-[#2563EB]">Questions</span>
           </h2>
-          <p className="text-slate-500 max-w-md mx-auto text-sm">
+          <p className="text-slate-500 dark:text-slate-400 max-w-md mx-auto text-sm">
             Have more questions? Reach us on WhatsApp — we typically respond within minutes.
           </p>
         </div>
@@ -122,8 +122,8 @@ const FAQSection = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-10 text-center bg-slate-50 rounded-2xl p-6 border border-slate-100">
-          <p className="text-slate-600 font-medium mb-3">Still have a question?</p>
+        <div className="mt-10 text-center bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+          <p className="text-slate-600 dark:text-slate-300 font-medium mb-3">Still have a question?</p>
           <a
             href="https://wa.me/917023057797"
             target="_blank"

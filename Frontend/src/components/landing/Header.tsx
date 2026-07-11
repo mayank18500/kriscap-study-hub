@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart, User, Search, ChevronRight, LogOut } from "lucide-react";
+import { Menu, X, ShoppingCart, User, Search, ChevronRight, LogOut, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface HeaderProps {
   activeView?: string;
@@ -22,6 +23,7 @@ const Header = ({ activeView, setActiveView }: HeaderProps = {}) => {
   const { isAuthenticated, logout } = useAuth();
   const { items, setIsOpen } = useCart();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   // Scroll visibility and styling detection
   useEffect(() => {
@@ -137,14 +139,18 @@ const Header = ({ activeView, setActiveView }: HeaderProps = {}) => {
 
             {/* Cart & Auth Actions (Desktop) */}
             <div className="flex items-center gap-3 border-l border-slate-200 pl-6 h-6">
+              <Button variant="ghost" size="icon" className="hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                {theme === "dark" ? <Sun className="w-4 h-4 text-slate-650 dark:text-slate-350" /> : <Moon className="w-4 h-4 text-slate-650 dark:text-slate-350" />}
+              </Button>
+
               {/* Search Trigger */}
               <Button variant="ghost" size="icon" className="hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full" onClick={() => setIsSearchOpen(true)}>
-                <Search className="w-4 h-4 text-slate-650" />
+                <Search className="w-4 h-4 text-slate-650 dark:text-slate-350" />
               </Button>
 
               {/* Cart Trigger */}
               <Button variant="ghost" size="icon" className="relative hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full" onClick={() => setIsOpen(true)}>
-                <ShoppingCart className="w-4 h-4 text-slate-650" />
+                <ShoppingCart className="w-4 h-4 text-slate-650 dark:text-slate-350" />
                 {items.length > 0 && (
                   <span className="absolute top-1 right-1 w-4 h-4 bg-blue-600 text-[10px] font-bold text-white flex items-center justify-center rounded-full shadow-md">
                     {items.length}
@@ -165,7 +171,7 @@ const Header = ({ activeView, setActiveView }: HeaderProps = {}) => {
               ) : (
                 <>
                   <Link to="/login">
-                    <Button variant="ghost" className="rounded-full px-4 h-8 font-bold text-slate-650 hover:text-blue-600 hover:bg-slate-100">
+                    <Button variant="ghost" className="rounded-full px-4 h-8 font-bold text-slate-650 hover:text-blue-600 hover:bg-slate-100 dark:text-slate-350 dark:hover:bg-slate-800">
                       Login
                     </Button>
                   </Link>
@@ -181,11 +187,19 @@ const Header = ({ activeView, setActiveView }: HeaderProps = {}) => {
 
           {/* Mobile Actions (Mobile only) */}
           <div className="flex md:hidden items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-10 h-10 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-slate-600 dark:text-slate-350"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
+            </Button>
             {/* Search */}
             <Button
               variant="ghost"
               size="icon"
-              className="w-10 h-10 hover:bg-slate-100 rounded-full text-slate-600"
+              className="w-10 h-10 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-slate-600 dark:text-slate-350"
               onClick={() => setIsSearchOpen(true)}
             >
               <Search className="w-[18px] h-[18px]" />
@@ -195,7 +209,7 @@ const Header = ({ activeView, setActiveView }: HeaderProps = {}) => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-10 h-10 hover:bg-slate-100 rounded-full text-slate-700"
+              className="w-10 h-10 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-slate-700 dark:text-slate-300"
               onClick={() => setIsMenuOpen(true)}
             >
               <Menu className="w-[18px] h-[18px]" />

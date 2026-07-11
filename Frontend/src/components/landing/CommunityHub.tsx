@@ -53,18 +53,18 @@ const CommunityHub = () => {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-20 bg-slate-50" ref={ref}>
+    <section className="py-20 bg-slate-50 dark:bg-slate-950" ref={ref}>
       <div className="w-full px-6 md:px-12 max-w-none">
         {/* Header */}
         <div className="text-center mb-14">
           <span className="inline-block px-4 py-1.5 bg-purple-100 text-purple-700 text-xs font-bold uppercase tracking-widest rounded-full mb-4">
             Student Community
           </span>
-          <h2 className="text-3xl md:text-5xl font-black text-[#0b1f3c] mb-4">
+          <h2 className="text-3xl md:text-5xl font-black text-[#0b1f3c] dark:text-slate-100 mb-4">
             You're Not Alone{" "}
             <span className="text-[#2563EB]">in This Journey</span>
           </h2>
-          <p className="text-slate-500 max-w-xl mx-auto text-base">
+          <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-base">
             Join 25,000+ NIOS students who share resources, motivate each other, and celebrate results together.
           </p>
         </div>
@@ -79,7 +79,7 @@ const CommunityHub = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: idx * 0.12 }}
-                className={`bg-white border ${platform.borderColor} rounded-2xl p-8 flex flex-col gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
+                className={`bg-white dark:bg-slate-900 border ${platform.borderColor} rounded-2xl p-8 flex flex-col gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
               >
                 {/* Icon + Members */}
                 <div className="flex items-center justify-between">
@@ -92,8 +92,8 @@ const CommunityHub = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-slate-900 text-lg mb-2">{platform.name}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">{platform.description}</p>
+                  <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-2">{platform.name}</h3>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{platform.description}</p>
                 </div>
 
                 <a
