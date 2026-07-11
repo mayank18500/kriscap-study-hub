@@ -25,14 +25,14 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative bg-[#0b1f3c] text-slate-300 pt-20 pb-8 overflow-hidden border-t border-white/10">
+    <footer className="relative bg-[#0b1f3c] text-slate-300 pt-10 md:pt-20 pb-24 md:pb-8 overflow-hidden border-t border-white/10">
       <div className="w-full px-6 md:px-12 max-w-none">
         
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-y-6 gap-x-6 lg:gap-8 mb-8 md:mb-16">
           
           {/* Column 1: Brand & Contact (4 cols) */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="lg:col-span-4 space-y-4 md:space-y-6">
             <Link to="/" className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full overflow-hidden mb-1 shadow-md border border-white/10 flex-shrink-0 bg-white">
                 <img src="/krish_logo.jpeg" alt="Kriscap Logo" className="w-full h-full object-cover" />
@@ -71,8 +71,8 @@ const Footer = () => {
 
           {/* Column 2: Quick Links (2 cols) */}
           <div className="lg:col-span-2 lg:col-start-6">
-            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Quick Links</h4>
-            <ul className="space-y-3">
+            <h4 className="text-white font-bold mb-3 md:mb-6 uppercase tracking-widest text-sm">Quick Links</h4>
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 md:flex-col md:space-y-3 md:gap-0">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <Link to={link.href} className="text-sm hover:text-white transition-colors flex items-center group">
@@ -88,8 +88,8 @@ const Footer = () => {
 
           {/* Column 3: Support (2 cols) */}
           <div className="lg:col-span-2">
-            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Support</h4>
-            <ul className="space-y-3">
+            <h4 className="text-white font-bold mb-3 md:mb-6 uppercase tracking-widest text-sm">Support</h4>
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 md:flex-col md:space-y-3 md:gap-0">
               {supportLinks.map((link) => (
                 <li key={link.name}>
                   <Link to={link.href} className="text-sm hover:text-white transition-colors flex items-center group">
@@ -104,9 +104,9 @@ const Footer = () => {
           </div>
 
           {/* Column 4: Newsletter & Social (4 cols) */}
-          <div className="lg:col-span-3 lg:col-start-10 space-y-6">
+          <div className="lg:col-span-3 lg:col-start-10 space-y-4 md:space-y-6">
             <div>
-              <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Join Our Newsletter</h4>
+              <h4 className="text-white font-bold mb-3 md:mb-6 uppercase tracking-widest text-sm">Join Our Newsletter</h4>
               <p className="text-sm text-slate-400 mb-4">
                 Get the latest NIOS updates and exam tips directly in your inbox.
               </p>
@@ -140,11 +140,11 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-500 text-sm">
+        <div className="pt-6 md:pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+          <p className="text-slate-500 text-xs md:text-sm">
             © {new Date().getFullYear()} Kriscap Education Pvt Ltd. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center gap-4 md:gap-6 text-sm text-slate-500">
+          <div className="flex flex-wrap justify-center md:justify-end items-center gap-4 md:gap-6 text-xs md:text-sm text-slate-500">
             {legalLinks.map((link) => (
               <Link key={link.name} to={link.href} className="hover:text-white transition-colors">
                 {link.name}

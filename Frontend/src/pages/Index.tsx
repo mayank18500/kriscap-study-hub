@@ -4,13 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Loader2 } from "lucide-react";
 
-// Layout & Global Components
+// Layout Components
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
 import MobileBottomNav from "@/components/landing/MobileBottomNav";
 
-// Home View Sections (Public Landing)
+// Public Sections
 import OfferBanner from "@/components/landing/OfferBanner";
 import StudentConvo from "@/components/landing/StudentConvo";
 import UpcomingClasses from "@/components/landing/UpcomingClasses";
@@ -24,7 +24,7 @@ import CommunityHub from "@/components/landing/CommunityHub";
 import FAQSection from "@/components/landing/FAQSection";
 import FinalCTA from "@/components/landing/FinalCTA";
 
-// Lazy loaded Dashboard/Account Subviews
+// Lazy Loaded Views
 const Profile = lazy(() => import("./Profile"));
 const OrdersDownloads = lazy(() => import("./OrdersDownloads"));
 const Admission = lazy(() => import("./Admission"));
@@ -32,23 +32,17 @@ const Store = lazy(() => import("./Store"));
 const Dashboard = lazy(() => import("./Dashboard"));
 const Wishlist = lazy(() => import("./Wishlist"));
 
-// SEO CONFIGURATION MAP
-const SEO_CONTENT = {
-  home: {
-    title: "Kriscap Education | Premium NIOS TMA Solutions & Academic Resources",
-    description: "Get professionally prepared NIOS TMA solutions, academic project files, and expert guidance at Kriscap Education. Boost your NIOS results today."
-  },
-  dashboard: { title: "Student Dashboard | Kriscap", description: "Access your personalized dashboard, courses, and account settings." },
-  profile: { title: "My Profile | Kriscap", description: "View and edit your student profile details." },
-  wishlist: { title: "Saved Resources | Kriscap", description: "Your bookmarked TMAs and study materials." },
-  orders: { title: "Orders & Downloads | Kriscap", description: "Access your digital purchases and TMAs." },
-  store: { title: "NIOS Digital Store | Kriscap", description: "Explore and buy premium educational resources." },
-  courses: { title: "Upcoming NIOS Classes | Admissions", description: "Enroll in live online classes for academic excellence." },
+const SEO = {
+  home: { title: "Kriscap Education | Premium NIOS TMA Solutions & Courses", desc: "Get professionally prepared NIOS TMA solutions, expert guidance, and enroll in our premium online classes to excel in your exams." },
+  dashboard: { title: "Dashboard | Kriscap", desc: "Your personalized student dashboard." },
+  profile: { title: "Profile | Kriscap", desc: "View and edit your profile." },
+  wishlist: { title: "Saved | Kriscap", desc: "Your bookmarked materials." },
+  orders: { title: "Orders | Kriscap", desc: "Access your purchases." },
+  store: { title: "Store | Kriscap", desc: "Explore high-quality educational resources, NIOS materials, and TMA files." },
+  courses: { title: "Classes & Admissions | Kriscap", desc: "Enroll in live online classes tailored for NIOS students." },
 };
 
-// --- HELPER COMPONENT: Reusable Authenticated Layout ---
-const ProtectedViewLayout = ({ children }) => (
-  // Standard container spacing for dashboard pages
+const Protected = ({ children }) => (
   <div className="pt-10 pb-24 min-h-screen container mx-auto px-4 md:px-6">
     <SignedIn>{children}</SignedIn>
     <SignedOut><RedirectToSignIn /></SignedOut>
@@ -56,119 +50,83 @@ const ProtectedViewLayout = ({ children }) => (
 );
 
 const Index = () => {
-  const [activeView, setActiveView] = useState("home");
+  const [view, setView] = useState("home");
 
   useEffect(() => {
-    const pendingSearch = sessionStorage.getItem("ke_store_search");
-    if (pendingSearch) {
-      setActiveView("store");
-      sessionStorage.removeItem("ke_store_search"); // Clean up after reading
-      return;
-    }
-
-    const pendingView = sessionStorage.getItem("ke_active_view");
-    if (pendingView) {
-      setActiveView(pendingView);
-      sessionStorage.removeItem("ke_active_view");
-    }
+    const nextView = sessionStorage.getItem("ke_store_search") ? "store" : sessionStorage.getItem("ke_active_view");
+    if (nextView) setView(nextView);
+    ["ke_store_search", "ke_active_view"].forEach(k => sessionStorage.removeItem(k));
   }, []);
 
-  // Determine current SEO based on active view
-  const currentSEO = SEO_CONTENT[activeView] || SEO_CONTENT.home;
+  const { title, desc } = SEO[view] || SEO.home;
 
-  const renderContent = () => {
-    switch (activeView) {
-      // Protected (Authenticated) Dashboard Views
-      case "dashboard": return <ProtectedViewLayout><Dashboard /></ProtectedViewLayout>;
-      case "profile": return <ProtectedViewLayout><Profile /></ProtectedViewLayout>;
-      case "wishlist": return <ProtectedViewLayout><Wishlist /></ProtectedViewLayout>;
-      case "orders": return <ProtectedViewLayout><OrdersDownloads /></ProtectedViewLayout>;
-      case "courses": return <ProtectedViewLayout><Admission hideHeaderFooter={true} /></ProtectedViewLayout>;
+  const renderView = () => {
+    const ProtectedViews = { dashboard: Dashboard, profile: Profile, wishlist: Wishlist, orders: OrdersDownloads, courses: Admission };
+    const Comp = ProtectedViews[view];
 
-      // Public Account/Store Views
-      case "store":
-        return (
-          <div className="pt-10 pb-24 min-h-screen container mx-auto px-4 md:px-6">
-            <Store />
+    if (Comp) return <Protected><Comp hideHeaderFooter={view === "courses"} /></Protected>;
+    if (view === "store") return <div className="pt-10 pb-24 min-h-screen container mx-auto px-4"><Store /></div>;
+
+    return (
+      <>
+        <main>
+          <OfferBanner onViewStore={() => setView("store")} />
+          <StudentConvo />
+
+          {/* Main Content Section */}
+          <div className="w-full max-w-7xl mx-auto flex flex-col gap-8 md:gap-24 py-6 md:py-16 px-4 sm:px-6">
+            <FeaturedProducts onViewStore={() => setView("store")} />
+            <StatsBar />
+            <WhyKriscap />
+            <SuccessStories />
+            <CommunityHub />
+            <FAQSection />
+            <FinalCTA />
           </div>
-        );
-
-      // Main Landing Page View
-      case "home":
-      default:
-        return (
-          <>
-            {/* Semantic main tag for better SEO */}
-            <main>
-              <OfferBanner onViewStore={() => setActiveView("store")} />
-              <StudentConvo />
-              <UpcomingClasses />
-              <SuccessStories />
-              <WhyKriscap />
-              <StatsBar />
-              <NIOSRoadmap />
-              <FreeResources />
-              <FeaturedProducts onViewStore={() => setActiveView("store")} />
-              <CommunityHub />
-              <FAQSection />
-              <FinalCTA />
-            </main>
-            <Footer />
-          </>
-        );
-    }
+        </main>
+        <Footer />
+      </>
+    );
   };
 
   return (
     <HelmetProvider>
-      {/* Page Structure: Improved default colors (slate) and anti-aliasing */}
-      <div className="min-h-screen bg-slate-50 text-slate-900 antialiased flex flex-col pt-16 selection:bg-blue-100">
-
-        {/* DYNAMIC SEO INJECTION */}
+      <div className="min-h-screen bg-slate-50 text-slate-900 antialiased flex flex-col pt-16">
         <Helmet>
-          <title>{currentSEO.title}</title>
-          <meta name="description" content={currentSEO.description} />
-          <meta property="og:title" content={currentSEO.title} />
-          <meta property="og:description" content={currentSEO.description} />
-          {/* Define primary brand color for browser address bars */}
+          <title>{title}</title>
+          <meta name="description" content={desc} />
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={desc} />
           <meta name="theme-color" content="#0b1f3c" />
-          <link rel="canonical" href={window.location.origin} />
+          <link rel="canonical" href={window.location?.origin} />
         </Helmet>
 
-        <Header activeView={activeView} setActiveView={setActiveView} />
+        <Header activeView={view} setActiveView={setView} />
 
-        {/* Set max width to prevent awkward stretching on wide screens */}
         <div className="flex-grow w-full max-w-[1920px] mx-auto">
-
-          {/* Enhanced Suspense Loading Fallback */}
           <Suspense fallback={
-            <div className="min-h-[75vh] flex flex-col items-center justify-center gap-5 glass m-6 rounded-[2rem]">
-              <div className="relative flex items-center justify-center">
-                {/* Visual pulse glow behind the spinner */}
-                <div className="absolute inset-0 rounded-full blur-2xl bg-indigo-500/30 animate-pulse"></div>
-                <Loader2 className="h-14 w-14 animate-spin text-indigo-600 relative z-10" />
-              </div>
-              <p className="text-slate-600 font-medium animate-pulse text-lg tracking-tight">Loading experience...</p>
+            <div className="min-h-[75vh] flex flex-col items-center justify-center gap-5 glass m-6 rounded-3xl">
+              <Loader2 className="h-12 w-12 animate-spin text-indigo-600" />
+              <p className="text-slate-600 font-medium animate-pulse">Loading...</p>
             </div>
           }>
             <AnimatePresence mode="wait">
-              {/* Premium Page Transition */}
               <motion.div
-                key={activeView}
-                initial={{ opacity: 0, y: 15, scale: 0.98, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -15, scale: 0.98, filter: "blur(8px)" }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} // Custom spring-like bezier
+                key={view}
+                initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
                 className="w-full h-full"
               >
-                {renderContent()}
+                {renderView()}
               </motion.div>
             </AnimatePresence>
           </Suspense>
         </div>
 
         <FloatingWhatsApp />
-        <MobileBottomNav activeView={activeView} setActiveView={setActiveView} />
+        <MobileBottomNav activeView={view} setActiveView={setView} />
       </div>
     </HelmetProvider>
   );

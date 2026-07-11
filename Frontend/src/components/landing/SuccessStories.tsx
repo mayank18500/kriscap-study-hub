@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, CheckCircle2, MessageCircleHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Story {
@@ -19,188 +19,148 @@ const STORIES: Story[] = [
   {
     id: 1,
     name: "Priya Sharma",
-    course: "NIOS Class 12 — Science",
-    message:
-      "I was completely lost before I found Kriscap. The TMA files were exactly what I needed — clear, precise, and exam-ready. I scored 92% in my board exams!",
+    course: "Class 12 — Science",
+    message: "I was completely lost before Kriscap. The TMA files were exactly what I needed—clear and precise. I scored 92%!",
     rating: 5,
-    result: "Scored 92% in NIOS Board Exams",
+    result: "Scored 92% in NIOS",
     avatar: "https://ui-avatars.com/api/?name=Priya+Sharma&background=4F46E5&color=fff&size=128",
-    before: "Struggling student, no direction",
-    after: "92% in NIOS Boards, pursuing B.Sc.",
+    before: "Struggling student",
+    after: "92% in Boards",
   },
   {
     id: 2,
     name: "Rahul Verma",
-    course: "NIOS Class 10 — Commerce",
-    message:
-      "The project files delivered to my home were handwritten and exactly as per the NIOS guidelines. My teacher was impressed. The support team guided me at every step.",
+    course: "Class 10 — Commerce",
+    message: "Files were handwritten exactly per NIOS guidelines. Teacher was impressed. The support team is amazing.",
     rating: 5,
-    result: "First Division — Class 10 NIOS",
+    result: "First Division",
     avatar: "https://ui-avatars.com/api/?name=Rahul+Verma&background=059669&color=fff&size=128",
-    before: "Failed twice in regular school",
-    after: "First Division, started college",
+    before: "Failed twice before",
+    after: "First Division achieved",
   },
   {
     id: 3,
     name: "Ananya Patel",
-    course: "NIOS Class 12 — Humanities",
-    message:
-      "The live classes helped me understand topics I could never grasp from books. The educators are patient and the study materials are top-notch. Highly recommend!",
+    course: "Class 12 — Humanities",
+    message: "Live classes helped me understand topics I couldn't grasp from books. Educators are super patient.",
     rating: 5,
-    result: "85% in NIOS Board — Humanities",
+    result: "85% in Boards",
     avatar: "https://ui-avatars.com/api/?name=Ananya+Patel&background=DC2626&color=fff&size=128",
-    before: "Working student, no time to study",
-    after: "85% NIOS result, pursuing B.A.",
-  },
-  {
-    id: 4,
-    name: "Mohammed Khan",
-    course: "NIOS Class 12 — Business Studies",
-    message:
-      "I purchased the complete subject bundle and it covered everything. The instant download feature is amazing — I got all files within minutes of payment.",
-    rating: 5,
-    result: "Passed with Distinction",
-    avatar: "https://ui-avatars.com/api/?name=Mohammed+Khan&background=D97706&color=fff&size=128",
-    before: "No study materials, low confidence",
-    after: "Distinction in NIOS, started business",
+    before: "Working, no time",
+    after: "85% NIOS result",
   },
 ];
 
-function StarRating({ count }: { count: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Star
-          key={i}
-          className={`w-4 h-4 ${i < count ? "fill-amber-400 text-amber-400" : "text-slate-300"}`}
-        />
-      ))}
-    </div>
-  );
-}
-
-const SuccessStories = () => {
+export default function SuccessStories() {
   const [current, setCurrent] = useState(0);
-
-  const prev = () => setCurrent((c) => (c - 1 + STORIES.length) % STORIES.length);
-  const next = () => setCurrent((c) => (c + 1) % STORIES.length);
-
   const story = STORIES[current];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
-      <div className="w-full px-6 md:px-12 max-w-none">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <span className="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest rounded-full mb-4">
-            Testimonials
-          </span>
-          <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">
-            Real Students,{" "}
-            <span className="text-blue-600">Real Reviews</span>
-          </h2>
-          <p className="text-slate-500 max-w-xl mx-auto text-base">
-            These are real stories from students who transformed their academic journey with Kriscap Study Hub.
-          </p>
-        </div>
+    <section className="py-12 bg-gradient-to-b from-blue-50/50 to-slate-50 px-4 max-w-sm mx-auto overflow-visible">
+      {/* Header */}
+      <div className="flex items-center justify-center gap-2 mb-8">
+        <MessageCircleHeart className="w-5 h-5 text-blue-500" />
+        <h2 className="text-sm font-bold text-slate-800 tracking-wide uppercase">Student Comments</h2>
+      </div>
 
-        {/* Story Card */}
-        <div className="relative">
+      {/* Floating Cloud Container */}
+      <motion.div
+        animate={{ y: [-6, 6, -6] }}
+        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        className="relative z-10"
+      >
+        {/* Main Cloud Body */}
+        <div className="bg-white/95 backdrop-blur-md rounded-[2.5rem] p-5 shadow-[0_20px_40px_-15px_rgba(37,99,235,0.15)] border border-white relative z-10">
+
           <AnimatePresence mode="wait">
             <motion.div
               key={story.id}
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25 }}
+              className="space-y-4"
             >
-              <div className="grid md:grid-cols-2 gap-0">
-                {/* Left — Story */}
-                <div className="p-8 md:p-12 flex flex-col justify-between">
-                  <div>
-                    <Quote className="w-10 h-10 text-blue-100 mb-6" />
-                    <p className="text-slate-700 text-lg leading-relaxed font-medium mb-8">
-                      "{story.message}"
-                    </p>
-                    <StarRating count={story.rating} />
-                  </div>
-                  <div className="mt-8 flex items-center gap-4">
-                    <img
-                      src={story.avatar}
-                      alt={story.name}
-                      className="w-14 h-14 rounded-full object-cover ring-2 ring-blue-200"
-                    />
-                    <div>
-                      <p className="font-bold text-slate-900">{story.name}</p>
-                      <p className="text-slate-500 text-sm">{story.course}</p>
-                    </div>
+              {/* User Header */}
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <img src={story.avatar} alt={story.name} className="w-10 h-10 rounded-full shadow-sm" />
+                  <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 fill-blue-50" />
                   </div>
                 </div>
+                <div className="flex-1">
+                  <span className="font-bold text-sm text-slate-900 block leading-none mb-1">{story.name}</span>
+                  <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md inline-block">
+                    {story.course}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  <span className="text-[10px] font-bold text-slate-400 text-center">5.0</span>
+                </div>
+              </div>
 
-                {/* Right — Before/After */}
-                <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-8 md:p-12 flex flex-col justify-center gap-6">
-                  <div className="inline-flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                      <span className="text-emerald-400 text-lg font-black">✓</span>
-                    </span>
-                    <span className="text-emerald-400 font-bold text-sm uppercase tracking-widest">
-                      Result
-                    </span>
+              {/* The Comment */}
+              <p className="text-sm leading-relaxed text-slate-700 font-medium px-1">
+                "{story.message}"
+              </p>
+
+              {/* Verified Result (Embedded Reply) */}
+              <div className="bg-slate-50/80 rounded-2xl p-3 border border-slate-100">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Result: {story.result}
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[10px] bg-white p-2 rounded-xl shadow-sm border border-slate-50">
+                  <div className="text-slate-500 truncate border-r border-slate-100 pr-2">
+                    <span className="font-bold text-slate-400 uppercase text-[8px] tracking-wider block mb-0.5">Before</span>
+                    {story.before}
                   </div>
-                  <p className="text-2xl font-black text-white">{story.result}</p>
-
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4">
-                      <p className="text-amber-400 text-xs font-bold uppercase mb-2">Before</p>
-                      <p className="text-blue-50 text-sm font-medium">{story.before}</p>
-                    </div>
-                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
-                      <p className="text-emerald-400 text-xs font-bold uppercase mb-2">After</p>
-                      <p className="text-blue-50 text-sm font-medium">{story.after}</p>
-                    </div>
+                  <div className="text-slate-700 truncate font-semibold pl-1">
+                    <span className="font-bold text-blue-400 uppercase text-[8px] tracking-wider block mb-0.5">After</span>
+                    {story.after}
                   </div>
                 </div>
               </div>
             </motion.div>
           </AnimatePresence>
-
-          {/* Navigation */}
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={prev}
-              className="rounded-full border-slate-200 hover:bg-slate-50 w-11 h-11"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-
-            <div className="flex gap-2">
-              {STORIES.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrent(idx)}
-                  className={`transition-all duration-300 rounded-full ${
-                    idx === current ? "w-8 h-2.5 bg-[#2563EB]" : "w-2.5 h-2.5 bg-slate-200 hover:bg-slate-300"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={next}
-              className="rounded-full border-slate-200 hover:bg-slate-50 w-11 h-11"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-          </div>
         </div>
+
+        {/* Cloud Tail (Speech Bubble effect) */}
+        <div className="absolute -bottom-3 left-12 w-8 h-8 bg-white transform rotate-45 rounded-sm shadow-[10px_10px_20px_-5px_rgba(37,99,235,0.1)] z-0" />
+      </motion.div>
+
+      {/* Pagination Controls (Outside the cloud) */}
+      <div className="flex items-center justify-center gap-4 mt-10">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setCurrent((c) => (c - 1 + STORIES.length) % STORIES.length)}
+          className="w-8 h-8 rounded-full bg-white shadow-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </Button>
+
+        <div className="flex gap-1.5">
+          {STORIES.map((_, idx) => (
+            <span
+              key={idx}
+              className={`h-1.5 rounded-full transition-all duration-300 ${idx === current ? "w-5 bg-blue-500 shadow-sm shadow-blue-200" : "w-1.5 bg-slate-200"
+                }`}
+            />
+          ))}
+        </div>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setCurrent((c) => (c + 1) % STORIES.length)}
+          className="w-8 h-8 rounded-full bg-white shadow-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </Button>
       </div>
     </section>
   );
-};
-
-export default SuccessStories;
+}

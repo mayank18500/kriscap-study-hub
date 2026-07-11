@@ -132,7 +132,7 @@ const AdminProducts = () => {
       price: Number(newProduct.price),
       offerPrice: newProduct.offerPrice ? Number(newProduct.offerPrice) : 0,
       stock: Number(newProduct.stock),
-      isPhysical: newProduct.isPhysical === "true" || newProduct.isPhysical === true
+      isPhysical: String(newProduct.isPhysical) === "true"
     };
     if (isEditMode && editProductId) {
       updateProductMutation.mutate({
