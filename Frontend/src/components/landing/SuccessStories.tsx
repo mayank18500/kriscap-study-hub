@@ -56,7 +56,7 @@ export default function SuccessStories() {
   const story = STORIES[current];
 
   return (
-    <section className="py-12 bg-gradient-to-b from-blue-50/50 to-slate-50 px-4 max-w-sm mx-auto overflow-visible">
+    <section className="py-4 bg-gradient-to-b from-blue-50/50 to-slate-50 px-4 max-w-sm mx-auto overflow-visible">
       {/* Header */}
       <div className="flex items-center justify-center gap-2 mb-8">
         <MessageCircleHeart className="w-5 h-5 text-blue-500" />

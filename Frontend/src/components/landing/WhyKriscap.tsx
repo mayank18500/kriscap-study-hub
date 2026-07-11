@@ -1,13 +1,13 @@
 import React from 'react';
-import { 
-  BookOpen, 
-  Users, 
-  Youtube, 
-  Video, 
-  Scale, 
-  Truck, 
-  Clock, 
-  Sprout, 
+import {
+  BookOpen,
+  Users,
+  Youtube,
+  Video,
+  Scale,
+  Truck,
+  Clock,
+  Sprout,
   Building2,
   MessageCircleQuestion,
   GraduationCap
@@ -16,24 +16,6 @@ import {
 const WhyKriscap = () => {
   const features = [
     {
-      icon: <BookOpen className="w-8 h-8 text-blue-600" />,
-      title: "50,000+",
-      subtitle: "Notes",
-      description: "Text & Handwritten"
-    },
-    {
-      icon: <Users className="w-8 h-8 text-orange-500" />,
-      title: "200K+",
-      subtitle: "members",
-      description: ""
-    },
-    {
-      icon: <Youtube className="w-8 h-8 text-red-600" />,
-      title: "200M+",
-      subtitle: "views",
-      description: "YouTube - All channel"
-    },
-    {
       icon: <Video className="w-8 h-8 text-indigo-600" />,
       title: "Daily Live",
       subtitle: "interactive classes",
@@ -41,21 +23,15 @@ const WhyKriscap = () => {
       badge: "LIVE"
     },
     {
-      icon: <Scale className="w-8 h-8 text-amber-700" />,
-      title: "All Exam Counselling",
-      subtitle: "",
-      description: "Expert & Analysis"
-    },
-    {
       icon: <Truck className="w-8 h-8 text-blue-500" />,
       title: "Physical files",
-      subtitle: "Home Delivery",
+      subtitle: "Home Delivery & Notes",
       description: ""
     },
     {
-      icon: <Clock className="w-8 h-8 text-gray-700" />,
-      title: "24x7",
-      subtitle: "Doubt solving Session",
+      icon: <Users className="w-8 h-8 text-orange-500" />,
+      title: "200K+",
+      subtitle: "members",
       description: ""
     },
     {
@@ -69,13 +45,19 @@ const WhyKriscap = () => {
       title: "20+",
       subtitle: "Offline centres",
       description: ""
+    },
+    {
+      icon: <Clock className="w-8 h-8 text-gray-700" />,
+      title: "24x7",
+      subtitle: "Help Support",
+      description: ""
     }
   ];
 
   return (
     <section className="py-16 bg-[#eef5fc] text-gray-900 border-t border-gray-200">
       <div className="w-full px-6 md:px-12 max-w-none">
-        
+
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-[#1a2b4b]">
@@ -90,8 +72,8 @@ const WhyKriscap = () => {
         {/* Features Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 bg-white border-t border-l border-gray-800 mx-auto rounded-md overflow-hidden max-w-4xl shadow-md">
           {features.map((feature, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="border-b border-r border-gray-800 p-4 md:p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors"
             >
               <div className="flex items-center gap-3 mb-2 w-full justify-center">

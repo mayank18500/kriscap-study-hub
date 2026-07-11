@@ -16,7 +16,7 @@ import {
 
 const StudentConvo = () => {
   return (
-    <section className="py-16 bg-gradient-to-b from-[#eef5fc] to-white text-gray-900 border-b border-gray-100 flex justify-center">
+    <section className="py-4 bg-gradient-to-b from-[#eef5fc] to-white text-gray-900 border-b border-gray-100 flex justify-center">
       <div className="w-full px-6 md:px-12 max-w-3xl flex flex-col gap-8">
 
         {/* Student Message */}

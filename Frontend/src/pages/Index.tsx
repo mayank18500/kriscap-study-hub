@@ -2,7 +2,7 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Loader2 } from "lucide-react";
+import { Loader2, Target } from "lucide-react";
 
 // Layout Components
 import Header from "@/components/landing/Header";
@@ -16,13 +16,10 @@ import StudentConvo from "@/components/landing/StudentConvo";
 import UpcomingClasses from "@/components/landing/UpcomingClasses";
 import SuccessStories from "@/components/landing/SuccessStories";
 import WhyKriscap from "@/components/landing/WhyKriscap";
-import StatsBar from "@/components/landing/StatsBar";
-import NIOSRoadmap from "@/components/landing/NIOSRoadmap";
-import FreeResources from "@/components/landing/FreeResources";
-import FeaturedProducts from "@/components/landing/FeaturedProducts";
 import CommunityHub from "@/components/landing/CommunityHub";
 import FAQSection from "@/components/landing/FAQSection";
 import FinalCTA from "@/components/landing/FinalCTA";
+import TargetToday from "@/components/landing/TargetToday";
 
 // Lazy Loaded Views
 const Profile = lazy(() => import("./Profile"));
@@ -74,9 +71,9 @@ const Index = () => {
           <StudentConvo />
 
           {/* Main Content Section */}
-          <div className="w-full max-w-7xl mx-auto flex flex-col gap-8 md:gap-24 py-6 md:py-16 px-4 sm:px-6">
-            <FeaturedProducts onViewStore={() => setView("store")} />
-            <StatsBar />
+          <div className="w-full max-w-7xl mx-auto flex flex-col gap-1 md:gap-2 py-0 md:py-1 px-0 sm:px-2">
+            <TargetToday />
+            <UpcomingClasses />
             <WhyKriscap />
             <SuccessStories />
             <CommunityHub />

@@ -61,8 +61,8 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
   };
 
   return (
-    <div className="w-full px-4 pt-4 pb-2 bg-white flex flex-col items-center">
-      <div 
+    <div className="w-full px-4 pt-4 pb-1 bg-white flex flex-col items-center">
+      <div
         className="relative w-full aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] lg:aspect-[16/5] cursor-grab active:cursor-grabbing overflow-hidden rounded-[24px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -94,14 +94,13 @@ const OfferBanner = ({ onViewStore }: OfferBannerProps) => {
       </div>
 
       {/* Nothing OS style pills indicator */}
-      <div className="mt-4 flex gap-1.5 justify-center">
+      <div className="mt-2 flex gap-1.5 justify-center">
         {BANNERS.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setCurrentIndex(idx)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              idx === currentIndex ? "bg-slate-900 w-6" : "bg-slate-200 w-1.5"
-            }`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? "bg-slate-900 w-6" : "bg-slate-200 w-1.5"
+              }`}
             aria-label={`Go to slide ${idx + 1}`}
           />
         ))}
