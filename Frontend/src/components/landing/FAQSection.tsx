@@ -21,7 +21,7 @@ const FAQS = [
   },
   {
     q: "How does physical home delivery work?",
-    a: "After placing an order for physical project files, we prepare and dispatch your order within 2–3 business days. Delivery typically takes 4–7 days depending on your location. You can track your order through the 'My Orders' section.",
+    a: "After placing an order for physical project files, we prepare and dispatch your order within 2 business days. Delivery typically takes 3-5 days depending on your location. You can track your order through the 'My Orders' section.",
   },
   {
     q: "Can I get support if I have doubts about NIOS subjects?",

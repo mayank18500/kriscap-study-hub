@@ -56,110 +56,94 @@ export default function SuccessStories() {
   const story = STORIES[current];
 
   return (
-    <section className="py-4 bg-gradient-to-b from-blue-50/50 to-slate-50 dark:from-slate-900/50 dark:to-slate-950 px-4 max-w-sm mx-auto overflow-visible">
+    <section className="py-2 bg-slate-50 dark:bg-slate-950 px-4 w-full">
       {/* Header */}
-      <div className="flex items-center justify-center gap-2 mb-8">
+      <div className="flex items-center justify-center gap-2 mb-4">
         <MessageCircleHeart className="w-5 h-5 text-blue-500" />
-        <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-wide uppercase">Success Stories</h2>
+        <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-wide uppercase">Student Reviews</h2>
       </div>
 
-      {/* Floating Cloud Container */}
-      <motion.div
-        animate={{ y: [-6, 6, -6] }}
-        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-        className="relative z-10"
-      >
-        {/* Main Cloud Body */}
-        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-[2.5rem] p-5 shadow-[0_20px_40px_-15px_rgba(37,99,235,0.15)] dark:shadow-none border border-white dark:border-slate-800 relative z-10">
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={story.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.25 }}
-              className="space-y-4"
-            >
-              {/* User Header */}
+      <div className="relative">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={story.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="w-full bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 relative"
+          >
+            {/* User Header */}
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="relative">
-                  <img src={story.avatar} alt={story.name} className="w-10 h-10 rounded-full shadow-sm" />
-                  <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 fill-blue-50" />
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <span className="font-bold text-sm text-slate-900 dark:text-slate-100 block leading-none mb-1">{story.name}</span>
-                  <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md inline-block">
-                    {story.course}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0.5">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span className="text-[10px] font-bold text-slate-400 text-center">5.0</span>
-                </div>
-              </div>
-
-              {/* The Comment */}
-              <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-medium px-1">
-                "{story.message}"
-              </p>
-
-              {/* Verified Result (Embedded Reply) */}
-              <div className="bg-slate-50/80 dark:bg-slate-800/80 rounded-2xl p-3 border border-slate-100 dark:border-slate-700">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Result: {story.result}
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[10px] bg-white dark:bg-slate-950 p-2 rounded-xl shadow-sm border border-slate-50 dark:border-slate-800">
-                  <div className="text-slate-500 dark:text-slate-400 truncate border-r border-slate-100 dark:border-slate-800 pr-2">
-                    <span className="font-bold text-slate-400 uppercase text-[8px] tracking-wider block mb-0.5">Before</span>
-                    {story.before}
-                  </div>
-                  <div className="text-slate-700 dark:text-slate-200 truncate font-semibold pl-1">
-                    <span className="font-bold text-blue-400 uppercase text-[8px] tracking-wider block mb-0.5">After</span>
-                    {story.after}
+                <img src={story.avatar} alt={story.name} className="w-12 h-12 rounded-full object-cover" />
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5 text-sm md:text-base pr-24">
+                    {story.name}
+                    <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                  </h4>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <div className="flex gap-0.5 text-amber-400">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                      ))}
+                    </div>
+                    <span className="text-xs text-slate-500 font-medium hidden sm:inline-block border-l border-slate-300 dark:border-slate-700 pl-2">
+                      {story.course}
+                    </span>
                   </div>
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
+              <span className="text-xs text-slate-500 font-medium sm:hidden">
+                {story.course}
+              </span>
+            </div>
+
+            {/* The Comment */}
+            <p className="text-slate-700 dark:text-slate-300 mb-2 text-sm md:text-base leading-relaxed">
+              "{story.message}"
+            </p>
+
+            {/* NIOS Result Badge */}
+            <div className="absolute top-4 right-4 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/50 flex items-center gap-1.5 shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              {story.result}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Pagination Controls */}
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setCurrent((c) => (c - 1 + STORIES.length) % STORIES.length)}
+            className="w-10 h-10 rounded-full border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </Button>
+
+          <div className="flex gap-2">
+            {STORIES.map((_, idx) => (
+              <span
+                key={idx}
+                className={`h-2 rounded-full transition-all duration-300 ${idx === current
+                  ? "w-8 bg-blue-600 dark:bg-blue-500"
+                  : "w-2 bg-slate-300 dark:bg-slate-700"
+                  }`}
+              />
+            ))}
+          </div>
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setCurrent((c) => (c + 1) % STORIES.length)}
+            className="w-10 h-10 rounded-full border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </Button>
         </div>
-
-        {/* Cloud Tail (Speech Bubble effect) */}
-        <div className="absolute -bottom-3 left-12 w-8 h-8 bg-white dark:bg-slate-900 transform rotate-45 rounded-sm shadow-[10px_10px_20px_-5px_rgba(37,99,235,0.1)] dark:shadow-none z-0" />
-      </motion.div>
-
-      {/* Pagination Controls (Outside the cloud) */}
-      <div className="flex items-center justify-center gap-4 mt-10">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setCurrent((c) => (c - 1 + STORIES.length) % STORIES.length)}
-          className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </Button>
-
-        <div className="flex gap-1.5">
-          {STORIES.map((_, idx) => (
-            <span
-              key={idx}
-              className={`h-1.5 rounded-full transition-all duration-300 ${idx === current ? "w-5 bg-blue-500 shadow-sm shadow-blue-200 dark:shadow-none" : "w-1.5 bg-slate-200 dark:bg-slate-700"
-                }`}
-            />
-          ))}
-        </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setCurrent((c) => (c + 1) % STORIES.length)}
-          className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </Button>
       </div>
     </section>
   );

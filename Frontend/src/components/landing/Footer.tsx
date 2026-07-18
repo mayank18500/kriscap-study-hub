@@ -27,10 +27,10 @@ const Footer = () => {
   return (
     <footer className="relative bg-[#0b1f3c] text-slate-300 pt-10 md:pt-20 pb-24 md:pb-8 overflow-hidden border-t border-white/10">
       <div className="w-full px-6 md:px-12 max-w-none">
-        
+
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-y-6 gap-x-6 lg:gap-8 mb-8 md:mb-16">
-          
+
           {/* Column 1: Brand & Contact (4 cols) */}
           <div className="lg:col-span-4 space-y-4 md:space-y-6">
             <Link to="/" className="flex items-center gap-3">
@@ -49,7 +49,7 @@ const Footer = () => {
             <p className="text-sm leading-relaxed text-slate-400 pr-4">
               Empowering NIOS students nationwide with premium study materials, expert-curated TMA files, and dedicated academic support.
             </p>
-            
+
             <div className="space-y-3 pt-2">
               <a href="tel:+917023057797" className="flex items-center gap-3 text-sm hover:text-white transition-colors">
                 <Phone className="w-4 h-4 text-blue-400" />
@@ -62,8 +62,8 @@ const Footer = () => {
               <div className="flex items-start gap-3 text-sm">
                 <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
                 <span className="leading-relaxed">
-                  Kriscap Education Center, Sector 15,<br />
-                  New Delhi, India - 110001
+                  Kriscap Education ,Mandadam ,<br />
+                  Amaravathi, Andhra Pradesh - 530011
                 </span>
               </div>
             </div>
@@ -75,11 +75,9 @@ const Footer = () => {
             <ul className="flex flex-wrap gap-x-6 gap-y-3 md:flex-col md:space-y-3 md:gap-0">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <Link to={link.href} className="text-sm hover:text-white transition-colors flex items-center group">
-                    <span className="w-0 overflow-hidden group-hover:w-4 transition-all duration-300">
-                      <ArrowRight className="w-3 h-3 text-blue-400" />
-                    </span>
-                    {link.name}
+                  <Link to={link.href} className="text-sm hover:text-white transition-colors flex items-center group relative">
+                    <ArrowRight className="w-3 h-3 text-blue-400 opacity-0 transform -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 absolute left-0" />
+                    <span className="transform transition-transform duration-300 group-hover:translate-x-5">{link.name}</span>
                   </Link>
                 </li>
               ))}
@@ -92,11 +90,9 @@ const Footer = () => {
             <ul className="flex flex-wrap gap-x-6 gap-y-3 md:flex-col md:space-y-3 md:gap-0">
               {supportLinks.map((link) => (
                 <li key={link.name}>
-                  <Link to={link.href} className="text-sm hover:text-white transition-colors flex items-center group">
-                    <span className="w-0 overflow-hidden group-hover:w-4 transition-all duration-300">
-                      <ArrowRight className="w-3 h-3 text-blue-400" />
-                    </span>
-                    {link.name}
+                  <Link to={link.href} className="text-sm hover:text-white transition-colors flex items-center group relative">
+                    <ArrowRight className="w-3 h-3 text-blue-400 opacity-0 transform -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 absolute left-0" />
+                    <span className="transform transition-transform duration-300 group-hover:translate-x-5">{link.name}</span>
                   </Link>
                 </li>
               ))}
@@ -111,9 +107,9 @@ const Footer = () => {
                 Get the latest NIOS updates and exam tips directly in your inbox.
               </p>
               <div className="flex gap-2">
-                <input 
-                  type="email" 
-                  placeholder="Your email address" 
+                <input
+                  type="email"
+                  placeholder="Your email address"
                   className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all"
                 />
                 <Button className="bg-blue-600 hover:bg-blue-700 rounded-xl px-4 shrink-0">

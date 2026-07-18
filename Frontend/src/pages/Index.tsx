@@ -18,7 +18,6 @@ import SuccessStories from "@/components/landing/SuccessStories";
 import WhyKriscap from "@/components/landing/WhyKriscap";
 import CommunityHub from "@/components/landing/CommunityHub";
 import FAQSection from "@/components/landing/FAQSection";
-import FinalCTA from "@/components/landing/FinalCTA";
 import TargetToday from "@/components/landing/TargetToday";
 
 // Lazy Loaded Views
@@ -78,7 +77,6 @@ const Index = () => {
             <WhyKriscap />
             <CommunityHub />
             <FAQSection />
-            <FinalCTA />
           </div>
         </main>
         <Footer />
