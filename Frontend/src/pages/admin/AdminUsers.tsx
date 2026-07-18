@@ -42,7 +42,8 @@ const AdminUsers = () => {
         queryFn: async () => {
             const response = await api.get("/api/admin/users");
             return response.data;
-        }
+        },
+        refetchInterval: 3000
     });
 
     const deleteMutation = useMutation({

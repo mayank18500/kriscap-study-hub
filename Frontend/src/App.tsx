@@ -24,6 +24,10 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Courses = lazy(() => import("./pages/Courses"));
 const Admission = lazy(() => import("./pages/Admission"));
 const OrdersDownloads = lazy(() => import("./pages/OrdersDownloads"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Refund = lazy(() => import("./pages/Refund"));
+const Careers = lazy(() => import("./pages/Careers"));
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -116,6 +120,10 @@ const App = () => {
                         <Route path="/admission" element={<Admission />} />
                         <Route path="/about" element={<AboutUs />} />
                         <Route path="/contact" element={<Contact />} />
+                        <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/terms" element={<Terms />} />
+                        <Route path="/refund" element={<Refund />} />
+                        <Route path="/careers" element={<Careers />} />
                         <Route path="/login/*" element={<Login />} />
                         <Route path="/register/*" element={<Register />} />
 

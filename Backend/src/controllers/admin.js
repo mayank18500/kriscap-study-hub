@@ -2,7 +2,7 @@ const prisma = require("../config/prisma");
 
 exports.getAdminStats = async (req, res) => {
     try {
-        const totalUsers = await prisma.user.count({ where: { role: "USER" } });
+        const totalUsers = await prisma.user.count({ where: { role: "user" } });
         const totalOrders = await prisma.order.count();
 
         // Revenue Calculation
@@ -250,7 +250,7 @@ exports.updateOrderStatus = async (req, res) => {
 exports.getAdminUsers = async (req, res) => {
     try {
         const users = await prisma.user.findMany({
-            where: { role: "USER" },
+            where: { role: "user" },
             orderBy: { createdAt: "desc" }
         });
         res.json(users);

@@ -11,7 +11,8 @@ const AdminOverview = () => {
     queryFn: async () => {
       const response = await api.get("/api/admin/stats");
       return response.data;
-    }
+    },
+    refetchInterval: 3000 // Poll every 3 seconds for real-time updates
   });
 
   if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>;
