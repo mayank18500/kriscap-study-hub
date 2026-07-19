@@ -9,8 +9,6 @@ import { useLocation } from "react-router-dom";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
-import MobileBottomNav from "@/components/landing/MobileBottomNav";
-
 // Public Sections
 import OfferBanner from "@/components/landing/OfferBanner";
 import StudentConvo from "@/components/landing/StudentConvo";
@@ -26,12 +24,12 @@ const Profile = lazy(() => import("./Profile"));
 const OrdersDownloads = lazy(() => import("./OrdersDownloads"));
 const Admission = lazy(() => import("./Admission"));
 const Store = lazy(() => import("./Store"));
-const Dashboard = lazy(() => import("./Dashboard"));
+
 const Wishlist = lazy(() => import("./Wishlist"));
 
 const SEO = {
   home: { title: "Kriscap Education | Premium NIOS TMA Solutions & Courses", desc: "Get professionally prepared NIOS TMA solutions, expert guidance, and enroll in our premium online classes to excel in your exams." },
-  dashboard: { title: "Dashboard | Kriscap", desc: "Your personalized student dashboard." },
+
   profile: { title: "Profile | Kriscap", desc: "View and edit your profile." },
   wishlist: { title: "Saved | Kriscap", desc: "Your bookmarked materials." },
   orders: { title: "Orders | Kriscap", desc: "Access your purchases." },
@@ -63,7 +61,7 @@ const Index = () => {
   const { title, desc } = SEO[view] || SEO.home;
 
   const renderView = () => {
-    const ProtectedViews = { dashboard: Dashboard, profile: Profile, wishlist: Wishlist, orders: OrdersDownloads, courses: Admission };
+    const ProtectedViews = { profile: Profile, wishlist: Wishlist, orders: OrdersDownloads, courses: Admission };
     const Comp = ProtectedViews[view];
 
     if (Comp) return <Protected><Comp hideHeaderFooter={view === "courses"} /></Protected>;
@@ -125,9 +123,7 @@ const Index = () => {
             </AnimatePresence>
           </Suspense>
         </div>
-
         <FloatingWhatsApp />
-        <MobileBottomNav activeView={view} setActiveView={setView} />
       </div>
     </HelmetProvider>
   );

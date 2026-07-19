@@ -55,7 +55,7 @@ const Store = () => {
   const [searchQuery, setSearchQuery] = useState(() => {
     return sessionStorage.getItem("ke_store_search") || "";
   });
-  const [activeTab, setActiveTab] = useState<"all" | "tma" | "project-digital" | "project-physical">("all");
+
   const [showFilters, setShowFilters] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<string>("all");
 
@@ -195,7 +195,7 @@ const Store = () => {
     }
   };
 
-  let activeProducts = products?.filter(p => p.active !== false) || [];
+  let activeProducts = products?.filter(p => p.active !== false && p.type !== "TMA" && p.type !== "PROJECT") || [];
 
   const uniqueSubjects = Array.from(new Set(activeProducts.map(p => p.subject).filter(Boolean)));
 
@@ -211,17 +211,6 @@ const Store = () => {
       p.class.toLowerCase().includes(q)
     );
   }
-
-  // Section 1: TMA Files (Digital PDF)
-  const tmaPdfs = activeProducts.filter(p => p.type === "TMA" && !p.isPhysical);
-
-  // Section 2: Project File PDF Download
-  const projectPdfs = activeProducts.filter(p => p.type === "PROJECT" && !p.isPhysical);
-
-  // Section 3: Project File Home Delivery
-  const projectPhysical = activeProducts.filter(p => p.type === "PROJECT" && p.isPhysical);
-  const projectPhysicalCopyright = projectPhysical.filter(p => p.copyrightStatus === "COPYRIGHT");
-  const projectPhysicalNonCopyright = projectPhysical.filter(p => p.copyrightStatus === "NON_COPYRIGHT");
 
   if (isLoading) {
     return (
@@ -450,13 +439,7 @@ const Store = () => {
               <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xl mt-1 font-medium">{description}</p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            onClick={() => setActiveTab("all")}
-            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/30 rounded-full h-8 px-4"
-          >
-            ← Back
-          </Button>
+
         </div>
 
         {items.length === 0 ? (
@@ -481,37 +464,8 @@ const Store = () => {
     <div className="w-full bg-slate-50 dark:bg-slate-950 min-h-screen pt-4">
       <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8 pb-4 space-y-6">
 
-        {/* Top Category Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto w-full scrollbar-none pb-1">
-          <Button
-            variant={activeTab === "all" ? "default" : "outline"}
-            onClick={() => { setActiveTab("all"); }}
-            className={`rounded-full shrink-0 h-10 px-5 text-sm font-bold transition-all ${activeTab === "all" ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md border-transparent" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm"}`}
-          >
-            All
-          </Button>
-          <Button
-            variant={activeTab === "tma" ? "default" : "outline"}
-            onClick={() => { setActiveTab("tma"); }}
-            className={`rounded-full shrink-0 h-10 px-5 text-sm font-bold transition-all ${activeTab === "tma" ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md border-transparent" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm"}`}
-          >
-            TMA(PDF)
-          </Button>
-          <Button
-            variant={activeTab === "project-digital" ? "default" : "outline"}
-            onClick={() => { setActiveTab("project-digital"); }}
-            className={`rounded-full shrink-0 h-10 px-5 text-sm font-bold transition-all ${activeTab === "project-digital" ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md border-transparent" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm"}`}
-          >
-            Practical(PDF)
-          </Button>
-          <Button
-            variant={activeTab === "project-physical" ? "default" : "outline"}
-            onClick={() => { setActiveTab("project-physical"); }}
-            className={`rounded-full shrink-0 h-10 px-5 text-sm font-bold transition-all ${activeTab === "project-physical" ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-md border-transparent" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm"}`}
-          >
-            Physical Delivery
-          </Button>
-        </div>
+
+
 
         {/* Search and Filters */}
         <div className="sticky top-20 z-30 w-full flex flex-col gap-3 py-2">
@@ -523,11 +477,7 @@ const Store = () => {
             >
               <SlidersHorizontal className="w-4 h-4" />
               <span>Filters</span>
-              {activeTab !== "all" && (
-                <span className="w-4 h-4 bg-indigo-500 rounded-full text-[9px] font-black flex items-center justify-center text-white border border-white dark:border-slate-900 shadow-sm ml-1">
-                  1
-                </span>
-              )}
+
             </Button>
           </div>
 
@@ -569,78 +519,12 @@ const Store = () => {
         </div>
 
         {/* Sections */}
-        {activeTab === "all" ? (
-          <div className="space-y-8">
-            {renderHorizontalScrollSection(
-              "TMA PDF Purchase",
-              "Download professional-grade Tutor Marked Assignments (TMAs) solutions. Instantly unlocked after purchase.",
-              tmaPdfs,
-              false,
-              <FileText className="w-5 h-5 text-indigo-500 drop-shadow-sm" />
-            )}
-
-            {renderHorizontalScrollSection(
-              "Practical PDF Download",
-              "Scholarly digital project reports available for instant download in PDF format. Print or write your own.",
-              projectPdfs,
-              false,
-              <Download className="w-5 h-5 text-purple-500 drop-shadow-sm" />
-            )}
-
-            {projectPhysicalCopyright.length > 0 && renderHorizontalScrollSection(
-              "Physical Delivery (Copyright)",
-              "Handwritten, fully-compiled physical project notebooks customized by professionals.",
-              projectPhysicalCopyright,
-              true,
-              <Truck className="w-5 h-5 text-amber-500 drop-shadow-sm" />
-            )}
-
-            {projectPhysicalNonCopyright.length > 0 && renderHorizontalScrollSection(
-              "Physical Delivery (Non-Copyright)",
-              "Verified handwritten, fully-compiled physical project notebooks delivered safely to your home.",
-              projectPhysicalNonCopyright,
-              true,
-              <Truck className="w-5 h-5 text-amber-500 drop-shadow-sm" />
-            )}
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {activeTab === "tma" && renderCategoryGridView(
-              "TMA PDF Purchase",
-              "Download professional-grade Tutor Marked Assignments (TMAs) solutions. Instantly unlocked after purchase.",
-              tmaPdfs,
-              false,
-              <FileText className="w-6 h-6" />
-            )}
-
-            {activeTab === "project-digital" && renderCategoryGridView(
-              "Practical PDF Download",
-              "Scholarly digital project reports available for instant download in PDF format. Print or write your own.",
-              projectPdfs,
-              false,
-              <Download className="w-6 h-6" />
-            )}
-
-            {activeTab === "project-physical" && (
-              <div className="space-y-12">
-                {projectPhysicalCopyright.length > 0 && renderCategoryGridView(
-                  "Physical Delivery (Copyright)",
-                  "Handwritten, fully-compiled physical project notebooks customized by professionals.",
-                  projectPhysicalCopyright,
-                  true,
-                  <Truck className="w-6 h-6" />
-                )}
-                
-                {projectPhysicalNonCopyright.length > 0 && renderCategoryGridView(
-                  "Physical Delivery (Non-Copyright)",
-                  "Verified handwritten, fully-compiled physical project notebooks delivered safely to your home.",
-                  projectPhysicalNonCopyright,
-                  true,
-                  <Truck className="w-6 h-6" />
-                )}
-              </div>
-            )}
-          </div>
+        {renderCategoryGridView(
+          "Store Catalog",
+          "Explore high-quality educational resources, materials, and other study tools.",
+          activeProducts,
+          true,
+          <ShoppingCart className="w-6 h-6" />
         )}
       </div>
 

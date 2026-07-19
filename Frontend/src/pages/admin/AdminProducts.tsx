@@ -270,20 +270,18 @@ const AdminProducts = () => {
                 </div>
               </div>
 
-              {newProduct.type === "TMA" && (
-                <div className="space-y-2">
-                  <Label>Category (TMA Only)</Label>
-                  <Select value={newProduct.category} onValueChange={(v) => setNewProduct({ ...newProduct, category: v })}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="TEXT">Text</SelectItem>
-                      <SelectItem value="HANDWRITTEN">Handwritten</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+              <div className="space-y-2">
+                <Label>Category</Label>
+                <Select value={newProduct.category} onValueChange={(v) => setNewProduct({ ...newProduct, category: v })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="TEXT">Text (Non-Handwritten)</SelectItem>
+                    <SelectItem value="HANDWRITTEN">Handwritten</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">

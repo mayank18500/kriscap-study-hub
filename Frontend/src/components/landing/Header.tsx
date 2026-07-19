@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
+import MobileBottomNav from "@/components/landing/MobileBottomNav";
 
 interface HeaderProps {
   activeView?: string;
@@ -60,7 +61,6 @@ const Header = ({ activeView, setActiveView }: HeaderProps = {}) => {
   ];
 
   const authLinks = [
-    { id: "dashboard", label: "Dashboard" },
     { id: "orders", label: "Downloads" },
   ];
 
@@ -415,6 +415,7 @@ const Header = ({ activeView, setActiveView }: HeaderProps = {}) => {
           </>
         )}
       </AnimatePresence>
+      <MobileBottomNav activeView={activeView} setActiveView={setActiveView} />
     </>
   );
 };

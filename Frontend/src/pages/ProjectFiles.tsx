@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { 
   Search, 
   Package, 
@@ -14,7 +14,8 @@ import {
   Box, 
   Heart, 
   Download,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,11 +56,12 @@ const ProjectFiles = () => {
   const { addToCart } = useCart();
 
   const debouncedSearch = useDebounce(searchQuery, 300);
+  const navigate = useNavigate();
   const [selectedClass, setSelectedClass] = useState("all");
-  const [selectedFormat, setSelectedFormat] = useState<string>(
-    formatParam === "digital" || formatParam === "physical" ? formatParam : "all"
+  const [selectedDeliveryTab, setSelectedDeliveryTab] = useState<'digital' | 'physical'>(
+    formatParam === "physical" ? "physical" : "digital"
   );
-  const [selectedTab, setSelectedTab] = useState<'NON_COPYRIGHT' | 'COPYRIGHT'>('NON_COPYRIGHT');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>("all");
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -112,7 +114,7 @@ const ProjectFiles = () => {
     },
   });
 
-  const isInWishlist = (productId: string) => wishlistItems?.some((item) => item._id === productId);
+  const isInWishlist = (productId: string) => wishlistItems?.some((item) => (item.id || item._id) === productId);
 
   const handleBuyDirect = (product: Product) => {
     if (!user) {
@@ -154,7 +156,7 @@ const ProjectFiles = () => {
 
     try {
       const { data: orderData } = await api.post("/api/orders/create", {
-        products: [{ product: product._id, quantity: 1 }],
+        products: [{ product: product.id || product._id, quantity: 1 }],
         amount: product.offerPrice && product.offerPrice > 0 ? product.offerPrice : product.price,
         phoneNumber: phoneNumber
       });
@@ -201,15 +203,13 @@ const ProjectFiles = () => {
     const matchesSearch = file.name.toLowerCase().includes(debouncedSearch.toLowerCase());
     const matchesClass = selectedClass === "all" || file.class === selectedClass;
     
-    const matchesFormat = 
-      selectedFormat === "all" || 
-      (selectedFormat === "digital" && !file.isPhysical) || 
-      (selectedFormat === "physical" && file.isPhysical);
+    const matchesDelivery = 
+      (selectedDeliveryTab === "digital" && !file.isPhysical) || 
+      (selectedDeliveryTab === "physical" && file.isPhysical);
 
-    const fileCopyright = file.copyrightStatus || "NON_COPYRIGHT";
-    const matchesTab = fileCopyright === selectedTab;
+    const matchesCategory = selectedCategoryFilter === "all" || file.category === selectedCategoryFilter;
 
-    return matchesSearch && matchesClass && matchesFormat && matchesTab;
+    return matchesSearch && matchesClass && matchesDelivery && matchesCategory;
   }) || [];
 
   if (isLoading) {
@@ -221,7 +221,20 @@ const ProjectFiles = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-20 px-6">
+    <div className="max-w-7xl mx-auto space-y-8 pb-20 px-6 pt-4 md:pt-0">
+      {/* Back Button */}
+      <div>
+        <button 
+          onClick={() => navigate("/")}
+          className="group inline-flex items-center gap-2.5 px-4 py-2.5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/60 dark:border-slate-700/60 rounded-2xl text-slate-600 dark:text-slate-300 font-bold text-sm hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-200 dark:hover:border-indigo-900 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 transition-all shadow-sm hover:shadow-md"
+        >
+          <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-full group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
+          </div>
+          Back to Hub
+        </button>
+      </div>
+
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
         <div className="space-y-2">
@@ -249,24 +262,24 @@ const ProjectFiles = () => {
       <div className="flex justify-center">
         <div className="flex bg-slate-100 p-1.5 rounded-2xl gap-1 border border-slate-200/50">
           <button
-            onClick={() => setSelectedTab('NON_COPYRIGHT')}
+            onClick={() => setSelectedDeliveryTab('digital')}
             className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-              selectedTab === 'NON_COPYRIGHT'
+              selectedDeliveryTab === 'digital'
                 ? 'bg-white text-[#0b1f3c] shadow-sm'
                 : 'text-slate-500 hover:text-slate-900'
             }`}
           >
-            Non-Copyright Projects
+            PDF Download
           </button>
           <button
-            onClick={() => setSelectedTab('COPYRIGHT')}
+            onClick={() => setSelectedDeliveryTab('physical')}
             className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-              selectedTab === 'COPYRIGHT'
+              selectedDeliveryTab === 'physical'
                 ? 'bg-white text-[#0b1f3c] shadow-sm'
                 : 'text-slate-500 hover:text-slate-900'
             }`}
           >
-            Copyright Projects
+            Home Delivery
           </button>
         </div>
       </div>
@@ -296,14 +309,14 @@ const ProjectFiles = () => {
               </SelectContent>
             </Select>
 
-            <Select value={selectedFormat} onValueChange={setSelectedFormat}>
+            <Select value={selectedCategoryFilter} onValueChange={setSelectedCategoryFilter}>
               <SelectTrigger className="w-[140px] h-12 rounded-xl border-slate-200 font-bold text-slate-600 bg-white">
                 <SelectValue placeholder="Format" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Formats</SelectItem>
-                <SelectItem value="digital">PDF Download</SelectItem>
-                <SelectItem value="physical">Home Delivery</SelectItem>
+                <SelectItem value="TEXT">Text / Normal</SelectItem>
+                <SelectItem value="HANDWRITTEN">Handwritten</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -315,7 +328,7 @@ const ProjectFiles = () => {
         <AnimatePresence mode="popLayout">
           {filteredFiles.map((file, index) => (
             <motion.div
-              key={file._id}
+              key={file.id || file._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -331,17 +344,22 @@ const ProjectFiles = () => {
               >
                 {/* Wishlist Button */}
                 <button
-                  className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-slate-100 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (isInWishlist(file._id)) {
-                      removeFromWishlistMutation.mutate(file._id);
+                    if (!user) {
+                      toast({ title: "Login Required", description: "Please login to add items to wishlist" });
+                      return;
+                    }
+                    const productId = file.id || file._id;
+                    if (isInWishlist(productId)) {
+                      removeFromWishlistMutation.mutate(productId);
                     } else {
-                      addToWishlistMutation.mutate(file._id);
+                      addToWishlistMutation.mutate(productId);
                     }
                   }}
+                  className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-slate-100 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm"
                 >
-                  <Heart className={`w-4 h-4 ${isInWishlist(file._id) ? "fill-red-500 text-red-500" : ""}`} />
+                  <Heart className={`w-4 h-4 ${isInWishlist(file.id || file._id) ? "fill-red-500 text-red-500" : ""}`} />
                 </button>
 
                 <CardContent className="p-4 sm:p-8">
