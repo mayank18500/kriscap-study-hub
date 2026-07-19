@@ -14,15 +14,15 @@ import {
 
 const TargetToday = () => {
   const targets = [
-    { id: 1, label: "1. TMA", icon: FileEdit, path: "/store" },
-    { id: 2, label: "2. Practical", icon: Microscope, path: "/store" },
+    { id: 1, label: "1. TMA", icon: FileEdit, path: "/store?tab=tma" },
+    { id: 2, label: "2. Practical", icon: Microscope, path: "/store?tab=project-digital" },
     { id: 3, label: "3. Classes", icon: Presentation, path: "/admission" },
-    { id: 4, label: "4. PCB Classes", icon: Atom, path: "/store" },
-    { id: 5, label: "5. Viva", icon: Mic, path: "/store" },
-    { id: 6, label: "6. Special Materials", icon: Star, path: "/store" },
-    { id: 7, label: "7. Test Series", icon: ClipboardList, path: "/store" },
-    { id: 8, label: "8. Study Materials", icon: BookOpen, path: "/store" },
-    { id: 9, label: "9. Imp. Questions", icon: FileQuestion, path: "/store" }
+    { id: 4, label: "4. PCB Classes", icon: Atom, path: "/admission" },
+    { id: 5, label: "5. Viva", icon: Mic, path: "/store?tab=all" },
+    { id: 6, label: "6. Special Materials", icon: Star, path: "/store?tab=all" },
+    { id: 7, label: "7. Test Series", icon: ClipboardList, path: "/store?tab=all" },
+    { id: 8, label: "8. Study Materials", icon: BookOpen, path: "/store?tab=all" },
+    { id: 9, label: "9. Imp. Questions", icon: FileQuestion, path: "/store?tab=all" }
   ];
 
   return (

@@ -3,6 +3,7 @@ import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Loader2, Target } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 // Layout Components
 import Header from "@/components/landing/Header";
@@ -46,13 +47,18 @@ const Protected = ({ children }) => (
 );
 
 const Index = () => {
-  const [view, setView] = useState("home");
+  const location = useLocation();
+  const [view, setView] = useState(() => location.pathname === "/store" ? "store" : "home");
 
   useEffect(() => {
-    const nextView = sessionStorage.getItem("ke_store_search") ? "store" : sessionStorage.getItem("ke_active_view");
-    if (nextView) setView(nextView);
-    ["ke_store_search", "ke_active_view"].forEach(k => sessionStorage.removeItem(k));
-  }, []);
+    if (location.pathname === "/store") {
+      setView("store");
+    } else if (location.pathname === "/") {
+      const nextView = sessionStorage.getItem("ke_store_search") ? "store" : sessionStorage.getItem("ke_active_view");
+      if (nextView) setView(nextView);
+      ["ke_store_search", "ke_active_view"].forEach(k => sessionStorage.removeItem(k));
+    }
+  }, [location.pathname]);
 
   const { title, desc } = SEO[view] || SEO.home;
 

@@ -220,6 +220,8 @@ const Store = () => {
 
   // Section 3: Project File Home Delivery
   const projectPhysical = activeProducts.filter(p => p.type === "PROJECT" && p.isPhysical);
+  const projectPhysicalCopyright = projectPhysical.filter(p => p.copyrightStatus === "COPYRIGHT");
+  const projectPhysicalNonCopyright = projectPhysical.filter(p => p.copyrightStatus === "NON_COPYRIGHT");
 
   if (isLoading) {
     return (
@@ -585,10 +587,18 @@ const Store = () => {
               <Download className="w-5 h-5 text-purple-500 drop-shadow-sm" />
             )}
 
-            {renderHorizontalScrollSection(
-              "Physical Delivery",
-              "Handwritten, fully-compiled physical project notebooks customized by professionals and delivered safely to your home.",
-              projectPhysical,
+            {projectPhysicalCopyright.length > 0 && renderHorizontalScrollSection(
+              "Physical Delivery (Copyright)",
+              "Handwritten, fully-compiled physical project notebooks customized by professionals.",
+              projectPhysicalCopyright,
+              true,
+              <Truck className="w-5 h-5 text-amber-500 drop-shadow-sm" />
+            )}
+
+            {projectPhysicalNonCopyright.length > 0 && renderHorizontalScrollSection(
+              "Physical Delivery (Non-Copyright)",
+              "Verified handwritten, fully-compiled physical project notebooks delivered safely to your home.",
+              projectPhysicalNonCopyright,
               true,
               <Truck className="w-5 h-5 text-amber-500 drop-shadow-sm" />
             )}
@@ -611,12 +621,24 @@ const Store = () => {
               <Download className="w-6 h-6" />
             )}
 
-            {activeTab === "project-physical" && renderCategoryGridView(
-              "Physical Delivery",
-              "Handwritten, fully-compiled physical project notebooks customized by professionals and delivered safely to your home.",
-              projectPhysical,
-              true,
-              <Truck className="w-6 h-6" />
+            {activeTab === "project-physical" && (
+              <div className="space-y-12">
+                {projectPhysicalCopyright.length > 0 && renderCategoryGridView(
+                  "Physical Delivery (Copyright)",
+                  "Handwritten, fully-compiled physical project notebooks customized by professionals.",
+                  projectPhysicalCopyright,
+                  true,
+                  <Truck className="w-6 h-6" />
+                )}
+                
+                {projectPhysicalNonCopyright.length > 0 && renderCategoryGridView(
+                  "Physical Delivery (Non-Copyright)",
+                  "Verified handwritten, fully-compiled physical project notebooks delivered safely to your home.",
+                  projectPhysicalNonCopyright,
+                  true,
+                  <Truck className="w-6 h-6" />
+                )}
+              </div>
             )}
           </div>
         )}

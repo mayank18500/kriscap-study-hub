@@ -98,7 +98,7 @@ const Profile = () => {
               <Camera className="w-4 h-4" />
             </button>
           </div>
-          
+
           <div className="space-y-2">
             <div className="flex items-center justify-center lg:justify-start gap-3">
               <h2 className="font-serif text-3xl font-bold text-slate-900">{user.name}</h2>
@@ -216,8 +216,8 @@ const Profile = () => {
               <p className="text-slate-400 text-sm leading-relaxed mb-8">
                 Ensure your shipping details are accurate to avoid delays in physical project file deliveries.
               </p>
-              <Button 
-                onClick={handleSave} 
+              <Button
+                onClick={handleSave}
                 disabled={isLoading}
                 className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-full transition-all"
               >
@@ -227,10 +227,10 @@ const Profile = () => {
           </motion.div>
 
           <div className="p-6 border-2 border-dashed border-slate-200 rounded-[1.5rem]">
-             <h5 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 text-center">Security Notice</h5>
-             <p className="text-[11px] text-slate-400 text-center leading-relaxed italic">
-               The email address <span className="text-slate-600 font-bold">{user.email}</span> is permanently linked to your student ID and cannot be modified.
-             </p>
+            <h5 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 text-center">Security Notice</h5>
+            <p className="text-[11px] text-slate-400 text-center leading-relaxed italic">
+              The email address <span className="text-slate-600 font-bold">{user.email}</span> is permanently linked to your student ID and cannot be modified.
+            </p>
           </div>
         </div>
       </div>
