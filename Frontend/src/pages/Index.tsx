@@ -8,7 +8,7 @@ import UpcomingClasses from "@/components/landing/UpcomingClasses";
 import SuccessStories from "@/components/landing/SuccessStories";
 import CommentsSection from "@/components/landing/CommentsSection";
 import Footer from "@/components/landing/Footer";
-import FloatingWhatsApp from "@/components/landing/FloatingWhatsapp";
+import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
 import OfferBanner from "@/components/landing/OfferBanner";
 import StudentConvo from "@/components/landing/StudentConvo";
 import WhyKriscap from "@/components/landing/WhyKriscap";
