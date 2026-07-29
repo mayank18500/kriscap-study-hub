@@ -1,0 +1,68 @@
+import { Users } from 'lucide-react';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import {
+  Bubble,
+  BubbleContent,
+} from "@/components/ui/bubble";
+import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+} from "@/components/ui/message";
+
+const StudentConvo = () => {
+  return (
+    <section className="py-4 bg-gradient-to-b from-[#eef5fc] to-white dark:from-slate-900 dark:to-slate-950 text-gray-900 dark:text-slate-100 border-b border-gray-100 dark:border-slate-900 flex justify-center">
+      <div className="w-full px-6 md:px-12 max-w-3xl flex flex-col gap-8">
+
+        {/* Student Message */}
+        <Message align="start">
+          <MessageAvatar className="flex flex-col items-center gap-1">
+            <span className="font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">Student</span>
+            <Avatar className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+              <AvatarFallback className="bg-transparent">
+                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
+              </AvatarFallback>
+            </Avatar>
+          </MessageAvatar>
+          <MessageContent>
+            <Bubble>
+              <BubbleContent className="text-sm sm:text-base font-semibold font-body leading-relaxed bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-700">
+                Kriscap sir, what makes Kriscap Education different from others?
+              </BubbleContent>
+            </Bubble>
+          </MessageContent>
+        </Message>
+
+        {/* Kriscap Sir Message */}
+        <Message align="end">
+          <MessageAvatar className="flex flex-col items-center gap-1">
+            <span className="font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">Kriscap</span>
+            <Avatar className="w-12 h-12 sm:w-16 sm:h-16 border-2 border-amber-400 shadow-md bg-white">
+              <AvatarImage
+                src="https://ui-avatars.com/api/?name=Kriscap+Sir&background=random"
+                alt="Kriscap Sir"
+                className="object-cover object-top"
+              />
+              <AvatarFallback>KS</AvatarFallback>
+            </Avatar>
+          </MessageAvatar>
+          <MessageContent>
+            <Bubble variant="muted">
+              <BubbleContent className="text-sm sm:text-base font-semibold font-body leading-relaxed bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-700">
+                At Kriscap Education, we don't just give degrees; we build careers. We train you to leave behind odd jobs and step into a dignified, professional life. Here, education means employment.
+              </BubbleContent>
+            </Bubble>
+          </MessageContent>
+        </Message>
+
+      </div>
+    </section>
+  );
+};
+
+export default StudentConvo;
